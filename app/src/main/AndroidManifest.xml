@@ -2,17 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
-    <uses-feature
-        android:name="android.hardware.nfc"
-        android:required="true" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,42 +10,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Avalanche"
-        tools:targetApi="31">
-        <activity
-            android:name=".client.views.StationSearchActivity"
-            android:exported="false"
-            android:label="@string/title_activity_station_search" />
-        <activity
-            android:name=".client.views.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <service
-            android:name=".client.services.StationDiscoveryService"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.BIND_NFC_SERVICE">
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_techlist" />
-
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-            </intent-filter>
-        </service>
-        <service
-            android:name=".client.services.StationPassService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name=".client.services.LocationService"
-            android:enabled="true"
-            android:exported="false" />
-    </application>
+        tools:targetApi="31" />
 
 </manifest>
