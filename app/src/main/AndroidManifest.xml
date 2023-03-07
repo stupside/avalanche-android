@@ -12,6 +12,15 @@
         android:theme="@style/Theme.Avalanche"
         tools:targetApi="31">
         <activity
+            android:name=".SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StationInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CurrentlyUsedPassInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".PassInfoActivity"
             android:exported="false" />
         <activity
