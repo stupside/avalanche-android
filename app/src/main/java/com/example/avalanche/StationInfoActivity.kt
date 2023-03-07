@@ -1,11 +1,17 @@
 package com.example.avalanche
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.example.avalanche.ui.theme.AvalancheTheme
 
-class StationInfoActivity : AppCompatActivity() {
+class StationInfoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_station_info)
+        setContent {
+            AvalancheTheme() {
+
+            }
+        }
     }
 }

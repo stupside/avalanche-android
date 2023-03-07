@@ -1,11 +1,18 @@
 package com.example.avalanche
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.example.avalanche.ui.theme.AvalancheTheme
 
-class WalletActivity : AppCompatActivity() {
+class WalletActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_wallet)
+        setContent {
+            AvalancheTheme() {
+
+            }
+        }
     }
 }
+
