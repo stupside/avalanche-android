@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import com.example.avalanche.layouts.ListLayout
 import com.example.avalanche.ui.theme.AvalancheTheme
 
+
 class WalletActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

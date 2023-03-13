@@ -4,6 +4,7 @@ import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -24,10 +25,14 @@ import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.unit.sp
 import com.example.avalanche.R
 
-class ListLayout(val activityTitle: String, val floatingButton: Boolean) {
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    internal fun ScaffoldBase(modifier: Modifier = Modifier, activityTitle: String) {
+    fun ScaffoldBase(modifier: Modifier = Modifier,
+                              activityTitle: String,
+                              floatingButton: Boolean,
+                              scaffold_Content: List<Any>
+    ) {
         Scaffold(
             topBar = {
                 MediumTopAppBar(
@@ -54,16 +59,9 @@ class ListLayout(val activityTitle: String, val floatingButton: Boolean) {
                     contentPadding = innerPadding,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    /*val list = (0..75).map { it.toString() }
-                    items(count = list.size) {
-                        Text(
-                            text = list[it],
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                        )
-                    }*/
+                    items(scaffold_Content) { scaffold_Content ->
+                        //SectionElement(sectionTitle = , contentForSection = )
+                    }
                 }
             },
             floatingActionButton = {
@@ -80,7 +78,45 @@ class ListLayout(val activityTitle: String, val floatingButton: Boolean) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun RowPassElement(modifier: Modifier = Modifier, mainInfo: String, extraInfo: String) {
+    fun SectionElement(
+        sectionTitle: String,
+        contentForSection: Map<String, String>
+    ){
+        Row() {
+            Text(
+                sectionTitle,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 34.sp
+            )
+            LazyColumn(
+                //contentPadding = ,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                /*val list = (0..75).map { it.toString() }
+                items(count = list.size) {
+                    Text(
+                        text = list[it],
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }*/
+            }
+        }
+
+    }
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun RowPassElement(
+        modifier: Modifier = Modifier,
+        mainInfo: String,
+        extraInfo: String,
+        image_id: Int,
+        image_description: String
+    ) {
         Surface(
             color = MaterialTheme.colorScheme.primary,
             onClick = { /* do something */ },
@@ -90,8 +126,8 @@ class ListLayout(val activityTitle: String, val floatingButton: Boolean) {
         ) {
             Row() {
                 Image(
-                    painter = painterResource(id = R.drawable.yphejpfs_400x400),
-                    contentDescription = "7 Laux Logo"
+                    painter = painterResource(id = image_id),
+                    contentDescription = image_description
                 )
                 Column {
                     Text(text = mainInfo, fontSize = 20.sp)
@@ -100,15 +136,35 @@ class ListLayout(val activityTitle: String, val floatingButton: Boolean) {
             }
         }
     }
-}
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreviewListLayout() {
     AvalancheTheme() {
+        val lauxRowElementDummyData = listOf(
+            R.drawable.yphejpfs_400x400,
+            mapOf(
+                "mainInfo" to "Les 7 Laux",
+                "extraInfo" to "1 pass"
+            )
+        )
+        val inUseSectionDummyData = listOf(
+            "In Use",
+            lauxRowElementDummyData,
+            lauxRowElementDummyData
+        )
+        val walletDummyData = listOf(
+            inUseSectionDummyData,
+            inUseSectionDummyData
+        )
         val activityTitle = "Wallet"
         val floatingButton = true
-        val listLayoutTest = ListLayout(activityTitle, floatingButton)
-        listLayoutTest.ScaffoldBase(modifier = Modifier.fillMaxSize(), activityTitle = activityTitle)
+        ScaffoldBase(
+            modifier = Modifier.fillMaxSize(),
+            activityTitle = activityTitle,
+            floatingButton = floatingButton,
+            scaffold_Content = walletDummyData
+        )
     }
 }
