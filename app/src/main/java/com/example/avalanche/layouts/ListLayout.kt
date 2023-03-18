@@ -26,116 +26,117 @@ import androidx.compose.ui.unit.sp
 import com.example.avalanche.R
 
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun ScaffoldBase(modifier: Modifier = Modifier,
-                              activityTitle: String,
-                              floatingButton: Boolean,
-                              scaffold_Content: List<Any>
-    ) {
-        Scaffold(
-            topBar = {
-                MediumTopAppBar(
-                    title = {
-                        Text(
-                            activityTitle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            fontSize = 34.sp
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScaffoldBase(
+    modifier: Modifier = Modifier,
+    activityTitle: String,
+    floatingButton: Boolean,
+    scaffold_Content: List<Any>
+) {
+    Scaffold(
+        topBar = {
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        activityTitle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontSize = 34.sp
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* doSomething() */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Localized description"
                         )
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Localized description"
-                            )
-                        }
-                    },
-                )
-            },
-            content = { innerPadding ->
-                LazyColumn(
-                    contentPadding = innerPadding,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(scaffold_Content) { scaffold_Content ->
-                        //SectionElement(sectionTitle = , contentForSection = )
                     }
-                }
-            },
-            floatingActionButton = {
-                if (floatingButton) {
-                    FloatingActionButton(
-                        onClick = { /* do something */ },
-                    ) {
-                        Icon(Icons.Filled.Add, "Localized description")
-                    }
-                }
-            }
-        )
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun SectionElement(
-        sectionTitle: String,
-        contentForSection: Map<String, String>
-    ){
-        Row() {
-            Text(
-                sectionTitle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = 34.sp
+                },
             )
+        },
+        content = { innerPadding ->
             LazyColumn(
-                //contentPadding = ,
+                contentPadding = innerPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                /*val list = (0..75).map { it.toString() }
-                items(count = list.size) {
-                    Text(
-                        text = list[it],
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    )
-                }*/
+                items(scaffold_Content) { scaffold_Content ->
+                    //SectionElement(sectionTitle = , contentForSection = )
+                }
             }
-        }
-
-    }
-
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    fun RowPassElement(
-        modifier: Modifier = Modifier,
-        mainInfo: String,
-        extraInfo: String,
-        image_id: Int,
-        image_description: String
-    ) {
-        Surface(
-            color = MaterialTheme.colorScheme.primary,
-            onClick = { /* do something */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            Row() {
-                Image(
-                    painter = painterResource(id = image_id),
-                    contentDescription = image_description
-                )
-                Column {
-                    Text(text = mainInfo, fontSize = 20.sp)
-                    Text(text = extraInfo, fontSize = 16.sp)
+        },
+        floatingActionButton = {
+            if (floatingButton) {
+                FloatingActionButton(
+                    onClick = { /* do something */ },
+                ) {
+                    Icon(Icons.Filled.Add, "Localized description")
                 }
             }
         }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SectionElement(
+    sectionTitle: String,
+    contentForSection: Map<String, String>
+) {
+    Row() {
+        Text(
+            sectionTitle,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontSize = 34.sp
+        )
+        LazyColumn(
+            //contentPadding = ,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            /*val list = (0..75).map { it.toString() }
+            items(count = list.size) {
+                Text(
+                    text = list[it],
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+            }*/
+        }
     }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RowPassElement(
+    modifier: Modifier = Modifier,
+    mainInfo: String,
+    extraInfo: String,
+    image_id: Int,
+    image_description: String
+) {
+    Surface(
+        color = MaterialTheme.colorScheme.primary,
+        onClick = { /* do something */ },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Row() {
+            Image(
+                painter = painterResource(id = image_id),
+                contentDescription = image_description
+            )
+            Column {
+                Text(text = mainInfo, fontSize = 20.sp)
+                Text(text = extraInfo, fontSize = 16.sp)
+            }
+        }
+    }
+}
 
 
 @Preview(showBackground = true)
