@@ -69,4 +69,41 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    // Grpc
+    implementation 'io.grpc:grpc-stub:1.52.1'
+    implementation 'io.grpc:grpc-protobuf:1.53.0'
+    implementation 'io.grpc:grpc-okhttp:1.52.1'
+    implementation 'io.grpc:protoc-gen-grpc-kotlin:1.3.0'
+    implementation 'io.grpc:grpc-kotlin-stub:1.3.0'
+    implementation 'com.google.protobuf:protobuf-kotlin:3.22.0'
+}
+
+// https://github.com/grpc/grpc-kotlin/blob/master/compiler/README.md#build-tool-plugins
+// https://stackoverflow.com/questions/67897164/how-do-you-add-grpc-to-android-studio-with-kotlin
+// https://github.com/google/protobuf-gradle-plugin/tree/781fad2a01e6561b284c5247e14d78a2b3595ad1#customizing-source-directories
+protobuf {  // this section needs to be added
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.21.12"
+    }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.52.1"
+        }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                grpc {}
+                grpckt {}
+            }
+            it.builtins {
+                kotlin {}
+                java {}
+            }
+        }
+    }
 }
