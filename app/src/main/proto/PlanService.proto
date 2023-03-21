@@ -1,0 +1,116 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Avalanche.Grpc.Proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+package Avalanche.Market;
+
+message GetPlanProto {
+
+  message Request {
+
+    string PlanId = 1;
+  }
+
+  message Response {
+    
+    string Name = 1;
+    string Description = 2;
+
+    uint64 Price = 3;
+
+    google.protobuf.Duration Duration = 4;
+  }
+}
+
+message GetPlansProto {
+
+  message Request {
+
+    string StoreId = 1;
+  }
+
+  message Response {
+
+    string PlanId = 1;
+
+    string Name = 2;
+  }
+}
+
+message CreatePlanProto {
+
+  message Request {
+    
+    string StoreId = 1;
+    
+    string Name = 2;
+    string Description = 3;
+    
+    google.protobuf.Duration Duration = 4;
+
+    uint64 Price = 5;
+  }
+
+  message Response {
+    
+    string PlanId = 1;
+  }
+}
+
+message DeletePlanProto {
+
+  message Request {
+    
+    string PlanId = 1;
+  }
+
+  message Response {
+  }
+}
+
+message RenamePlanProto {
+
+  message Request {
+    
+    string PlanId = 1;
+    
+    string NewName = 2;
+    string OldName = 3;
+  }
+
+  message Response {
+  }
+}
+
+message PurchasePlanProto {
+
+  message Request {
+    
+    string PlanId = 1;
+    
+    string TicketName = 2;
+    
+    google.protobuf.Timestamp From = 3;
+  }
+
+  message Response {
+    
+    string CustomerId = 1;
+    
+    string ClientSecret = 2;
+  }
+}
+
+service PlanServiceProto {
+  
+  rpc Create(CreatePlanProto.Request) returns (CreatePlanProto.Response);
+  rpc Delete(DeletePlanProto.Request) returns (DeletePlanProto.Response);
+  rpc Purchase(PurchasePlanProto.Request) returns (PurchasePlanProto.Response);
+  rpc Rename(RenamePlanProto.Request) returns (RenamePlanProto.Response);
+
+  rpc GetOne(GetPlanProto.Request) returns (GetPlanProto.Response);
+  rpc GetMany(GetPlansProto.Request) returns (stream GetPlansProto.Response);
+}
