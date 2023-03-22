@@ -20,6 +20,9 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".identity.ui.IdentityActivity"
+            android:exported="false" />
+        <activity
             android:name=".StationsActivity"
             android:exported="false" />
         <activity
@@ -37,6 +40,20 @@
         <activity
             android:name=".WalletActivity"
             android:exported="false" />
+
+        <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="com.example.avalanche"
+                    android:path="/oauth2redirect"
+                    android:scheme="com.example.avalanche" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

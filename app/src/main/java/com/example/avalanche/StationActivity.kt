@@ -9,15 +9,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.avalanche.grpc.BearerTokenCallCredentials
-import com.example.avalanche.identity.AvalancheIdentityViewModel
+import com.example.avalanche.identity.AvalancheIdentityState
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import io.grpc.*
+import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
-class StationViewModel() : ViewModel() {
+class StationViewModel : ViewModel() {
 
     private val _data = MutableLiveData<StoreService.GetStoreProto.Response>()
 
@@ -28,12 +31,12 @@ class StationViewModel() : ViewModel() {
 
         val address = "grpc://localhost:8081"
 
-        val identity = AvalancheIdentityViewModel(context)
+        val state = AvalancheIdentityState.getInstance(context)
 
         val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
 
         val credentials =
-            BearerTokenCallCredentials(identity.state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.get().accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

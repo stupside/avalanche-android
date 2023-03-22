@@ -19,7 +19,9 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        manifestPlaceholders = [appAuthRedirectScheme: 'com.example.avalanche']
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'net.openid.appauthdemo'
+        ]
     }
 
     buildTypes {

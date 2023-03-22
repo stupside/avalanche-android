@@ -2,33 +2,68 @@ package com.example.avalanche.identity
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.annotation.AnyThread
 import net.openid.appauth.*
 import org.json.JSONException
+import java.lang.ref.WeakReference
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 
-class AvalancheIdentityState(context: Context) {
+
+class AvalancheIdentityState private constructor(context: Context) {
+
+    companion object {
+
+        private const val IDENTITY_SERVER_URI = "https://192.168.2.58:8180"
+
+        private const val TAG = "AuthStateManager"
+
+        private const val KEY_AUTH_STATE = "state"
+
+        private const val STORE_NAME = "AuthState"
+
+        private val INSTANCE_REF =
+            AtomicReference<WeakReference<AvalancheIdentityState>>(WeakReference(null))
+
+        @AnyThread
+        fun getInstance(context: Context): AvalancheIdentityState {
+
+            var manager: AvalancheIdentityState? = INSTANCE_REF.get().get()
+
+            if (manager == null) {
+                manager = AvalancheIdentityState(context.applicationContext)
+                INSTANCE_REF.set(WeakReference(manager))
+            }
+            return manager
+        }
+    }
 
     private val _prefs: SharedPreferences
     private val _prefsLock: ReentrantLock
 
     private val _state: AtomicReference<AuthState>
 
-    companion object {
-        private const val TAG = "AuthStateManager"
-
-        private const val KEY_AUTH_STATE = "state"
-
-        private const val STORE_NAME = "AuthState"
-    }
-
     init {
         _prefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE)
-
         _prefsLock = ReentrantLock()
-        _state = AtomicReference()
+        _state = AtomicReference<AuthState>()
+
+        AuthorizationServiceConfiguration.fetchFromIssuer(
+            Uri.parse(IDENTITY_SERVER_URI),
+            AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, exception ->
+                if (exception == null) {
+
+                    if (configuration == null)
+                        return@RetrieveConfigurationCallback
+
+                    replace(AuthState(configuration))
+                }
+
+                return@RetrieveConfigurationCallback
+            }, DevelopmentConnectionBuilder.getInstance()
+        )
     }
 
     @AnyThread

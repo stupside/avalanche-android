@@ -1,23 +1,45 @@
 package com.example.avalanche.identity.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.avalanche.identity.AvalancheIdentityState
 import com.example.avalanche.identity.AvalancheIdentityViewModel
+import com.example.avalanche.identity.DevelopmentConnectionBuilder
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import net.openid.appauth.AppAuthConfiguration
+import net.openid.appauth.AuthorizationService
 
 class LoginActivity : ComponentActivity() {
+
+    private val identity: AvalancheIdentityViewModel by viewModels()
+
+    lateinit var service: AuthorizationService
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        service.dispose()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val identity = AvalancheIdentityViewModel(this)
+        service = AuthorizationService(
+            application.applicationContext, AppAuthConfiguration.Builder().setConnectionBuilder(
+                DevelopmentConnectionBuilder.getInstance()
+            ).build()
+        )
+
+        val state = AvalancheIdentityState.getInstance(this)
 
         setContent {
 
@@ -27,6 +49,8 @@ class LoginActivity : ComponentActivity() {
             var password by remember {
                 mutableStateOf("")
             }
+
+            val intent = Intent(this, IdentityActivity::class.java)
 
             AvalancheScaffold(activity = this, button = {}) {
                 Column(
@@ -48,20 +72,32 @@ class LoginActivity : ComponentActivity() {
                         onClick = {
 
                             val request = identity.getTokenRequestForPasswordFlow(
+                                state,
                                 username,
                                 password,
                                 listOf("market", "passport", "tracker")
                             )
 
-                            identity.service.performTokenRequest(request) { response, exception ->
-                                identity.state.updateAfterTokenResponse(
+                            service.performTokenRequest(request) { response, exception ->
+                                state.updateAfterTokenResponse(
                                     response = response,
                                     exception = exception
                                 )
+
+                                if (exception == null) {
+                                    startActivity(intent)
+                                }
                             }
                         }
                     ) {
                         Text("Login")
+                    }
+                    Button(
+                        onClick = {
+                            startActivity(intent)
+                        }
+                    ) {
+                        Text("Show identity")
                     }
                 }
             }
