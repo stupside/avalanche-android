@@ -1,52 +1,63 @@
 package com.example.avalanche.layouts
 
-import android.media.Image
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.ui.theme.AvalancheTheme
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
-import androidx.compose.ui.unit.sp
-import com.example.avalanche.R
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage() {
+fun LoginLayout() {
+    var usernametext by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue("Enter Username", TextRange(0, 7)))
+    }
+    var passwordtext by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+        mutableStateOf(TextFieldValue("Enter Password", TextRange(0, 7)))
+    }
     Surface(
-        color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Login",
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(vertical = 32.dp)
+            OutlinedTextField(
+                value = usernametext,
+                onValueChange = { usernametext = it },
+                label = { Text("Username") }
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = { /*TODO*/ },
-                label = { Text(text = "Email address") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                value = passwordtext,
+                onValueChange = { passwordtext = it },
+                label = { Text("Password") }
             )
+            Button(
+                onClick = { /* Do something! */ }
+            ) {
+                Text("Login")
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DefaultPreviewListLayout() {
+    AvalancheTheme {
+        LoginLayout()
+    }
+}
