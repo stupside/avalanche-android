@@ -29,7 +29,6 @@ class StationViewModel : ViewModel() {
 class StationInfoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             AvalancheTheme() {
             }
