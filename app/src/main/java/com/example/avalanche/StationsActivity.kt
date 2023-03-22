@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -24,48 +25,14 @@ import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.vms.StationsViewModel
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
 
-class StationsViewModel : ViewModel() {
-
-    private val _data =
-        MutableLiveData(emptyList<StoreService.GetStoresProto.Response>().toMutableList())
-
-    val data: LiveData<MutableList<StoreService.GetStoresProto.Response>>
-        get() = _data
-
-    fun load(context: Context, name: String) {
-
-        val address = "grpc://localhost:8081"
-
-        val state = AvalancheIdentityState.getInstance(context)
-
-        val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
-
-        val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
-
-        val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
-            .withCallCredentials(credentials)
-
-        val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(name)
-
-        _data.value?.clear()
-
-        viewModelScope.launch {
-
-            val store = service.getMany(request.build())
-
-            _data.value = store.toCollection(_data.value!!)
-        }
-    }
-}
-
 class StationsActivity : ComponentActivity() {
 
-    private val vm = StationsViewModel()
+    private val vm: StationsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
