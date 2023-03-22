@@ -69,6 +69,8 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
 
     // Grpc
     implementation 'io.grpc:grpc-stub:1.52.1'
