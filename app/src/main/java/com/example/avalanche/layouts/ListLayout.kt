@@ -141,7 +141,7 @@ fun RowPassElement(
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreviewListLayout() {
+private fun DefaultPreviewListLayout() {
     AvalancheTheme() {
         val lauxRowElementDummyData = listOf(
             R.drawable.yphejpfs_400x400,
