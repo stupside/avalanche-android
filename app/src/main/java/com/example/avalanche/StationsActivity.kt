@@ -2,6 +2,7 @@ package com.example.avalanche
 
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.avalanche.grpc.BearerTokenCallCredentials
+import com.example.avalanche.identity.AvalancheIdentityViewModel
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
@@ -32,14 +35,19 @@ class StationsViewModel : ViewModel() {
     val data: LiveData<MutableList<StoreService.GetStoresProto.Response>>
         get() = _data
 
-    fun load(name: String) {
+    fun load(context: Context, name: String) {
 
-        val address = "grpc://localhost"
-        val port = 8081
+        val address = "grpc://localhost:8081"
 
-        val channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build()
+        val identity = AvalancheIdentityViewModel(context)
+
+        val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
+
+        val credentials =
+            BearerTokenCallCredentials(identity.manager.get().accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
 
         val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(name)
 
@@ -67,7 +75,7 @@ class StationsActivity : ComponentActivity() {
             var search by remember { mutableStateOf("") }
 
             if (search.isNotEmpty())
-                vm.load(search)
+                vm.load(this, search)
 
             AvalancheScaffold(activity = this, content = {
                 AvalancheSection(title = "Search") {

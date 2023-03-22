@@ -2,6 +2,7 @@ package com.example.avalanche
 
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,28 +10,35 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.*
+import com.example.avalanche.grpc.BearerTokenCallCredentials
+import com.example.avalanche.identity.AvalancheIdentityViewModel
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import io.grpc.ManagedChannelBuilder
+import io.grpc.*
 import kotlinx.coroutines.launch
 
-class StationViewModel : ViewModel() {
+class StationViewModel() : ViewModel() {
 
     private val _data = MutableLiveData<StoreService.GetStoreProto.Response>()
 
     val data: LiveData<StoreService.GetStoreProto.Response>
         get() = _data
 
-    fun load(stationId: String) {
+    fun load(context: Context, stationId: String) {
 
-        val address = "grpc://localhost"
-        val port = 8081
+        val address = "grpc://localhost:8081"
+
+        val identity = AvalancheIdentityViewModel(context)
+
+        val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
+
+        val credentials =
+            BearerTokenCallCredentials(identity.manager.get().accessToken.toString())
+
+        val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
 
         viewModelScope.launch {
-
-            val channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build()
-
-            val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
 
             val request = StoreService.GetStoreProto.Request.newBuilder().setStoreId(stationId)
 
@@ -55,7 +63,7 @@ class StationActivity : ComponentActivity() {
 
         val id = intent.getStringExtra(StationIdKey)!!
 
-        vm.load(id)
+        vm.load(this, id)
 
         setContent {
 
