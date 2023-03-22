@@ -12,13 +12,18 @@
         android:theme="@style/Theme.Avalanche"
         tools:targetApi="31">
         <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
+            android:name=".identity.ui.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".StationsActivity"
             android:exported="false" />
         <activity
-            android:name=".StationInfoActivity"
+            android:name=".StationActivity"
             android:exported="false" />
         <activity
             android:name=".CurrentlyUsedPassInfoActivity"
@@ -32,17 +37,6 @@
         <activity
             android:name=".WalletActivity"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Avalanche">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

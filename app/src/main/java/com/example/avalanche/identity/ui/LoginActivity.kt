@@ -1,4 +1,4 @@
-package com.example.avalanche
+package com.example.avalanche.identity.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,10 +14,10 @@ import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 
 class LoginActivity : ComponentActivity() {
 
-    private val identity = AvalancheIdentityViewModel(this)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val identity = AvalancheIdentityViewModel(this)
 
         setContent {
 
@@ -53,14 +53,12 @@ class LoginActivity : ComponentActivity() {
                                 listOf("market", "passport", "tracker")
                             )
 
-                            identity.auth.performTokenRequest(request) { response, exception ->
-                                identity.manager.updateAfterTokenResponse(
+                            identity.service.performTokenRequest(request) { response, exception ->
+                                identity.state.updateAfterTokenResponse(
                                     response = response,
                                     exception = exception
                                 )
                             }
-
-                            // identity.manager.get().isAuthorized
                         }
                     ) {
                         Text("Login")

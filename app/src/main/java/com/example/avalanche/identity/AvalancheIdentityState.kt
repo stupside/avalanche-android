@@ -9,12 +9,12 @@ import org.json.JSONException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 
-class AvalancheIdentityManager(context: Context) {
+class AvalancheIdentityState(context: Context) {
 
-    private val mPrefs: SharedPreferences
-    private val mPrefsLock: ReentrantLock
+    private val _prefs: SharedPreferences
+    private val _prefsLock: ReentrantLock
 
-    private val mCurrentAuthState: AtomicReference<AuthState>
+    private val _state: AtomicReference<AuthState>
 
     companion object {
         private const val TAG = "AuthStateManager"
@@ -25,31 +25,36 @@ class AvalancheIdentityManager(context: Context) {
     }
 
     init {
-        mPrefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE)
+        _prefs = context.getSharedPreferences(STORE_NAME, Context.MODE_PRIVATE)
 
-        mPrefsLock = ReentrantLock()
-        mCurrentAuthState = AtomicReference()
+        _prefsLock = ReentrantLock()
+        _state = AtomicReference()
     }
 
     @AnyThread
     fun get(): AuthState {
-        if (mCurrentAuthState.get() != null) {
-            return mCurrentAuthState.get()
+
+        var state = _state.get()
+
+        if (state != null) {
+            return state
         }
 
-        val state = readState()
+        state = readState()
 
-        return if (mCurrentAuthState.compareAndSet(null, state)) {
+        return if (_state.compareAndSet(null, state)) {
             state
         } else {
-            mCurrentAuthState.get()
+            _state.get()
         }
     }
 
     @AnyThread
     fun replace(state: AuthState): AuthState {
         writeState(state)
-        mCurrentAuthState.set(state)
+
+        _state.set(state)
+
         return state
     }
 
@@ -59,7 +64,9 @@ class AvalancheIdentityManager(context: Context) {
         ex: AuthorizationException?
     ): AuthState {
         val current = get()
+
         current.update(response, ex)
+
         return replace(current)
     }
 
@@ -69,15 +76,17 @@ class AvalancheIdentityManager(context: Context) {
         exception: AuthorizationException?
     ): AuthState {
         val current = get()
+
         current.update(response, exception)
+
         return replace(current)
     }
 
     @AnyThread
     private fun readState(): AuthState {
-        mPrefsLock.lock()
+        _prefsLock.lock()
         return try {
-            val currentState = mPrefs.getString(KEY_AUTH_STATE, null)
+            val currentState = _prefs.getString(KEY_AUTH_STATE, null)
                 ?: return AuthState()
             try {
                 AuthState.jsonDeserialize(currentState)
@@ -86,15 +95,15 @@ class AvalancheIdentityManager(context: Context) {
                 AuthState()
             }
         } finally {
-            mPrefsLock.unlock()
+            _prefsLock.unlock()
         }
     }
 
     @AnyThread
     private fun writeState(state: AuthState?) {
-        mPrefsLock.lock()
+        _prefsLock.lock()
         try {
-            val editor = mPrefs.edit()
+            val editor = _prefs.edit()
             if (state == null) {
                 editor.remove(KEY_AUTH_STATE)
             } else {
@@ -102,7 +111,7 @@ class AvalancheIdentityManager(context: Context) {
             }
             check(editor.commit()) { "Failed to write state to shared prefs" }
         } finally {
-            mPrefsLock.unlock()
+            _prefsLock.unlock()
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.avalanche.identity
 
 import android.content.Context
 import android.net.Uri
+import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.AuthorizationServiceConfiguration
@@ -11,33 +12,34 @@ import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
 class AvalancheIdentityViewModel(context: Context) {
 
-    var auth: AuthorizationService = AuthorizationService(context)
+    var service: AuthorizationService = AuthorizationService(
+        context, AppAuthConfiguration.Builder().setConnectionBuilder(
+            DevelopmentConnectionBuilder.getInstance()
+        ).build()
+    )
 
-    val manager: AvalancheIdentityManager = AvalancheIdentityManager(context)
+    val state: AvalancheIdentityState = AvalancheIdentityState(context)
 
     companion object {
 
-        private val TAG = AvalancheIdentityViewModel::class.simpleName
-
         private const val CLIENT_ID = "android"
 
-        private const val IDENTITY_SERVER_URI = "https://localhost:8180"
+        private const val IDENTITY_SERVER_URI = "https://192.168.2.58:8180"
     }
 
     init {
-        AuthorizationServiceConfiguration.fetchFromIssuer(
-            Uri.parse(IDENTITY_SERVER_URI),
+        AuthorizationServiceConfiguration.fetchFromIssuer(Uri.parse(IDENTITY_SERVER_URI),
             AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, exception ->
                 if (exception == null) {
 
                     if (configuration == null)
                         return@RetrieveConfigurationCallback
 
-                    manager.replace(AuthState(configuration))
+                    state.replace(AuthState(configuration))
                 }
 
                 return@RetrieveConfigurationCallback
-            })
+            }, DevelopmentConnectionBuilder.getInstance())
     }
 
     fun getTokenRequestForPasswordFlow(
@@ -46,7 +48,9 @@ class AvalancheIdentityViewModel(context: Context) {
         scopes: Iterable<String>
     ): TokenRequest {
 
-        val configuration = manager.get().authorizationServiceConfiguration!!
+        val auth = state.get()
+
+        val configuration = auth.authorizationServiceConfiguration!!
 
         val request = TokenRequest.Builder(configuration, CLIENT_ID)
 

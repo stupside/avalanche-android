@@ -33,7 +33,7 @@ class StationViewModel() : ViewModel() {
         val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
 
         val credentials =
-            BearerTokenCallCredentials(identity.manager.get().accessToken.toString())
+            BearerTokenCallCredentials(identity.state.get().accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
