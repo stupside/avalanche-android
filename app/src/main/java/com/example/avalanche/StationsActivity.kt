@@ -50,7 +50,7 @@ class StationsActivity : ComponentActivity() {
                     )
 
                     AvalancheList(elements = stores, template = { store ->
-                        
+
                         val logo = store.logo.toString()
 
                         val bytes = Base64.decode(logo, Base64.DEFAULT)
@@ -68,7 +68,9 @@ class StationsActivity : ComponentActivity() {
 
                         AvalancheListElement(
                             onClick = {
-                                // TODO: start StationActivity
+                                val intent = StationActivity.getIntent(this, store.storeId)
+
+                                startActivity(intent)
                             },
                             content = {
 

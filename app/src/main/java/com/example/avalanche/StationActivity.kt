@@ -1,6 +1,8 @@
 package com.example.avalanche
 
 import Avalanche.Market.StoreService
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,15 +20,19 @@ class StationActivity : ComponentActivity() {
     private val vm : StationViewModel by viewModels()
 
     companion object {
-        const val StationIdKey = "StationId"
+        private const val StationIdKey = "StationId"
+
+        fun getIntent(context: Context, stationId: String): Intent {
+            return Intent(context, StationActivity::class.java).putExtra(StationIdKey, stationId)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val id = intent.getStringExtra(StationIdKey)!!
+        val stationId = intent.getStringExtra(StationIdKey)!!
 
-        vm.load(this, id)
+        vm.load(this, stationId)
 
         setContent {
 
