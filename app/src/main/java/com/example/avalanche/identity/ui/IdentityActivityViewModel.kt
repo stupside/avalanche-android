@@ -1,12 +1,12 @@
-package com.example.avalanche.identity
+package com.example.avalanche.identity.ui
 
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import com.example.avalanche.identity.AvalancheIdentityState
 import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
 
-class AvalancheIdentityViewModel : ViewModel() {
+class IdentityActivityViewModel : ViewModel() {
 
     companion object {
         private const val CLIENT_ID = "android"

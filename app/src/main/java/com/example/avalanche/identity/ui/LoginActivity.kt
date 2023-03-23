@@ -11,8 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.avalanche.StationsActivity
 import com.example.avalanche.identity.AvalancheIdentityState
-import com.example.avalanche.identity.AvalancheIdentityViewModel
 import com.example.avalanche.identity.DevelopmentConnectionBuilder
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import net.openid.appauth.AppAuthConfiguration
@@ -20,7 +20,7 @@ import net.openid.appauth.AuthorizationService
 
 class LoginActivity : ComponentActivity() {
 
-    private val identity: AvalancheIdentityViewModel by viewModels()
+    private val identity: IdentityActivityViewModel by viewModels()
 
     lateinit var service: AuthorizationService
 
@@ -50,7 +50,8 @@ class LoginActivity : ComponentActivity() {
                 mutableStateOf("")
             }
 
-            val intent = Intent(this, IdentityActivity::class.java)
+            val identityIntent = Intent(this, IdentityActivity::class.java)
+            val stationsIntent = Intent(this, StationsActivity::class.java)
 
             AvalancheScaffold(activity = this, button = {}) {
                 Column(
@@ -85,7 +86,7 @@ class LoginActivity : ComponentActivity() {
                                 )
 
                                 if (exception == null) {
-                                    startActivity(intent)
+                                    startActivity(stationsIntent)
                                 }
                             }
                         }
@@ -94,7 +95,7 @@ class LoginActivity : ComponentActivity() {
                     }
                     Button(
                         onClick = {
-                            startActivity(intent)
+                            startActivity(identityIntent)
                         }
                     ) {
                         Text("Show identity")

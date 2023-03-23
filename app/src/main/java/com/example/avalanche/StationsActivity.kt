@@ -1,12 +1,13 @@
 package com.example.avalanche
 
 import Avalanche.Market.StoreService
-import Avalanche.Market.StoreServiceProtoGrpcKt
-import android.content.Context
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
@@ -14,21 +15,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.avalanche.grpc.BearerTokenCallCredentials
-import com.example.avalanche.identity.AvalancheIdentityState
-import com.example.avalanche.identity.AvalancheIdentityViewModel
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.vms.StationsViewModel
-import io.grpc.ManagedChannelBuilder
-import kotlinx.coroutines.flow.toCollection
-import kotlinx.coroutines.launch
 
 class StationsActivity : ComponentActivity() {
 
@@ -58,13 +50,32 @@ class StationsActivity : ComponentActivity() {
                     )
 
                     AvalancheList(elements = stores, template = { store ->
+                        
+                        val logo = store.logo.toString()
+
+                        val bytes = Base64.decode(logo, Base64.DEFAULT)
+
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
+
+                        if (bitmap == null) {
+                            /* TODO: DO SOMETHING */
+                        } else {
+                            Image(
+                                bitmap = bitmap.asImageBitmap(),
+                                contentDescription = store.name
+                            )
+                        }
+
                         AvalancheListElement(
-                            image = store.logo.toString(),
-                            description = store.description,
                             onClick = {
                                 // TODO: start StationActivity
                             },
                             content = {
+
+                                Text(store.name)
+                                Text(store.description)
+
+                                Text(store.storeId)
                             })
                     })
                 }

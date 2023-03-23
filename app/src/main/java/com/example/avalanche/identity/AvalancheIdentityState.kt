@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.AnyThread
+import com.example.avalanche.shared.Constants
 import net.openid.appauth.*
 import org.json.JSONException
 import java.lang.ref.WeakReference
@@ -16,7 +17,7 @@ class AvalancheIdentityState private constructor(context: Context) {
 
     companion object {
 
-        private const val IDENTITY_SERVER_URI = "https://192.168.2.58:8180"
+        private const val IDENTITY_SERVER_URI = Constants.IDENTITY_SERVER_URI
 
         private const val TAG = "AuthStateManager"
 

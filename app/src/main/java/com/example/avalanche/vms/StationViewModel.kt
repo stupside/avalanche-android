@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.avalanche.grpc.BearerTokenCallCredentials
 import com.example.avalanche.identity.AvalancheIdentityState
+import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
@@ -21,11 +22,9 @@ class StationViewModel : ViewModel() {
 
     fun load(context: Context, stationId: String) {
 
-        val address = "grpc://localhost:8081"
-
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = ManagedChannelBuilder.forTarget(address).usePlaintext().build()
+        val channel = ManagedChannelBuilder.forTarget(Constants.MARKET_SERVICE).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
