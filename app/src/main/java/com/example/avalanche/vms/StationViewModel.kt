@@ -1,5 +1,7 @@
 package com.example.avalanche.vms
 
+import Avalanche.Market.PlanService
+import Avalanche.Market.PlanServiceProtoGrpcKt
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
 import android.content.Context
@@ -15,12 +17,16 @@ import kotlinx.coroutines.launch
 
 class StationViewModel : ViewModel() {
 
-    private val _data = MutableLiveData<StoreService.GetStoreProto.Response>()
+    private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
+    private val _plans = MutableLiveData<MutableList<PlanService.GetPlansProto.Response>>()
 
-    val data: LiveData<StoreService.GetStoreProto.Response>
-        get() = _data
+    val store: LiveData<StoreService.GetStoreProto.Response>
+        get() = _store
 
-    fun load(context: Context, stationId: String) {
+    val plans: LiveData<MutableList<PlanService.GetPlansProto.Response>>
+        get() = _plans
+
+    fun loadStore(context: Context, storeId: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -34,11 +40,35 @@ class StationViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            val request = StoreService.GetStoreProto.Request.newBuilder().setStoreId(stationId)
+            val request = StoreService.GetStoreProto.Request.newBuilder().setStoreId(storeId)
 
             val store = service.getOne(request.build())
 
-            _data.value = store
+            _store.value = store
+        }
+    }
+
+    fun loadPlans(context: Context, storeId: String) {
+
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = ManagedChannelBuilder.forTarget(Constants.MARKET_SERVICE).usePlaintext().build()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        viewModelScope.launch {
+
+            val request = PlanService.GetPlansProto.Request.newBuilder().setStoreId(storeId)
+
+            val flow = service.getMany(request.build())
+
+            flow.collect { plan ->
+                _plans.value = _plans.value?.plus(plan)?.toMutableList() ?: mutableListOf(plan)
+            }
         }
     }
 }

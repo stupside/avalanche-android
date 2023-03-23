@@ -1,10 +1,7 @@
 package com.example.avalanche.ui.shared.scaffold
 
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,7 +25,7 @@ fun AvalancheScaffold(
                 button.invoke()
             }
         ) { paddingValues ->
-            Surface(
+            Column(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
