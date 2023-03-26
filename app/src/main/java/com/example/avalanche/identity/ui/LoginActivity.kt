@@ -3,6 +3,7 @@ package com.example.avalanche.identity.ui
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,15 @@ class LoginActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        val state = AvalancheIdentityState.getInstance(this)
 
+        val onBackPressedCallback = object: OnBackPressedCallback(true) {
+
+            override fun handleOnBackPressed() {
+                // Your business logic to handle the back pressed event
+            }
+        }
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
         service.dispose()
     }
 

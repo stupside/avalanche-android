@@ -6,11 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import com.example.avalanche.identity.AvalancheIdentityState
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
@@ -28,6 +30,19 @@ class StationActivity : ComponentActivity() {
         fun getIntent(context: Context, stationId: String): Intent {
             return Intent(context, StationActivity::class.java).putExtra(StationIdKey, stationId)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val state = AvalancheIdentityState.getInstance(this)
+
+        val onBackPressedCallback = object: OnBackPressedCallback(true) {
+
+            override fun handleOnBackPressed() {
+                // Your business logic to handle the back pressed event
+            }
+        }
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
