@@ -1,17 +1,20 @@
 package com.example.avalanche
 
+import Avalanche.Market.StoreService
 import Avalanche.Passport.TicketService
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -19,6 +22,9 @@ import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.vms.StationViewModel
+import com.example.avalanche.vms.WalletViewModel
+import com.example.avalanche.vms.WalletsViewModel
 
 
 class WalletActivity : ComponentActivity() {
@@ -31,21 +37,29 @@ class WalletActivity : ComponentActivity() {
         }
     }
 
+    private val vmWallet: WalletViewModel by viewModels()
+    private val vmStore: StationViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        vmWallet.loadWallet(this)
+        vmStore.loadStore(this, StoreIdKey)
+
         setContent {
             AvalancheScaffold(activity = this, content = {
+
+                val store: StoreService.GetStoreProto.Response? by vmStore.store.observeAsState(null)
+
                 AvalancheSection(title = "List of Station Id's") {
 
-                    val wallets: List<TicketService.GetWalletsProto.Response> by vmWallets.data.observeAsState(
+                    val tickets: List<TicketService.GetTicketsProto.Response> by vmWallet.data.observeAsState(
                         emptyList()
                     )
 
-                    AvalancheList(elements = wallets, template = { wallet ->
+                    /*AvalancheList(elements = tickets, template = { ticket ->
 
                         val store = wallet.storeId
-
-                        val tickets = wallet.ticketCount.toString()
 
                         AvalancheListElement(
                             onClick = {
@@ -58,7 +72,7 @@ class WalletActivity : ComponentActivity() {
                                 Text(store)
                                 Text(tickets)
                             })
-                    })
+                    })*/
                 }
 
             }, button = {

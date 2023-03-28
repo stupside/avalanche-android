@@ -1,0 +1,188 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Avalanche.Grpc.Proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+package Avalanche.Passport;
+
+message CreateTicketProto {
+
+  message Request {
+
+    string StoreId = 1;
+
+    string UserId = 2;
+
+    string Name = 3;
+  }
+
+  message Response {
+
+    string TicketId = 1;
+  }
+}
+
+message ExtendTicketProto {
+
+  message Request {
+
+    string TicketId = 1;
+
+    google.protobuf.Timestamp From = 2;
+    google.protobuf.Duration Duration = 3;
+  }
+
+  message Response {
+  }
+}
+
+message SealTicketProto {
+
+  message Request {
+
+    string TicketId = 1;
+
+    string DeviceIdentifier = 2;
+  }
+
+  message Response {
+  }
+}
+
+message UnsealTicketProto {
+
+  message Request {
+
+    string TicketId = 1;
+
+    string DeviceIdentifier = 2;
+  }
+
+  message Response {
+  }
+}
+
+message SerializeTicketProto {
+
+  message Request {
+
+    string TicketId = 1;
+  }
+
+  message Response {
+
+    string Token = 1;
+  }
+}
+
+message DeserializeTicketProto {
+
+  message Request{
+
+    string TicketId = 1;
+
+    string SerializedTicket = 2;
+
+    string DeviceIdentifier = 3;
+  }
+
+  message Response {
+
+    bool IsValid = 1;
+  }
+}
+
+message ChallengeTicketProto {
+
+  message Request {
+    string UserId = 1;
+  }
+  
+  message Response {
+    
+    bool IsValid = 1;
+  }
+}
+
+message GetTicketProto {
+
+  message Request{
+
+    string TicketId = 1;
+  }
+
+  message Response {
+
+    message Validity {
+
+      google.protobuf.Timestamp From = 1;
+      google.protobuf.Timestamp To = 2;
+
+      google.protobuf.Duration Expiry = 3;
+
+      bool IsNow = 4;
+    }
+
+    string Name = 1;
+
+    bool IsSealed = 2;
+    bool IsValidForNow = 3;
+
+    repeated Validity Validities = 4;
+  }
+}
+
+message GetTicketsProto {
+
+  message Request{
+
+    string StoreId = 1;
+  }
+
+  message Response {
+
+    string TicketId = 1;
+
+    string Name = 2;
+
+    bool IsSealed = 3;
+
+    bool IsValidForNow = 4;
+  }
+}
+
+message GetWalletsProto {
+
+  message Request{
+  }
+
+  message Response {
+
+    string StoreId = 1;
+
+    int32 TicketCount = 2;
+  }
+}
+
+service TicketServiceProto {
+
+  rpc Create(CreateTicketProto.Request) returns (CreateTicketProto.Response);
+
+  rpc Extend(ExtendTicketProto.Request) returns (ExtendTicketProto.Response);
+
+  rpc Seal(SealTicketProto.Request) returns (SealTicketProto.Response);
+
+  rpc Serialize(SerializeTicketProto.Request) returns (SerializeTicketProto.Response);
+
+  rpc Unseal(UnsealTicketProto.Request) returns (UnsealTicketProto.Response);
+
+  rpc ChallengeTicketProto(ChallengeTicketProto.Request) returns (ChallengeTicketProto.Response);
+
+  rpc Deserialize(DeserializeTicketProto.Request) returns (DeserializeTicketProto.Response);
+
+  rpc GetOne(GetTicketProto.Request) returns (GetTicketProto.Response);
+  rpc GetMany(GetTicketsProto.Request) returns (stream GetTicketsProto.Response);
+  rpc GetWallets(GetWalletsProto.Request) returns (stream GetWalletsProto.Response);
+}
