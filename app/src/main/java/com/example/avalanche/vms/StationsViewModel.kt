@@ -3,7 +3,6 @@ package com.example.avalanche.vms
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,6 @@ import com.example.avalanche.grpc.BearerTokenCallCredentials
 import com.example.avalanche.identity.AvalancheIdentityState
 import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
-import kotlinx.coroutines.flow.toCollection
 import kotlinx.coroutines.launch
 
 class StationsViewModel : ViewModel() {
@@ -28,7 +26,7 @@ class StationsViewModel : ViewModel() {
         val state = AvalancheIdentityState.getInstance(context)
 
         val channel =
-            ManagedChannelBuilder.forTarget(Constants.MARKET_SERVICE).usePlaintext().build()
+            ManagedChannelBuilder.forTarget(Constants.REVERSE_PROXY).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())

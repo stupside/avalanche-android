@@ -17,8 +17,6 @@ class AvalancheIdentityState private constructor(context: Context) {
 
     companion object {
 
-        private const val IDENTITY_SERVER_URI = Constants.IDENTITY_SERVER_URI
-
         private const val TAG = "AuthStateManager"
 
         private const val KEY_AUTH_STATE = "state"
@@ -52,7 +50,7 @@ class AvalancheIdentityState private constructor(context: Context) {
         _state = AtomicReference<AuthState>()
 
         AuthorizationServiceConfiguration.fetchFromIssuer(
-            Uri.parse(IDENTITY_SERVER_URI),
+            Uri.parse(Constants.REVERSE_PROXY),
             AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, exception ->
                 if (exception == null) {
 
