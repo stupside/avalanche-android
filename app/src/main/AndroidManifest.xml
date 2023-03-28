@@ -65,7 +65,7 @@
             android:name=".PassportActivity"
             android:exported="false" />
         <activity
-            android:name=".PassportsActivity"
+            android:name=".WalletsActivity"
             android:exported="false" />
         <activity
             android:name=".WalletActivity"

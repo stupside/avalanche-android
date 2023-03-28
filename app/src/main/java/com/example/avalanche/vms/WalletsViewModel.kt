@@ -1,7 +1,9 @@
 package com.example.avalanche.vms
 
+import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
-import Avalanche.Market.StoreServiceProtoGrpcKt
+import Avalanche.Passport.TicketService
+import Avalanche.Passport.TicketServiceProtoGrpcKt
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,15 +15,15 @@ import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
-class StationsViewModel : ViewModel() {
+class WalletsViewModel : ViewModel() {
 
     private val _data =
-        MutableLiveData(emptyList<StoreService.GetStoresProto.Response>().toMutableList())
+        MutableLiveData(emptyList<TicketService.GetWalletsProto.Response>().toMutableList())
 
-    val data: LiveData<MutableList<StoreService.GetStoresProto.Response>>
+    val data: LiveData<MutableList<TicketService.GetWalletsProto.Response>>
         get() = _data
 
-    fun loadStations(context: Context, name: String) {
+    fun loadWallets(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -31,19 +33,19 @@ class StationsViewModel : ViewModel() {
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
 
-        val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
+        val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
-        val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(name)
+        val request = TicketService.GetWalletsProto.Request.newBuilder()
 
         _data.value?.clear()
 
         viewModelScope.launch {
 
-            val flow = service.getMany(request.build())
+            val flow = service.getWallets(request.build())
 
-            flow.collect { store ->
-                _data.value = _data.value?.plus(store)?.toMutableList() ?: mutableListOf(store)
+            flow.collect { data ->
+                _data.value = _data.value?.plus(data)?.toMutableList() ?: mutableListOf(data)
             }
         }
     }

@@ -19,7 +19,7 @@ import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.vms.StationViewModel
 
-
+//Ac
 class StationActivity : ComponentActivity() {
 
     private val vm: StationViewModel by viewModels()

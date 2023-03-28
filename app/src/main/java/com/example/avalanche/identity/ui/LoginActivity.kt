@@ -19,6 +19,7 @@ import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationService
 
+//Ac0: Activité de Login. Permet à l'utilisateur de se connecter
 class LoginActivity : ComponentActivity() {
 
     private val identity: IdentityActivityViewModel by viewModels()

@@ -1,6 +1,8 @@
 package com.example.avalanche
 
 import Avalanche.Market.StoreService
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
@@ -26,6 +28,12 @@ class StationsActivity : ComponentActivity() {
 
     private val vm: StationsViewModel by viewModels()
 
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, StationsActivity::class.java)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,7 +42,7 @@ class StationsActivity : ComponentActivity() {
             var search by remember { mutableStateOf("") }
 
             if (search.isNotEmpty())
-                vm.load(this, search)
+                vm.loadStations(this, search)
 
             AvalancheScaffold(activity = this, content = {
                 AvalancheSection(title = "Search") {
