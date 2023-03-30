@@ -47,8 +47,6 @@ class WalletsActivity : ComponentActivity() {
                 Scaffold(topBar = {
                     TopAppBar(title = {
                         Text("Wallets")
-                    }, navigationIcon = {
-                        AvalancheGoBackButton(activity = this)
                     })
                 }, content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
@@ -96,7 +94,9 @@ fun WalletItem(
             Icon(logo, contentDescription = description)
         },
         trailingContent = {
-            Text("$tickets tickets")
+            Badge {
+                Text("$tickets tickets")
+            }
         },
         supportingText = { Text(description) }
     )
