@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -102,18 +103,11 @@ fun TicketItem(context: Context, ticket: String, name: String, description: Stri
     val intent = TicketActivity.getIntent(context, ticket)
 
     ListItem(
+        modifier = Modifier.clickable(onClick = {
+            context.startActivity(intent)
+        }),
         headlineText = { Text(name) },
         supportingText = { Text(description) },
-        trailingContent = {
-            Button(onClick = {
-                context.startActivity(intent)
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Info,
-                    contentDescription = description
-                )
-            }
-        }
     )
 }
 

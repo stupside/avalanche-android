@@ -6,10 +6,15 @@ import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
@@ -18,6 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -107,11 +115,21 @@ class StoreActivity : ComponentActivity() {
 
 @Composable
 fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?) {
-    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-        Text(store)
-        Text(name)
-        Text(description)
-        StoreLogo(logo)
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Box(modifier = Modifier.padding(16.dp)) {
+            Row {
+                StoreLogo(logo)
+                Column {
+                    Text(name)
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(description)
+                }
+            }
+        }
     }
 }
 
@@ -119,17 +137,47 @@ fun StoreHeader(context: Context, store: String, name: String, description: Stri
 fun PlanItem(context: Context, name: String, description: String) {
 
     ListItem(
+        modifier = Modifier.clickable(onClick = {
+            // TODO: show plans
+
+        }),
         headlineText = { Text(name) },
-        supportingText = { Text(description) },
-        trailingContent = {
-            Button(onClick = {
-                // TODO: show plans
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Info,
-                    contentDescription = description
-                )
-            }
+        supportingText = { Text(description) }
+    )
+}
+
+@Composable
+fun StoreLogo(logo: String?) {
+
+    if (logo == null) {
+        StoreLogoPlaceholder()
+    } else {
+
+        val bytes = logo.toByteArray()
+
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
+
+        if (bitmap == null) {
+            StoreLogoPlaceholder()
+        } else {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = logo,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+            )
         }
+    }
+}
+
+@Composable
+fun StoreLogoPlaceholder() {
+    Icon(
+        imageVector = Icons.Rounded.Info,
+        contentDescription = "Placeholder",
+        modifier = Modifier
+            .size(64.dp)
+            .clip(CircleShape)
     )
 }

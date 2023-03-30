@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,6 +24,7 @@ import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
+import com.google.android.material.chip.Chip
 
 //
 class WalletsActivity : ComponentActivity() {
@@ -87,16 +89,15 @@ fun WalletItem(
     val intent = WalletActivity.getIntent(context, wallet)
 
     ListItem(
+        modifier = Modifier.clickable(onClick = {
+            context.startActivity(intent)
+        }),
         headlineText = { Text(name) },
         leadingContent = {
             Icon(logo, contentDescription = description)
         },
         trailingContent = {
-            Button(onClick = {
-                context.startActivity(intent)
-            }) {
-                Text(tickets.toString())
-            }
+            Text("$tickets tickets")
         },
         supportingText = { Text(description) }
     )

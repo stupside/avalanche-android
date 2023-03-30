@@ -5,19 +5,15 @@ package com.example.avalanche
 import Avalanche.Market.StoreService
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -90,47 +86,13 @@ fun StoreItem(
     val intent = StoreActivity.getIntent(context, store)
 
     ListItem(
+        modifier = Modifier.clickable(onClick = {
+            context.startActivity(intent)
+        }),
         headlineText = { Text(name) },
         leadingContent = {
             StoreLogo(logo)
         },
-        trailingContent = {
-            Button(onClick = {
-                context.startActivity(intent)
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Info,
-                    contentDescription = description
-                )
-            }
-        },
         supportingText = { Text(description) }
     )
-}
-
-@Composable
-fun StoreLogo(logo: String?) {
-    if (logo == null) {
-        Icon(
-            imageVector = Icons.Rounded.Info,
-            contentDescription = "Placeholder"
-        )
-    } else {
-
-        val bytes = logo.toByteArray()
-
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
-
-        if (bitmap == null) {
-            Icon(
-                imageVector = Icons.Rounded.Info,
-                contentDescription = "Placeholder"
-            )
-        } else {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = logo
-            )
-        }
-    }
 }
