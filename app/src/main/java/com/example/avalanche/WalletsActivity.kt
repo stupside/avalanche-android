@@ -81,7 +81,7 @@ class WalletsActivity : ComponentActivity() {
                     ){
                         Icon(
                             imageVector = Icons.Rounded.Add,
-                            contentDescription = "Add FAB",
+                            contentDescription = "Search stations",
                             tint = Color.White,
                         )
                     }

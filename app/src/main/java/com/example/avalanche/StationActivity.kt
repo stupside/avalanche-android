@@ -51,7 +51,6 @@ class StationActivity : ComponentActivity() {
         val stationId = intent.getStringExtra(StationIdKey)!!
 
         vm.loadStore(this, stationId)
-
         vm.loadPlans(this, stationId)
 
         setContent {

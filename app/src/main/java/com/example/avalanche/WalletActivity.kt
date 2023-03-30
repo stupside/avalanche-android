@@ -43,36 +43,36 @@ class WalletActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val storeId = intent.getStringExtra(StoreIdKey)!!
+
         vmWallet.loadWallet(this)
-        vmStore.loadStore(this, StoreIdKey)
+
+        vmStore.loadStore(this, storeId)
 
         setContent {
             AvalancheScaffold(activity = this, content = {
 
-                val store: StoreService.GetStoreProto.Response? by vmStore.store.observeAsState(null)
+                val storeState: StoreService.GetStoreProto.Response? by vmStore.store.observeAsState(null)
 
-                AvalancheSection(title = "List of Station Id's") {
+                storeState?.let { store ->
+                    AvalancheSection(title = store.name) {
 
-                    val tickets: List<TicketService.GetTicketsProto.Response> by vmWallet.data.observeAsState(
-                        emptyList()
-                    )
+                        val tickets: List<TicketService.GetTicketsProto.Response> by vmWallet.data.observeAsState(
+                            emptyList()
+                        )
 
-                    /*AvalancheList(elements = tickets, template = { ticket ->
+                        AvalancheList(elements = tickets, template = { ticket ->
 
-                        val store = wallet.storeId
+                            AvalancheListElement(
+                                onClick = {
+                                    // TODO: load ticket activity
+                                },
+                                content = {
+                                    Text(ticket.name)
+                                })
+                        })
+                    }
 
-                        AvalancheListElement(
-                            onClick = {
-                                val intent = getIntent(this, store)
-
-                                startActivity(intent)
-                            },
-                            content = {
-
-                                Text(store)
-                                Text(tickets)
-                            })
-                    })*/
                 }
 
             }, button = {
@@ -83,7 +83,7 @@ class WalletActivity : ComponentActivity() {
                         startActivity(intent)
                     },
                     shape = RoundedCornerShape(16.dp),
-                ){
+                ) {
                     Icon(
                         imageVector = Icons.Rounded.Add,
                         contentDescription = "Add FAB",
