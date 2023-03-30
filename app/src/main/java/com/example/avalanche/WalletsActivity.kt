@@ -18,7 +18,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
@@ -98,7 +97,7 @@ fun WalletItem(
                 Text("$tickets tickets")
             }
         },
-        supportingText = { Text(description) }
+        supportingText = { Text(description) },
     )
 }
 

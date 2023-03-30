@@ -102,19 +102,13 @@ class StoreActivity : ComponentActivity() {
 
 @Composable
 fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Row {
-                StoreLogo(logo)
-                Column {
-                    Text(name, style = MaterialTheme.typography.titleMedium)
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(description)
-                }
+    Box(modifier = Modifier.padding(32.dp)) {
+        Row {
+            StoreLogo(logo)
+            Column {
+                Text(name, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.padding(8.dp))
+                Text(description)
             }
         }
     }
@@ -126,10 +120,9 @@ fun PlanItem(context: Context, name: String, description: String) {
     ListItem(
         modifier = Modifier.clickable(onClick = {
             // TODO: show plans
-
         }),
         headlineText = { Text(name, style = MaterialTheme.typography.titleSmall) },
-        supportingText = { Text(description, style = MaterialTheme.typography.bodyMedium) }
+        supportingText = { Text(description, style = MaterialTheme.typography.bodyMedium) },
     )
 }
 

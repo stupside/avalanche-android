@@ -93,6 +93,6 @@ fun StoreItem(
         leadingContent = {
             StoreLogo(logo)
         },
-        supportingText = { Text(description) }
+        supportingText = { Text(description) },
     )
 }
