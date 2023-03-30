@@ -20,7 +20,7 @@ import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.vms.StationViewModel
 
 //Ac
-class StationActivity : ComponentActivity() {
+class StoreActivity : ComponentActivity() {
 
     private val vm: StationViewModel by viewModels()
 
@@ -28,7 +28,7 @@ class StationActivity : ComponentActivity() {
         private const val StationIdKey = "StationId"
 
         fun getIntent(context: Context, stationId: String): Intent {
-            return Intent(context, StationActivity::class.java).putExtra(StationIdKey, stationId)
+            return Intent(context, StoreActivity::class.java).putExtra(StationIdKey, stationId)
         }
     }
 

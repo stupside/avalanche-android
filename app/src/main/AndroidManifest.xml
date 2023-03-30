@@ -55,16 +55,16 @@
             android:name=".identity.ui.IdentityActivity"
             android:exported="false" />
         <activity
-            android:name=".StationsActivity"
+            android:name=".StoresActivity"
             android:exported="false" />
         <activity
-            android:name=".StationActivity"
+            android:name=".StoreActivity"
             android:exported="false" />
         <activity
-            android:name=".CurrentPassportActivity"
+            android:name=".CurrentTicketActivity"
             android:exported="false" />
         <activity
-            android:name=".PassportActivity"
+            android:name=".TicketActivity"
             android:exported="false" />
         <activity
             android:name=".WalletsActivity"

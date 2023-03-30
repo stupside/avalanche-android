@@ -24,13 +24,13 @@ import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.vms.StationsViewModel
 
-class StationsActivity : ComponentActivity() {
+class StoresActivity : ComponentActivity() {
 
     private val vm: StationsViewModel by viewModels()
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, StationsActivity::class.java)
+            return Intent(context, StoresActivity::class.java)
         }
     }
 
@@ -76,7 +76,7 @@ class StationsActivity : ComponentActivity() {
 
                         AvalancheListElement(
                             onClick = {
-                                val intent = StationActivity.getIntent(this, store.storeId)
+                                val intent = StoreActivity.getIntent(this, store.storeId)
 
                                 startActivity(intent)
                             },

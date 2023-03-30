@@ -73,7 +73,7 @@ class WalletsActivity : ComponentActivity() {
                 button = {
                     FloatingActionButton(
                         onClick = {
-                            val intent = StationsActivity.getIntent(this)
+                            val intent = StoresActivity.getIntent(this)
 
                             startActivity(intent)
                         },

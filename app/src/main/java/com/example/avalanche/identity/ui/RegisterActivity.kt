@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.avalanche.StationsActivity
+import com.example.avalanche.StoresActivity
 import com.example.avalanche.identity.AvalancheIdentityState
 import com.example.avalanche.shared.Constants
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
@@ -109,7 +109,7 @@ class RegisterActivity : ComponentActivity() {
         val state = AvalancheIdentityState.getInstance(this)
 
         if (state.get().isAuthorized) {
-            val stationsIntent = Intent(this, StationsActivity::class.java)
+            val stationsIntent = Intent(this, StoresActivity::class.java)
 
             startActivity(stationsIntent)
         }

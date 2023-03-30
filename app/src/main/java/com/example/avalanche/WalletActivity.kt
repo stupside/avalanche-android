@@ -24,13 +24,12 @@ import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.vms.StationViewModel
 import com.example.avalanche.vms.WalletViewModel
-import com.example.avalanche.vms.WalletsViewModel
 
 
 class WalletActivity : ComponentActivity() {
 
     companion object {
-        private const val StoreIdKey = "StationId"
+        private const val StoreIdKey = "StoreId"
 
         fun getIntent(context: Context, storeId: String): Intent {
             return Intent(context, WalletActivity::class.java).putExtra(StoreIdKey, storeId)
@@ -78,7 +77,7 @@ class WalletActivity : ComponentActivity() {
             }, button = {
                 FloatingActionButton(
                     onClick = {
-                        val intent = StationActivity.getIntent(this, StoreIdKey)
+                        val intent = StoreActivity.getIntent(this, StoreIdKey)
 
                         startActivity(intent)
                     },
