@@ -10,14 +10,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.avalanche.core.grpc.AvalancheChannel
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class WalletsViewModel : ViewModel() {
 
     private val _wallets =
-        MutableLiveData(mutableListOf<TicketService.GetWalletsProto.Response>())
+        MutableStateFlow(mutableListOf<TicketService.GetWalletsProto.Response>())
 
-    val wallets: LiveData<MutableList<TicketService.GetWalletsProto.Response>>
+    val wallets: StateFlow<MutableList<TicketService.GetWalletsProto.Response>>
         get() = _wallets
 
     fun loadWallets(context: Context) {
@@ -34,7 +36,7 @@ class WalletsViewModel : ViewModel() {
 
         val request = TicketService.GetWalletsProto.Request.newBuilder()
 
-        _wallets.value?.clear()
+        _wallets.value.clear()
 
         viewModelScope.launch {
 
@@ -42,11 +44,7 @@ class WalletsViewModel : ViewModel() {
 
             flow.collect { wallet ->
 
-                if (_wallets.value == null) {
-                    _wallets.value = mutableListOf(wallet)
-                } else {
-                    _wallets.value!!.add(wallet)
-                }
+                _wallets.value += wallet
             }
         }
     }

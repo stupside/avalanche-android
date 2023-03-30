@@ -14,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.asImageBitmap
 import com.example.avalanche.core.ui.shared.AvalancheSection
 import com.example.avalanche.core.ui.shared.list.AvalancheList
@@ -40,8 +39,9 @@ class StoresActivity : ComponentActivity() {
 
             var search by remember { mutableStateOf("") }
 
-            if (search.isNotEmpty())
-                storesVm.loadStores(this, search)
+
+            storesVm.loadStores(this, search)
+
 
             AvalancheScaffold(activity = this, content = {
                 AvalancheSection(title = "Search") {
@@ -52,9 +52,7 @@ class StoresActivity : ComponentActivity() {
                         label = { Text("Name") }
                     )
 
-                    val stores: List<StoreService.GetStoresProto.Response> by storesVm.stations.observeAsState(
-                        emptyList()
-                    )
+                    val stores: List<StoreService.GetStoresProto.Response> by storesVm.stores.collectAsState()
 
                     AvalancheList(elements = stores, template = { store ->
                         StoreItem(

@@ -9,22 +9,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.avalanche.core.grpc.AvalancheChannel
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import com.example.avalanche.core.envrionment.Constants
-import com.example.avalanche.core.grpc.AvalancheChannel
-import io.grpc.ManagedChannelBuilder
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class StoreViewModel(private val storeId: String) : ViewModel() {
 
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
-    private val _plans = MutableLiveData(mutableListOf<PlanService.GetPlansProto.Response>())
+    private val _plans = MutableStateFlow(mutableListOf<PlanService.GetPlansProto.Response>())
 
     val store: LiveData<StoreService.GetStoreProto.Response>
         get() = _store
 
-    val plans: LiveData<MutableList<PlanService.GetPlansProto.Response>>
+    val plans: StateFlow<MutableList<PlanService.GetPlansProto.Response>>
         get() = _plans
 
     fun loadStore(context: Context) {
@@ -61,7 +61,7 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
         val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
-        _plans.value?.clear()
+        _plans.value.clear()
 
         viewModelScope.launch {
 
@@ -70,12 +70,7 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
             val flow = service.getMany(request.build())
 
             flow.collect { plan ->
-
-                if (_plans.value == null) {
-                    _plans.value = mutableListOf(plan)
-                } else {
-                    _plans.value!!.add(plan)
-                }
+                _plans.value += plan
             }
         }
     }

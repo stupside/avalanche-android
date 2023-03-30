@@ -13,8 +13,8 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.avalanche.core.ui.shared.AvalancheSection
 import com.example.avalanche.core.ui.shared.list.AvalancheList
@@ -46,9 +46,7 @@ class WalletsActivity : ComponentActivity() {
                 content = {
                     AvalancheSection(title = "Wallets") {
 
-                        val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.observeAsState(
-                            emptyList()
-                        )
+                        val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.collectAsState()
 
                         AvalancheList(elements = wallets, template = { wallet ->
                             WalletItem(

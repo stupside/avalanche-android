@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -51,9 +52,7 @@ class StoreActivity : ComponentActivity() {
                 null
             )
 
-            val planStates: List<PlanService.GetPlansProto.Response> by stationVm.plans.observeAsState(
-                emptyList()
-            )
+            val planStates: List<PlanService.GetPlansProto.Response> by stationVm.plans.collectAsState()
 
             AvalancheScaffold(activity = this, content = {
 
@@ -65,7 +64,11 @@ class StoreActivity : ComponentActivity() {
 
                     AvalancheSection(title = "Plans") {
                         AvalancheList(elements = planStates) { plan ->
-                            PlanItem(context = this, name = plan.name, description = "Plan description")
+                            PlanItem(
+                                context = this,
+                                name = plan.name,
+                                description = "Plan description"
+                            )
                         }
                     }
                 }
@@ -75,7 +78,7 @@ class StoreActivity : ComponentActivity() {
 }
 
 @Composable
-fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?){
+fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?) {
     ElevatedCard {
         Box(Modifier.fillMaxWidth()) {
             Text(store)
@@ -87,7 +90,7 @@ fun StoreHeader(context: Context, store: String, name: String, description: Stri
 }
 
 @Composable
-fun PlanItem(context: Context, name: String, description: String){
+fun PlanItem(context: Context, name: String, description: String) {
 
     ListItem(
         headlineText = { Text(name) },

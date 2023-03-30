@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
@@ -57,9 +58,7 @@ class WalletActivity : ComponentActivity() {
 
                 storeState?.let { store ->
 
-                    val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.observeAsState(
-                        emptyList()
-                    )
+                    val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
 
                     AvalancheSection(title = store.name) {
 
