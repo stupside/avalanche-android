@@ -1,4 +1,4 @@
-package com.example.avalanche.shared
+package com.example.avalanche.core.shared
 
 class Constants {
     companion object {

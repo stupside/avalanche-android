@@ -42,7 +42,7 @@
             android:name=".PaymentActivity"
             android:exported="false" />
         <activity
-            android:name=".identity.ui.LoginActivity"
+            android:name=".core.identity.ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

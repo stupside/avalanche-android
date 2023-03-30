@@ -1,11 +1,10 @@
-package com.example.avalanche.identity.ui
+package com.example.avalanche.core.identity.ui
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Button
@@ -18,19 +17,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.avalanche.StoresActivity
-import com.example.avalanche.WalletsActivity
-import com.example.avalanche.identity.AvalancheIdentityState
-import com.example.avalanche.identity.DevelopmentConnectionBuilder
-import com.example.avalanche.shared.Constants
+import com.example.avalanche.core.identity.AvalancheIdentityState
+import com.example.avalanche.core.shared.Constants
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import net.openid.appauth.AppAuthConfiguration
-import net.openid.appauth.AuthorizationService
+import okhttp3.*
+import okhttp3.internal.EMPTY_REQUEST
+import java.io.IOException
 
-class LoginActivity : ComponentActivity() {
 
-    private val vmLogin: LoginViewModel by viewModels()
-
-    lateinit var service: AuthorizationService
+class RegisterActivity : ComponentActivity() {
 
     companion object {
         fun getIntent(context: Context): Intent {
@@ -38,25 +33,10 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        service.dispose()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        service = AuthorizationService(
-            application.applicationContext, AppAuthConfiguration.Builder()
-                .setConnectionBuilder(
-                    DevelopmentConnectionBuilder.getInstance()
-                ).build()
-        )
-
-        val state = AvalancheIdentityState.getInstance(this)
-
-        val register = RegisterActivity.getIntent(this)
+        val loginIntent = LoginActivity.getIntent(this)
 
         setContent {
 
@@ -66,8 +46,9 @@ class LoginActivity : ComponentActivity() {
             var password by remember {
                 mutableStateOf("")
             }
-
-            val walletsIntent = WalletsActivity.getIntent(this)
+            var validation by remember {
+                mutableStateOf("")
+            }
 
             AvalancheScaffold(activity = this, button = {}) {
                 Column(
@@ -85,33 +66,34 @@ class LoginActivity : ComponentActivity() {
                         onValueChange = { password = it },
                         label = { Text("Password") }
                     )
+                    OutlinedTextField(
+                        value = validation,
+                        onValueChange = { validation = it },
+                        label = { Text("Password validation") }
+                    )
+
                     Button(
+                        enabled = password == validation,
                         onClick = {
+                            val client = OkHttpClient()
 
-                            val request = vmLogin.getTokenRequestForPasswordFlow(
-                                state,
-                                username,
-                                password,
-                                Constants.AVALANCHE_IDENTITY_SCOPES
-                            )
+                            val request = Request.Builder()
 
-                            service.performTokenRequest(request) { response, exception ->
-                                state.updateAfterTokenResponse(
-                                    response = response,
-                                    exception = exception
-                                )
+                            request.url("${Constants.AVALANCHE_IDENTITY_ACCOUNTS}?username=$username&passport=$password")
 
-                                if (exception == null) {
-                                    startActivity(walletsIntent)
+                            request.post(EMPTY_REQUEST)
+
+                            client.newCall(request.build()).enqueue(object : Callback {
+
+                                override fun onResponse(call: Call, response: Response) {
+                                    if (response.isSuccessful) {
+                                        startActivity(loginIntent)
+                                    }
                                 }
-                            }
-                        }
-                    ) {
-                        Text("Login")
-                    }
-                    Button(
-                        onClick = {
-                            startActivity(register)
+
+                                override fun onFailure(call: Call, e: IOException) {
+                                }
+                            })
                         }
                     ) {
                         Text("Register")
@@ -131,6 +113,5 @@ class LoginActivity : ComponentActivity() {
 
             startActivity(stationsIntent)
         }
-
     }
 }

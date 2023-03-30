@@ -1,4 +1,4 @@
-package com.example.avalanche.identity
+package com.example.avalanche.core.identity
 
 import android.annotation.SuppressLint
 import android.net.Uri

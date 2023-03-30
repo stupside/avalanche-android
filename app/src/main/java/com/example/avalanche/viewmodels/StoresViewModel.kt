@@ -1,4 +1,4 @@
-package com.example.avalanche.vms
+package com.example.avalanche.viewmodels
 
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.avalanche.grpc.BearerTokenCallCredentials
-import com.example.avalanche.identity.AvalancheIdentityState
-import com.example.avalanche.shared.Constants
+import com.example.avalanche.core.grpc.BearerTokenCallCredentials
+import com.example.avalanche.core.identity.AvalancheIdentityState
+import com.example.avalanche.core.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 

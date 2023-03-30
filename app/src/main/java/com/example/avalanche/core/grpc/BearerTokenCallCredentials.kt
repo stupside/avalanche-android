@@ -1,4 +1,4 @@
-package com.example.avalanche.grpc
+package com.example.avalanche.core.grpc
 
 import io.grpc.*
 import java.util.concurrent.Executor

@@ -20,7 +20,7 @@ import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import com.example.avalanche.vms.StoresViewModel
+import com.example.avalanche.viewmodels.StoresViewModel
 
 class StoresActivity : ComponentActivity() {
 

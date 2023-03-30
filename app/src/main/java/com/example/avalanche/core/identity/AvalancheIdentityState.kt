@@ -1,11 +1,11 @@
-package com.example.avalanche.identity
+package com.example.avalanche.core.identity
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.AnyThread
-import com.example.avalanche.shared.Constants
+import com.example.avalanche.core.shared.Constants
 import net.openid.appauth.*
 import org.json.JSONException
 import java.lang.ref.WeakReference

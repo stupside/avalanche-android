@@ -1,8 +1,8 @@
-package com.example.avalanche.identity.ui
+package com.example.avalanche.core.identity.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.avalanche.identity.AvalancheIdentityState
-import com.example.avalanche.shared.Constants
+import com.example.avalanche.core.identity.AvalancheIdentityState
+import com.example.avalanche.core.shared.Constants
 import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
