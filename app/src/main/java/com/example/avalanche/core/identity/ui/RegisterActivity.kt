@@ -97,7 +97,7 @@ class RegisterActivity : ComponentActivity() {
 
                                     val request = Request.Builder()
 
-                                    request.url("${Constants.AVALANCHE_IDENTITY_ACCOUNTS}?username=$username&passport=$password")
+                                    request.url("${Constants.AVALANCHE_IDENTITY_ACCOUNTS}?username=$username&password=$password")
 
                                     request.post(EMPTY_REQUEST)
 
