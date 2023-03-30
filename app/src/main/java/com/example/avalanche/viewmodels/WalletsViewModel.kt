@@ -3,8 +3,6 @@ package com.example.avalanche.viewmodels
 import Avalanche.Passport.TicketService
 import Avalanche.Passport.TicketServiceProtoGrpcKt
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.avalanche.core.grpc.AvalancheChannel
@@ -26,7 +24,7 @@ class WalletsViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getInstance()
+        val channel = AvalancheChannel.getNext()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -35,8 +33,6 @@ class WalletsViewModel : ViewModel() {
             .withCallCredentials(credentials)
 
         val request = TicketService.GetWalletsProto.Request.newBuilder()
-
-        _wallets.value.clear()
 
         viewModelScope.launch {
 

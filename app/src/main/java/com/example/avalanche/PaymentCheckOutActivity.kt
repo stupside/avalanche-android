@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 
-class PaymentCheckInActivity : ComponentActivity() {
+class PaymentCheckOutActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

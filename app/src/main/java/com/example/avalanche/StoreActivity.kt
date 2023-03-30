@@ -86,6 +86,7 @@ class StoreActivity : ComponentActivity() {
                                 AvalancheList(elements = planStates) { plan ->
                                     PlanItem(
                                         context = this@StoreActivity,
+                                        planId = plan.planId,
                                         name = plan.name,
                                         description = "Plan description"
                                     )
@@ -115,11 +116,13 @@ fun StoreHeader(context: Context, store: String, name: String, description: Stri
 }
 
 @Composable
-fun PlanItem(context: Context, name: String, description: String) {
+fun PlanItem(context: Context, planId: String, name: String, description: String) {
+
+    val checkInIntent = PaymentCheckInActivity.getIntent(context, planId)
 
     ListItem(
         modifier = Modifier.clickable(onClick = {
-            // TODO: show plans
+            context.startActivity(checkInIntent)
         }),
         headlineText = { Text(name, style = MaterialTheme.typography.titleSmall) },
         supportingText = { Text(description, style = MaterialTheme.typography.bodyMedium) },

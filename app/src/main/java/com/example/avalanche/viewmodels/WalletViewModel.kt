@@ -24,7 +24,7 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getInstance()
+        val channel = AvalancheChannel.getNext()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -33,8 +33,6 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
             .withCallCredentials(credentials)
 
         val request = TicketService.GetTicketsProto.Request.newBuilder().setStoreId(storeId)
-
-        _tickets.value.clear()
 
         viewModelScope.launch {
 

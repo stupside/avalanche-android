@@ -4,6 +4,8 @@ import Avalanche.Market.PlanService
 import Avalanche.Market.PlanServiceProtoGrpcKt
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
+import Avalanche.Sales.OrderService
+import Avalanche.Sales.OrderServiceProtoGrpcKt
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,7 +33,7 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getInstance()
+        val channel = AvalancheChannel.getNext()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -53,15 +55,13 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getInstance()
+        val channel = AvalancheChannel.getNext()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
 
         val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
-
-        _plans.value.clear()
 
         viewModelScope.launch {
 
@@ -74,6 +74,27 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
 
                 _plans.value += plan
             }
+        }
+    }
+
+    fun purchase(context: Context, ticketName: String, planId: String, availableInDays: Int) {
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNext()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = OrderServiceProtoGrpcKt.OrderServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        val request = OrderService.IntentPaymentProto.Request.newBuilder()
+            .setTicketName(ticketName)
+            .setPlanId(planId)
+            .setAvailableInDays(availableInDays)
+
+        viewModelScope.launch {
+            val response = service.intent(request.build())
         }
     }
 }

@@ -25,7 +25,7 @@ class StoresViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getInstance()
+        val channel = AvalancheChannel.getNext()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
