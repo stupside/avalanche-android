@@ -7,15 +7,11 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.tech.NfcA
 import android.os.Build
-import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 
 
-class NfcActivity : ComponentActivity() {
+abstract class NfcActivity : ComponentActivity() {
 
     private val adapter: NfcAdapter by lazy {
         NfcAdapter.getDefaultAdapter(this)
@@ -40,17 +36,6 @@ class NfcActivity : ComponentActivity() {
             intent,
             flag
         )
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContent {
-            AvalancheScaffold(activity = this, button = {
-            }) {
-                Text("NfcActivity")
-            }
-        }
     }
 
     override fun onResume() {
@@ -80,7 +65,7 @@ class NfcActivity : ComponentActivity() {
         Toast.makeText(this, "Nfc", Toast.LENGTH_LONG).show()
 
         if (intent.action == NfcAdapter.ACTION_NDEF_DISCOVERED) {
-            val messages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableArrayExtra(
                     NfcAdapter.EXTRA_NDEF_MESSAGES,
                     NdefMessage::class.java

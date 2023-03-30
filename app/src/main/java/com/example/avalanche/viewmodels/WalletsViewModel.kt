@@ -7,10 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.avalanche.core.grpc.AvalancheChannel
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import com.example.avalanche.core.shared.Constants
-import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
 class WalletsViewModel : ViewModel() {
@@ -25,8 +24,7 @@ class WalletsViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel =
-            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
+        val channel = AvalancheChannel.getInstance()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())

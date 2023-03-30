@@ -1,14 +1,14 @@
-package com.example.avalanche.ui.shared.scaffold
+@file:OptIn(ExperimentalMaterial3Api::class)
+
+package com.example.avalanche.core.ui.shared.scaffold
 
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.avalanche.ui.theme.AvalancheTheme
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 
 @Composable
 fun AvalancheScaffold(
@@ -22,7 +22,7 @@ fun AvalancheScaffold(
                 AvalancheScaffoldTopBar(activity)
             },
             floatingActionButton = {
-                button.invoke()
+                button()
             }
         ) { paddingValues ->
             Column(

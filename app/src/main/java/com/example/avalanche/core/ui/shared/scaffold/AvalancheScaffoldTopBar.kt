@@ -1,4 +1,4 @@
-package com.example.avalanche.ui.shared.scaffold
+package com.example.avalanche.core.ui.shared.scaffold
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material.icons.Icons

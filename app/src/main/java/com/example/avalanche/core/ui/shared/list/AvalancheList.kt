@@ -1,9 +1,8 @@
-package com.example.avalanche.ui.shared.list
+package com.example.avalanche.core.ui.shared.list
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 
 
 @Composable
@@ -11,12 +10,14 @@ fun <TData> AvalancheList(
     elements: List<TData> = emptyList(),
     template: @Composable (data: TData) -> Unit,
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
+    LazyColumn {
         for (element in elements.withIndex()) {
+
             item(element.index, content = {
+
                 template(element.value)
+
+                Divider()
             })
         }
     }

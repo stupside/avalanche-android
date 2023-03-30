@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Text
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
 
 class PaymentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

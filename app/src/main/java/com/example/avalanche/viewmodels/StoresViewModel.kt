@@ -9,7 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import com.example.avalanche.core.shared.Constants
+import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.grpc.AvalancheChannel
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
@@ -25,8 +26,7 @@ class StoresViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel =
-            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
+        val channel = AvalancheChannel.getInstance()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.avalanche
 
 import Avalanche.Market.StoreService
@@ -8,18 +10,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.asImageBitmap
-import com.example.avalanche.ui.shared.AvalancheSection
-import com.example.avalanche.ui.shared.list.AvalancheList
-import com.example.avalanche.ui.shared.list.AvalancheListElement
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.shared.AvalancheSection
+import com.example.avalanche.core.ui.shared.list.AvalancheList
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.viewmodels.StoresViewModel
 
 class StoresActivity : ComponentActivity() {
@@ -58,40 +57,65 @@ class StoresActivity : ComponentActivity() {
                     )
 
                     AvalancheList(elements = stores, template = { store ->
-
-                        if (store.logo != null) {
-
-                            val bytes = store.logo.toByteArray()
-
-                            val bitmap =
-                                BitmapFactory.decodeByteArray(bytes, 0, store.logo.serializedSize)
-
-                            if (bitmap == null) {
-                                // TODO: DO SOMETHING
-                            } else {
-                                Image(
-                                    bitmap = bitmap.asImageBitmap(),
-                                    contentDescription = store.name
-                                )
-                            }
-                        }
-
-                        AvalancheListElement(
-                            onClick = {
-                                val intent = StoreActivity.getIntent(this, store.storeId)
-
-                                startActivity(intent)
-                            },
-                            content = {
-
-                                Text(store.name)
-                                Text(store.description)
-
-                                Text(store.storeId)
-                            })
+                        StoreItem(
+                            context = this,
+                            store = store.storeId,
+                            name = store.name,
+                            description = store.description,
+                            logo = store.logo.toString()
+                        )
                     })
                 }
             }, button = {})
         }
+    }
+}
+
+@Composable
+fun StoreItem(
+    context: Context,
+    store: String,
+    name: String,
+    description: String,
+    logo: String?
+) {
+    val intent = StoreActivity.getIntent(context, store)
+
+    ListItem(
+        headlineText = { Text(name) },
+        leadingContent = {
+            StoreLogo(logo)
+        },
+        trailingContent = {
+            Button(onClick = {
+                context.startActivity(intent)
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Info,
+                    contentDescription = description
+                )
+            }
+        },
+        supportingText = { Text(description) }
+    )
+}
+
+@Composable
+fun StoreLogo(logo: String?) {
+    if (logo == null) {
+        Icon(
+            imageVector = Icons.Rounded.Info,
+            contentDescription = "Placeholder"
+        )
+    } else {
+
+        val bytes = logo.toByteArray()
+
+        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
+
+        Image(
+            bitmap = bitmap.asImageBitmap(),
+            contentDescription = logo
+        )
     }
 }

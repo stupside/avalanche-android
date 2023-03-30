@@ -18,8 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.avalanche.StoresActivity
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import com.example.avalanche.core.shared.Constants
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
 import okhttp3.*
 import okhttp3.internal.EMPTY_REQUEST
 import java.io.IOException
@@ -29,7 +29,7 @@ class RegisterActivity : ComponentActivity() {
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
+            return Intent(context, RegisterActivity::class.java)
         }
     }
 

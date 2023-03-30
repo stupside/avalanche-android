@@ -1,11 +1,11 @@
 package com.example.avalanche
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.nfc.NfcActivity
 
-class CurrentTicketActivity : ComponentActivity() {
+class TicketNfcActivity : NfcActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

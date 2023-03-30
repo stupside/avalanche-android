@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import androidx.annotation.AnyThread
-import com.example.avalanche.core.shared.Constants
+import com.example.avalanche.core.envrionment.Constants
 import net.openid.appauth.*
 import org.json.JSONException
 import java.lang.ref.WeakReference
@@ -35,6 +35,7 @@ class AvalancheIdentityState private constructor(context: Context) {
                 manager = AvalancheIdentityState(context.applicationContext)
                 INSTANCE_REF.set(WeakReference(manager))
             }
+
             return manager
         }
     }

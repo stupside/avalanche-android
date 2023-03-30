@@ -21,8 +21,8 @@ import com.example.avalanche.StoresActivity
 import com.example.avalanche.WalletsActivity
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import com.example.avalanche.core.identity.DevelopmentConnectionBuilder
-import com.example.avalanche.core.shared.Constants
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationService
 

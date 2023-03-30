@@ -12,15 +12,14 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.launch
 
-class WalletViewModel(private val storeId: String) : ViewModel() {
+class TicketViewModel(private val ticketId: String) : ViewModel() {
 
-    private val _tickets =
-        MutableLiveData(emptyList<TicketService.GetTicketsProto.Response>().toMutableList())
+    private val _ticket = MutableLiveData<TicketService.GetTicketProto.Response>()
 
-    val tickets: LiveData<MutableList<TicketService.GetTicketsProto.Response>>
-        get() = _tickets
+    val ticket: LiveData<TicketService.GetTicketProto.Response>
+        get() = _ticket
 
-    fun loadWallet(context: Context) {
+    fun loadTicket(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -32,22 +31,13 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
-        val request = TicketService.GetTicketsProto.Request.newBuilder().setStoreId(storeId)
-
-        _tickets.value?.clear()
-
         viewModelScope.launch {
 
-            val flow = service.getMany(request.build())
+            val request = TicketService.GetTicketProto.Request.newBuilder().setTicketId(ticketId)
 
-            flow.collect { ticket ->
+            val ticket = service.getOne(request.build())
 
-                if (_tickets.value == null) {
-                    _tickets.value = mutableListOf(ticket)
-                } else {
-                    _tickets.value!!.add(ticket)
-                }
-            }
+            _ticket.value = ticket
         }
     }
 }

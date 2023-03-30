@@ -1,4 +1,4 @@
-package com.example.avalanche.ui.shared.pass
+package com.example.avalanche.core.ui.shared.pass
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

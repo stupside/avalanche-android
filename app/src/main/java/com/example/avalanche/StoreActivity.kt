@@ -1,22 +1,26 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.avalanche
 
 import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.asImageBitmap
-import com.example.avalanche.ui.shared.AvalancheSection
-import com.example.avalanche.ui.shared.list.AvalancheList
-import com.example.avalanche.ui.shared.list.AvalancheListElement
-import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
+import androidx.compose.ui.Modifier
+import com.example.avalanche.core.ui.shared.AvalancheSection
+import com.example.avalanche.core.ui.shared.list.AvalancheList
+import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
 import com.example.avalanche.viewmodels.StoreViewModel
 
 class StoreActivity : ComponentActivity() {
@@ -57,36 +61,46 @@ class StoreActivity : ComponentActivity() {
                     AvalancheSection(store.name) {
                         Text(store.description)
                         Text(store.email)
-
-                        if (store.logo != null) {
-
-                            val bytes = store.logo.toByteArray()
-
-                            val bitmap =
-                                BitmapFactory.decodeByteArray(bytes, 0, store.logo.serializedSize)
-
-                            if (bitmap == null) {
-                                // TODO: show a placeholder
-                            } else {
-                                Image(
-                                    bitmap = bitmap.asImageBitmap(),
-                                    contentDescription = store.name
-                                )
-                            }
-                        }
                     }
-                    AvalancheSection(title = "Passes") {
+
+                    AvalancheSection(title = "Plans") {
                         AvalancheList(elements = planStates) { plan ->
-                            AvalancheListElement(content = {
-                                Text(plan.name)
-                                Text(plan.planId)
-                            }, onClick = {
-                                // TODO: show payment
-                            })
+                            PlanItem(context = this, name = plan.name, description = "Plan description")
                         }
                     }
                 }
             }, button = {})
         }
     }
+}
+
+@Composable
+fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?){
+    ElevatedCard {
+        Box(Modifier.fillMaxWidth()) {
+            Text(store)
+            Text(name)
+            Text(description)
+            StoreLogo(logo)
+        }
+    }
+}
+
+@Composable
+fun PlanItem(context: Context, name: String, description: String){
+
+    ListItem(
+        headlineText = { Text(name) },
+        supportingText = { Text(description) },
+        trailingContent = {
+            Button(onClick = {
+                // TODO: show plans
+            }) {
+                Icon(
+                    imageVector = Icons.Rounded.Info,
+                    contentDescription = description
+                )
+            }
+        }
+    )
 }
