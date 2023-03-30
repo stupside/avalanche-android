@@ -15,16 +15,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
-import com.google.android.material.chip.Chip
 
 //
 class WalletsActivity : ComponentActivity() {
@@ -55,6 +52,7 @@ class WalletsActivity : ComponentActivity() {
                     })
                 }, content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
+
                         val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.collectAsState()
 
                         AvalancheList(elements = wallets, template = { wallet ->
@@ -68,6 +66,7 @@ class WalletsActivity : ComponentActivity() {
                             )
                         })
                     }
+
                 }, floatingActionButton = {
                     ExploreStoresButton(this)
                 })

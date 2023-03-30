@@ -14,7 +14,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
@@ -70,20 +69,6 @@ class StoreActivity : ComponentActivity() {
                     })
                 }, content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
-
-                    }
-                })
-            }
-
-            AvalancheTheme {
-                Scaffold(topBar = {
-                    TopAppBar(title = {
-                        Text("Store")
-                    }, navigationIcon = {
-                        AvalancheGoBackButton(activity = this)
-                    })
-                }, content = { paddingValues ->
-                    Column(modifier = Modifier.padding(paddingValues)) {
                         storeState?.let { store ->
 
                             StoreHeader(
@@ -94,8 +79,10 @@ class StoreActivity : ComponentActivity() {
                                 logo = store.logo.toString()
                             )
 
-                            Row {
-                                Text("Plans")
+                            Column {
+
+                                Text("Plans", style = MaterialTheme.typography.titleMedium)
+
                                 AvalancheList(elements = planStates) { plan ->
                                     PlanItem(
                                         context = this@StoreActivity,
@@ -124,7 +111,7 @@ fun StoreHeader(context: Context, store: String, name: String, description: Stri
             Row {
                 StoreLogo(logo)
                 Column {
-                    Text(name)
+                    Text(name, style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.padding(8.dp))
                     Text(description)
                 }
@@ -141,8 +128,8 @@ fun PlanItem(context: Context, name: String, description: String) {
             // TODO: show plans
 
         }),
-        headlineText = { Text(name) },
-        supportingText = { Text(description) }
+        headlineText = { Text(name, style = MaterialTheme.typography.titleSmall) },
+        supportingText = { Text(description, style = MaterialTheme.typography.bodyMedium) }
     )
 }
 

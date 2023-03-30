@@ -11,10 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -79,14 +79,20 @@ class WalletActivity : ComponentActivity() {
                                 logo = store.logo.toString()
                             )
 
-                            AvalancheList(elements = tickets, template = { ticket ->
-                                TicketItem(
-                                    this@WalletActivity,
-                                    ticket = ticket.ticketId,
-                                    name = ticket.name,
-                                    description = "Ticket description"
-                                )
-                            })
+                            Column {
+                                Text("Tickets", style = MaterialTheme.typography.titleMedium)
+
+                                AvalancheList(elements = tickets, template = { ticket ->
+                                    TicketItem(
+                                        this@WalletActivity,
+                                        ticket = ticket.ticketId,
+                                        name = ticket.name,
+                                        description = "Ticket description",
+                                        isValid = ticket.isValidForNow,
+                                        isSealed = ticket.isSealed
+                                    )
+                                })
+                            }
                         }
                     }
                 }, floatingActionButton = {
@@ -98,7 +104,14 @@ class WalletActivity : ComponentActivity() {
 }
 
 @Composable
-fun TicketItem(context: Context, ticket: String, name: String, description: String) {
+fun TicketItem(
+    context: Context,
+    ticket: String,
+    name: String,
+    description: String,
+    isValid: Boolean,
+    isSealed: Boolean
+) {
 
     val intent = TicketActivity.getIntent(context, ticket)
 
@@ -108,6 +121,41 @@ fun TicketItem(context: Context, ticket: String, name: String, description: Stri
         }),
         headlineText = { Text(name) },
         supportingText = { Text(description) },
+        trailingContent = {
+
+            Row {
+                Badge(
+                    containerColor = if (isValid) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.errorContainer
+
+                    },
+                    contentColor = if (isValid) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.error
+                    }
+                ) {
+                    Text("Valid")
+                }
+                Badge(
+                    containerColor = if (isSealed) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.errorContainer
+
+                    },
+                    contentColor = if (isValid) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.error
+                    }
+                ) {
+                    Text("Sealed")
+                }
+            }
+        }
     )
 }
 
