@@ -121,9 +121,16 @@ fun StoreLogo(logo: String?) {
 
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
 
-        Image(
-            bitmap = bitmap.asImageBitmap(),
-            contentDescription = logo
-        )
+        if (bitmap == null) {
+            Icon(
+                imageVector = Icons.Rounded.Info,
+                contentDescription = "Placeholder"
+            )
+        } else {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = logo
+            )
+        }
     }
 }

@@ -70,7 +70,7 @@ class StoreActivity : ComponentActivity() {
             AvalancheTheme {
                 Scaffold(topBar = {
                     TopAppBar(title = {
-                        Text("Payments")
+                        Text("Store")
                     }, navigationIcon = {
                         AvalancheGoBackButton(activity = this)
                     })

@@ -44,6 +44,8 @@ class WalletsViewModel : ViewModel() {
 
             flow.collect { wallet ->
 
+                if (_wallets.value.contains(wallet)) return@collect
+
                 _wallets.value += wallet
             }
         }

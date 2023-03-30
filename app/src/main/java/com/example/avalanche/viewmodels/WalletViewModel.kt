@@ -42,6 +42,8 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
 
             flow.collect { ticket ->
 
+                if (_tickets.value.contains(ticket)) return@collect
+
                 _tickets.value += ticket
             }
         }

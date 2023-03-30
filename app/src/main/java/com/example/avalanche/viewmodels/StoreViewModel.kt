@@ -70,6 +70,8 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
             val flow = service.getMany(request.build())
 
             flow.collect { plan ->
+                if (_plans.value.contains(plan)) return@collect
+
                 _plans.value += plan
             }
         }
