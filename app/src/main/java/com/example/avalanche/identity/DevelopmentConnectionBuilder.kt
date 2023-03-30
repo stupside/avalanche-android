@@ -23,6 +23,7 @@ class DevelopmentConnectionBuilder private constructor() : ConnectionBuilder {
             DevelopmentConnectionBuilder()
 
         fun getInstance(): DevelopmentConnectionBuilder {
+
             return INSTANCE
         }
 

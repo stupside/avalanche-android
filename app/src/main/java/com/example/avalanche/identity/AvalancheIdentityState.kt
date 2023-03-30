@@ -50,7 +50,7 @@ class AvalancheIdentityState private constructor(context: Context) {
         _state = AtomicReference<AuthState>()
 
         AuthorizationServiceConfiguration.fetchFromIssuer(
-            Uri.parse(Constants.REVERSE_PROXY),
+            Uri.parse(Constants.AVALANCHE_IDENTITY),
             AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, exception ->
                 if (exception == null) {
 

@@ -17,11 +17,11 @@ import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
 
 class NfcActivity : ComponentActivity() {
 
-    private val nfcAdapter: NfcAdapter by lazy {
+    private val adapter: NfcAdapter by lazy {
         NfcAdapter.getDefaultAdapter(this)
     }
 
-    private val pendingIntent: PendingIntent by lazy {
+    private val pending: PendingIntent by lazy {
 
         val intent = Intent(this, javaClass)
 
@@ -60,16 +60,24 @@ class NfcActivity : ComponentActivity() {
 
         filter.addDataType("text/plain")
 
-        nfcAdapter.enableForegroundDispatch(
+        adapter.enableForegroundDispatch(
             this,
-            pendingIntent,
+            pending,
             arrayOf(filter),
             arrayOf(arrayOf(NfcA::class.java.name))
         )
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        adapter.disableForegroundDispatch(this)
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
+        Toast.makeText(this, "Nfc", Toast.LENGTH_LONG).show()
 
         if (intent.action == NfcAdapter.ACTION_NDEF_DISCOVERED) {
             val messages = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -80,9 +88,6 @@ class NfcActivity : ComponentActivity() {
             } else {
                 throw NotImplementedError()
             }
-
-            Toast.makeText(this, messages.toString(), Toast.LENGTH_LONG).show()
-
         }
     }
 }

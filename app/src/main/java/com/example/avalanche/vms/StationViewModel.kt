@@ -30,7 +30,7 @@ class StationViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = ManagedChannelBuilder.forTarget(Constants.REVERSE_PROXY).usePlaintext().build()
+        val channel = ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -52,7 +52,7 @@ class StationViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = ManagedChannelBuilder.forTarget(Constants.REVERSE_PROXY).usePlaintext().build()
+        val channel = ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())

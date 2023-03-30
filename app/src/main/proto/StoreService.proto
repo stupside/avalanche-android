@@ -49,8 +49,6 @@ message CreateStoreProto {
     string Description = 2;
 
     string Email = 3;
-
-    uint32 PercentFees = 4;
   }
 
   message Response {

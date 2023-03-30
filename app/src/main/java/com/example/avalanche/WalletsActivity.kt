@@ -1,38 +1,38 @@
 package com.example.avalanche
 
-import Avalanche.Market.StoreService
 import Avalanche.Passport.TicketService
-import android.graphics.BitmapFactory
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import com.example.avalanche.vms.StationViewModel
-import com.example.avalanche.vms.StationsViewModel
 import com.example.avalanche.vms.WalletsViewModel
 
 //
 class WalletsActivity : ComponentActivity() {
 
     private val vmWallets: WalletsViewModel by viewModels()
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(context, WalletsActivity::class.java)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

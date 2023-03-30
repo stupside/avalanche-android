@@ -1,0 +1,40 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Avalanche.Grpc.Proto";
+
+package Avalanche.Sales;
+
+message IntentPaymentProto {
+
+  message Request {
+    
+    string PlanId = 1;
+    
+    string TicketName = 2;
+
+    uint32 AvailableInDays = 3;
+  }
+
+  message Response {
+  }
+}
+
+message ReceivePaymentProto {
+
+  message Request {
+
+    string OrderId = 1;
+
+    uint32 Amount = 2;
+  }
+
+  message Response {
+    bool IsPaymentFullFilled = 1;
+  }
+}
+
+service OrderServiceProto {
+
+  rpc Receive(ReceivePaymentProto.Request) returns (ReceivePaymentProto.Response);
+  rpc Intent(IntentPaymentProto.Request) returns (IntentPaymentProto.Response);
+}

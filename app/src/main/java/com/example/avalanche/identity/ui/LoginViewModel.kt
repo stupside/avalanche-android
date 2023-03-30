@@ -2,14 +2,14 @@ package com.example.avalanche.identity.ui
 
 import androidx.lifecycle.ViewModel
 import com.example.avalanche.identity.AvalancheIdentityState
+import com.example.avalanche.shared.Constants
 import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
 
-class IdentityActivityViewModel : ViewModel() {
+class LoginViewModel : ViewModel() {
 
     companion object {
-        private const val CLIENT_ID = "android"
     }
 
     fun getTokenRequestForPasswordFlow(
@@ -23,7 +23,7 @@ class IdentityActivityViewModel : ViewModel() {
 
         val configuration = auth.authorizationServiceConfiguration!!
 
-        val request = TokenRequest.Builder(configuration, CLIENT_ID)
+        val request = TokenRequest.Builder(configuration, Constants.AVALANCHE_IDENTITY_CLIENT_ID)
 
         request.setGrantType(GRANT_TYPE_PASSWORD)
 

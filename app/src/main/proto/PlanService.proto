@@ -2,7 +2,6 @@
 
 option csharp_namespace = "Avalanche.Grpc.Proto";
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
 
 package Avalanche.Market;
@@ -16,12 +15,14 @@ message GetPlanProto {
 
   message Response {
     
-    string Name = 1;
-    string Description = 2;
+    string StoreId = 1;
+    
+    string Name = 2;
+    string Description = 3;
 
-    uint64 Price = 3;
+    uint32 Price = 4;
 
-    google.protobuf.Duration Duration = 4;
+    google.protobuf.Duration Duration = 5;
   }
 }
 
@@ -48,10 +49,11 @@ message CreatePlanProto {
     
     string Name = 2;
     string Description = 3;
-    
-    google.protobuf.Duration Duration = 4;
 
-    uint64 Price = 5;
+    uint32 ValidForMinutes = 4;
+    uint32 ValidForDays = 5;
+
+    uint32 Price = 6;
   }
 
   message Response {
@@ -85,30 +87,10 @@ message RenamePlanProto {
   }
 }
 
-message PurchasePlanProto {
-
-  message Request {
-    
-    string PlanId = 1;
-    
-    string TicketName = 2;
-    
-    google.protobuf.Timestamp From = 3;
-  }
-
-  message Response {
-    
-    string CustomerId = 1;
-    
-    string ClientSecret = 2;
-  }
-}
-
 service PlanServiceProto {
   
   rpc Create(CreatePlanProto.Request) returns (CreatePlanProto.Response);
   rpc Delete(DeletePlanProto.Request) returns (DeletePlanProto.Response);
-  rpc Purchase(PurchasePlanProto.Request) returns (PurchasePlanProto.Response);
   rpc Rename(RenamePlanProto.Request) returns (RenamePlanProto.Response);
 
   rpc GetOne(GetPlanProto.Request) returns (GetPlanProto.Response);
