@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -26,18 +25,20 @@ import com.example.avalanche.vms.WalletsViewModel
 //
 class WalletsActivity : ComponentActivity() {
 
-    private val vmWallets: WalletsViewModel by viewModels()
-
     companion object {
         fun getIntent(context: Context): Intent {
             return Intent(context, WalletsActivity::class.java)
         }
     }
 
+    private val walletsVm: WalletsViewModel by lazy {
+        WalletsViewModel()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        vmWallets.loadWallets(this)
+        walletsVm.loadWallets(this)
 
         setContent {
 
@@ -46,7 +47,7 @@ class WalletsActivity : ComponentActivity() {
                 content = {
                     AvalancheSection(title = "List of Station Id's") {
 
-                        val wallets: List<TicketService.GetWalletsProto.Response> by vmWallets.data.observeAsState(
+                        val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.observeAsState(
                             emptyList()
                         )
 

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -22,7 +21,7 @@ import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import com.example.avalanche.vms.StationViewModel
+import com.example.avalanche.vms.StoreViewModel
 import com.example.avalanche.vms.WalletViewModel
 
 
@@ -36,27 +35,29 @@ class WalletActivity : ComponentActivity() {
         }
     }
 
-    private val vmWallet: WalletViewModel by viewModels()
-    private val vmStore: StationViewModel by viewModels()
+    private lateinit var walletVm: WalletViewModel
+    private lateinit var storeVm: StoreViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val storeId = intent.getStringExtra(StoreIdKey)!!
 
-        vmWallet.loadWallet(this)
+        walletVm = WalletViewModel(storeId)
+        storeVm = StoreViewModel(storeId)
 
-        vmStore.loadStore(this, storeId)
+        walletVm.loadWallet(this)
+        storeVm.loadStore(this)
 
         setContent {
             AvalancheScaffold(activity = this, content = {
 
-                val storeState: StoreService.GetStoreProto.Response? by vmStore.store.observeAsState(null)
+                val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState(null)
 
                 storeState?.let { store ->
                     AvalancheSection(title = store.name) {
 
-                        val tickets: List<TicketService.GetTicketsProto.Response> by vmWallet.data.observeAsState(
+                        val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.observeAsState(
                             emptyList()
                         )
 

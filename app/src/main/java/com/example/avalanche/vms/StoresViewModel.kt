@@ -13,15 +13,15 @@ import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
-class StationsViewModel : ViewModel() {
+class StoresViewModel : ViewModel() {
 
-    private val _data =
-        MutableLiveData(emptyList<StoreService.GetStoresProto.Response>().toMutableList())
+    private val _stores =
+        MutableLiveData(mutableListOf<StoreService.GetStoresProto.Response>())
 
-    val data: LiveData<MutableList<StoreService.GetStoresProto.Response>>
-        get() = _data
+    val stations: LiveData<MutableList<StoreService.GetStoresProto.Response>>
+        get() = _stores
 
-    fun loadStations(context: Context, name: String) {
+    fun loadStores(context: Context, name: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -36,14 +36,19 @@ class StationsViewModel : ViewModel() {
 
         val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(name)
 
-        _data.value?.clear()
+        _stores.value?.clear()
 
         viewModelScope.launch {
 
             val flow = service.getMany(request.build())
 
             flow.collect { store ->
-                _data.value = _data.value?.plus(store)?.toMutableList() ?: mutableListOf(store)
+
+                if (_stores.value == null) {
+                    _stores.value = mutableListOf(store)
+                } else {
+                    _stores.value!!.add(store)
+                }
             }
         }
     }

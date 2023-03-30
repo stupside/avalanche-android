@@ -1,7 +1,5 @@
 package com.example.avalanche.vms
 
-import Avalanche.Market.PlanService
-import Avalanche.Market.StoreService
 import Avalanche.Passport.TicketService
 import Avalanche.Passport.TicketServiceProtoGrpcKt
 import android.content.Context
@@ -17,18 +15,18 @@ import kotlinx.coroutines.launch
 
 class WalletsViewModel : ViewModel() {
 
-    private val _data =
-        MutableLiveData(emptyList<TicketService.GetWalletsProto.Response>().toMutableList())
+    private val _wallets =
+        MutableLiveData(mutableListOf<TicketService.GetWalletsProto.Response>())
 
-    val data: LiveData<MutableList<TicketService.GetWalletsProto.Response>>
-        get() = _data
+    val wallets: LiveData<MutableList<TicketService.GetWalletsProto.Response>>
+        get() = _wallets
 
     fun loadWallets(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
         val channel =
-            ManagedChannelBuilder.forTarget(Constants.REVERSE_PROXY).usePlaintext().build()
+            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -38,14 +36,19 @@ class WalletsViewModel : ViewModel() {
 
         val request = TicketService.GetWalletsProto.Request.newBuilder()
 
-        _data.value?.clear()
+        _wallets.value?.clear()
 
         viewModelScope.launch {
 
             val flow = service.getWallets(request.build())
 
-            flow.collect { data ->
-                _data.value = _data.value?.plus(data)?.toMutableList() ?: mutableListOf(data)
+            flow.collect { wallet ->
+
+                if (_wallets.value == null) {
+                    _wallets.value = mutableListOf(wallet)
+                } else {
+                    _wallets.value!!.add(wallet)
+                }
             }
         }
     }

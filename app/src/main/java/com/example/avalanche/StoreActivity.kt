@@ -4,76 +4,85 @@ import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import com.example.avalanche.identity.AvalancheIdentityState
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import com.example.avalanche.vms.StationViewModel
+import com.example.avalanche.vms.StoreViewModel
 
-//Ac
 class StoreActivity : ComponentActivity() {
 
-    private val vm: StationViewModel by viewModels()
+    private lateinit var stationVm: StoreViewModel
 
     companion object {
-        private const val StationIdKey = "StationId"
+        private const val StoreIdKey = "StoreId"
 
-        fun getIntent(context: Context, stationId: String): Intent {
-            return Intent(context, StoreActivity::class.java).putExtra(StationIdKey, stationId)
+        fun getIntent(context: Context, storeId: String): Intent {
+            return Intent(context, StoreActivity::class.java).putExtra(StoreIdKey, storeId)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        val state = AvalancheIdentityState.getInstance(this)
-
-        val onBackPressedCallback = object: OnBackPressedCallback(true) {
-
-            override fun handleOnBackPressed() {
-                // Your business logic to handle the back pressed event
-            }
-        }
-        onBackPressedDispatcher.addCallback(onBackPressedCallback)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val stationId = intent.getStringExtra(StationIdKey)!!
+        val storeId = intent.getStringExtra(StoreIdKey)!!
 
-        vm.loadStore(this, stationId)
-        vm.loadPlans(this, stationId)
+        stationVm = StoreViewModel(storeId)
+
+        stationVm.loadStore(this)
+        stationVm.loadPlans(this)
 
         setContent {
 
-            val store: StoreService.GetStoreProto.Response? by vm.store.observeAsState(null)
+            val storeState: StoreService.GetStoreProto.Response? by stationVm.store.observeAsState(
+                null
+            )
 
-            val plans: List<PlanService.GetPlansProto.Response> by vm.plans.observeAsState(
+            val planStates: List<PlanService.GetPlansProto.Response> by stationVm.plans.observeAsState(
                 emptyList()
             )
 
             AvalancheScaffold(activity = this, content = {
-                AvalancheSection(title = store?.name.toString()) {
-                    Text(text = store?.description.toString())
-                    Text(text = store?.email.toString())
-                    Text(text = store?.logo.toString())
-                }
-                AvalancheSection(title = "Passes") {
-                    AvalancheList(elements = plans) { plan ->
-                        AvalancheListElement(content = {
-                            Text(plan.name)
-                            Text(plan.planId)
-                        }) {
 
+                storeState?.let { store ->
+                    AvalancheSection(store.name) {
+                        Text(store.description)
+                        Text(store.email)
+
+                        if (store.logo != null) {
+
+                            val bytes = store.logo.toByteArray()
+
+                            val bitmap =
+                                BitmapFactory.decodeByteArray(bytes, 0, store.logo.serializedSize)
+
+                            if (bitmap == null) {
+                                // TODO: show a placeholder
+                            } else {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = store.name
+                                )
+                            }
+                        }
+                    }
+                    AvalancheSection(title = "Passes") {
+                        AvalancheList(elements = planStates) { plan ->
+                            AvalancheListElement(content = {
+                                Text(plan.name)
+                                Text(plan.planId)
+                            }, onClick = {
+                                // TODO: show payment
+                            })
                         }
                     }
                 }

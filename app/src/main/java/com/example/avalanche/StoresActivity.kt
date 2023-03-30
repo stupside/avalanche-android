@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -22,16 +20,18 @@ import com.example.avalanche.ui.shared.AvalancheSection
 import com.example.avalanche.ui.shared.list.AvalancheList
 import com.example.avalanche.ui.shared.list.AvalancheListElement
 import com.example.avalanche.ui.shared.scaffold.AvalancheScaffold
-import com.example.avalanche.vms.StationsViewModel
+import com.example.avalanche.vms.StoresViewModel
 
 class StoresActivity : ComponentActivity() {
-
-    private val vm: StationsViewModel by viewModels()
 
     companion object {
         fun getIntent(context: Context): Intent {
             return Intent(context, StoresActivity::class.java)
         }
+    }
+
+    private val storesVm: StoresViewModel by lazy {
+        StoresViewModel()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +42,7 @@ class StoresActivity : ComponentActivity() {
             var search by remember { mutableStateOf("") }
 
             if (search.isNotEmpty())
-                vm.loadStations(this, search)
+                storesVm.loadStores(this, search)
 
             AvalancheScaffold(activity = this, content = {
                 AvalancheSection(title = "Search") {
@@ -53,25 +53,27 @@ class StoresActivity : ComponentActivity() {
                         label = { Text("Name") }
                     )
 
-                    val stores: List<StoreService.GetStoresProto.Response> by vm.data.observeAsState(
+                    val stores: List<StoreService.GetStoresProto.Response> by storesVm.stations.observeAsState(
                         emptyList()
                     )
 
                     AvalancheList(elements = stores, template = { store ->
 
-                        val logo = store.logo.toString()
+                        if (store.logo != null) {
 
-                        val bytes = Base64.decode(logo, Base64.DEFAULT)
+                            val bytes = store.logo.toByteArray()
 
-                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
+                            val bitmap =
+                                BitmapFactory.decodeByteArray(bytes, 0, store.logo.serializedSize)
 
-                        if (bitmap == null) {
-                            /* TODO: DO SOMETHING */
-                        } else {
-                            Image(
-                                bitmap = bitmap.asImageBitmap(),
-                                contentDescription = store.name
-                            )
+                            if (bitmap == null) {
+                                // TODO: DO SOMETHING
+                            } else {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = store.name
+                                )
+                            }
                         }
 
                         AvalancheListElement(

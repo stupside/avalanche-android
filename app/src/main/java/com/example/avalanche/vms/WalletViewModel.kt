@@ -13,20 +13,20 @@ import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
-class WalletViewModel: ViewModel() {
+class WalletViewModel(private val storeId: String) : ViewModel() {
 
-    private val _data =
+    private val _tickets =
         MutableLiveData(emptyList<TicketService.GetTicketsProto.Response>().toMutableList())
 
-    val data: LiveData<MutableList<TicketService.GetTicketsProto.Response>>
-        get() = _data
+    val tickets: LiveData<MutableList<TicketService.GetTicketsProto.Response>>
+        get() = _tickets
 
     fun loadWallet(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
         val channel =
-            ManagedChannelBuilder.forTarget(Constants.REVERSE_PROXY).usePlaintext().build()
+            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -34,16 +34,21 @@ class WalletViewModel: ViewModel() {
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
-        val request = TicketService.GetTicketsProto.Request.newBuilder()
+        val request = TicketService.GetTicketsProto.Request.newBuilder().setStoreId(storeId)
 
-        _data.value?.clear()
+        _tickets.value?.clear()
 
         viewModelScope.launch {
 
             val flow = service.getMany(request.build())
 
-            flow.collect { data ->
-                _data.value = _data.value?.plus(data)?.toMutableList() ?: mutableListOf(data)
+            flow.collect { ticket ->
+
+                if (_tickets.value == null) {
+                    _tickets.value = mutableListOf(ticket)
+                } else {
+                    _tickets.value!!.add(ticket)
+                }
             }
         }
     }

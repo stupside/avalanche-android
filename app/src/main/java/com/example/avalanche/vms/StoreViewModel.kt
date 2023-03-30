@@ -15,10 +15,10 @@ import com.example.avalanche.shared.Constants
 import io.grpc.ManagedChannelBuilder
 import kotlinx.coroutines.launch
 
-class StationViewModel : ViewModel() {
+class StoreViewModel(private val storeId: String) : ViewModel() {
 
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
-    private val _plans = MutableLiveData<MutableList<PlanService.GetPlansProto.Response>>()
+    private val _plans = MutableLiveData(mutableListOf<PlanService.GetPlansProto.Response>())
 
     val store: LiveData<StoreService.GetStoreProto.Response>
         get() = _store
@@ -26,11 +26,12 @@ class StationViewModel : ViewModel() {
     val plans: LiveData<MutableList<PlanService.GetPlansProto.Response>>
         get() = _plans
 
-    fun loadStore(context: Context, storeId: String) {
+    fun loadStore(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
+        val channel =
+            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -48,17 +49,20 @@ class StationViewModel : ViewModel() {
         }
     }
 
-    fun loadPlans(context: Context, storeId: String) {
+    fun loadPlans(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
+        val channel =
+            ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext().build()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
 
         val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
+
+        _plans.value?.clear()
 
         viewModelScope.launch {
 
@@ -67,7 +71,12 @@ class StationViewModel : ViewModel() {
             val flow = service.getMany(request.build())
 
             flow.collect { plan ->
-                _plans.value = _plans.value?.plus(plan)?.toMutableList() ?: mutableListOf(plan)
+
+                if (_plans.value == null) {
+                    _plans.value = mutableListOf(plan)
+                } else {
+                    _plans.value!!.add(plan)
+                }
             }
         }
     }
