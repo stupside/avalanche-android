@@ -73,7 +73,7 @@ class StoreActivity : ComponentActivity() {
 
                             StoreHeader(
                                 context = this@StoreActivity,
-                                store = storeId,
+                                storeId = storeId,
                                 name = store.name,
                                 description = store.description,
                                 logo = store.logo.toString()
@@ -103,7 +103,7 @@ class StoreActivity : ComponentActivity() {
 }
 
 @Composable
-fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?) {
+fun StoreHeader(context: Context, storeId: String, name: String, description: String, logo: String?) {
     Box(modifier = Modifier.padding(32.dp)) {
         Row {
             StoreLogo(logo)

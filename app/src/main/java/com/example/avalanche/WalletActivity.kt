@@ -73,7 +73,7 @@ class WalletActivity : ComponentActivity() {
 
                             StoreHeader(
                                 context = this@WalletActivity,
-                                store = storeId,
+                                storeId = storeId,
                                 name = store.name,
                                 description = store.description,
                                 logo = store.logo.toString()

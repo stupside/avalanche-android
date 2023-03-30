@@ -29,7 +29,7 @@ class PurchaseViewModel : ViewModel() {
             .setAvailableInDays(availableInDays)
 
         viewModelScope.launch {
-            val response = service.intent(request.build())
+            service.intent(request.build())
         }
     }
 }

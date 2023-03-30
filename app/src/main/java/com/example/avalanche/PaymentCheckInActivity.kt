@@ -46,18 +46,19 @@ class PaymentCheckInActivity : ComponentActivity() {
         val planId = intent.getStringExtra(PlanIdKey)!!
 
         walletVm = WalletViewModel(storeId)
+        purchaseVm = PurchaseViewModel()
 
         walletVm.loadWallet(this)
 
-        purchaseVm = PurchaseViewModel()
+        val calendar = Calendar.getInstance()
 
-        val now = Calendar.getInstance().timeInMillis
+        val now = calendar.timeInMillis
 
         setContent {
 
             var inputTicketName by remember { mutableStateOf("") }
 
-            val inputDate = remember { mutableStateOf(0L) }
+            val inputDate = remember { mutableStateOf(now) }
 
             AvalancheTheme {
                 Scaffold(topBar = {
@@ -113,10 +114,10 @@ class PaymentCheckInActivity : ComponentActivity() {
                         val availableInDays = TimeUnit.MILLISECONDS.toDays(inputDate.value - now)
 
                         Button(onClick = {
-
                             purchaseVm.purchase(this@PaymentCheckInActivity, inputTicketName, planId, availableInDays.toInt())
                         }) {
                             Text("Buy")
+
                             Text("Ticket will be available in $availableInDays days")
                         }
                     }
