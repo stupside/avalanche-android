@@ -1,55 +1,63 @@
 package com.example.avalanche
 
+import Avalanche.Passport.TicketService
 import android.content.Context
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.widget.CalendarView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
-import com.example.avalanche.viewmodels.StoreViewModel
+import com.example.avalanche.viewmodels.PurchaseViewModel
+import com.example.avalanche.viewmodels.WalletViewModel
+import java.util.concurrent.TimeUnit
 
 class PaymentCheckInActivity : ComponentActivity() {
 
     companion object {
         private const val PlanIdKey = "PlanId"
+        private const val StoreIdKey = "StoreId"
 
-        fun getIntent(context: Context, planId: String): Intent {
+        fun getIntent(context: Context, storeId: String, planId: String): Intent {
             return Intent(context, PaymentCheckInActivity::class.java)
+                .putExtra(StoreIdKey, storeId)
                 .putExtra(PlanIdKey, planId)
         }
     }
 
-    private lateinit var storeVm: StoreViewModel
+    private lateinit var purchaseVm: PurchaseViewModel
+    private lateinit var walletVm: WalletViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        storeVm.loadPlans(this)
+        val storeId = intent.getStringExtra(StoreIdKey)!!
+        val planId = intent.getStringExtra(PlanIdKey)!!
+
+        walletVm = WalletViewModel(storeId)
+
+        walletVm.loadWallet(this)
+
+        purchaseVm = PurchaseViewModel()
+
+        val now = Calendar.getInstance().timeInMillis
 
         setContent {
 
-            var ticketName by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-                mutableStateOf(TextFieldValue())
-            }
+            var inputTicketName by remember { mutableStateOf("") }
 
-            val inputDay = remember { mutableStateOf(0) }
-            val inputMonth = remember { mutableStateOf(0) }
-            val inputYear = remember { mutableStateOf(0) }
+            val inputDate = remember { mutableStateOf(0L) }
 
             AvalancheTheme {
                 Scaffold(topBar = {
@@ -63,31 +71,54 @@ class PaymentCheckInActivity : ComponentActivity() {
                     Column(modifier = Modifier.padding(paddingValues)) {
 
                         Column {
+
                             OutlinedTextField(
-                                value = ticketName,
+                                value = inputTicketName,
                                 placeholder = {
                                     Text("Ticket name")
                                 },
-                                onValueChange = { ticketName = it },
+                                onValueChange = { inputTicketName = it },
                             )
 
+                            val ticketStates: List<TicketService.GetTicketsProto.Response>? by walletVm.tickets.collectAsState()
 
-
+                            ticketStates?.let { tickets ->
+                                AvalancheList(elements = tickets) { ticket ->
+                                    ListItem(
+                                        modifier = Modifier.clickable(onClick = {
+                                            inputTicketName = ticket.name
+                                        }),
+                                        headlineText = { Text(ticket.name) },
+                                        trailingContent = {
+                                            Checkbox(
+                                                checked = ticket.name == inputTicketName,
+                                                onCheckedChange = null
+                                            )
+                                        }
+                                    )
+                                }
+                            }
                         }
-
-
 
                         AndroidView(
                             { CalendarView(it) },
                             modifier = Modifier.wrapContentSize(),
                             update = { views ->
-                                views.setOnDateChangeListener { _, year, month, day ->
-                                    inputYear.value = year
-                                    inputMonth.value = month
-                                    inputDay.value = day
+                                views.setOnDateChangeListener { picker, _, _, _ ->
+                                    inputDate.value = picker.date
                                 }
                             }
                         )
+
+                        val availableInDays = TimeUnit.MILLISECONDS.toDays(inputDate.value - now)
+
+                        Button(onClick = {
+
+                            purchaseVm.purchase(this@PaymentCheckInActivity, inputTicketName, planId, availableInDays.toInt())
+                        }) {
+                            Text("Buy")
+                            Text("Ticket will be available in $availableInDays days")
+                        }
                     }
                 })
             }
