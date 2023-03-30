@@ -9,9 +9,6 @@ import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
 class LoginViewModel : ViewModel() {
 
-    companion object {
-    }
-
     fun getTokenRequestForPasswordFlow(
         state: AvalancheIdentityState,
         username: String,

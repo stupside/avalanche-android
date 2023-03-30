@@ -10,14 +10,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import com.example.avalanche.core.ui.shared.AvalancheSection
+import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
-import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoresViewModel
 
 class StoresActivity : ComponentActivity() {
@@ -42,29 +45,36 @@ class StoresActivity : ComponentActivity() {
 
             storesVm.loadStores(this, search)
 
-
-            AvalancheScaffold(activity = this, content = {
-                AvalancheSection(title = "Search") {
-
-                    OutlinedTextField(
-                        value = search,
-                        onValueChange = { search = it },
-                        label = { Text("Name") }
-                    )
-
-                    val stores: List<StoreService.GetStoresProto.Response> by storesVm.stores.collectAsState()
-
-                    AvalancheList(elements = stores, template = { store ->
-                        StoreItem(
-                            context = this,
-                            store = store.storeId,
-                            name = store.name,
-                            description = store.description,
-                            logo = store.logo.toString()
-                        )
+            AvalancheTheme {
+                Scaffold(topBar = {
+                    TopAppBar(title = {
+                        Text("Stores")
+                    }, navigationIcon = {
+                        AvalancheGoBackButton(activity = this)
                     })
-                }
-            }, button = {})
+                }, content = { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
+
+                        OutlinedTextField(
+                            value = search,
+                            onValueChange = { search = it },
+                            label = { Text("Name") }
+                        )
+
+                        val stores: List<StoreService.GetStoresProto.Response> by storesVm.stores.collectAsState()
+
+                        AvalancheList(elements = stores, template = { store ->
+                            StoreItem(
+                                context = this@StoresActivity,
+                                store = store.storeId,
+                                name = store.name,
+                                description = store.description,
+                                logo = store.logo.toString()
+                            )
+                        })
+                    }
+                })
+            }
         }
     }
 }

@@ -3,16 +3,32 @@ package com.example.avalanche
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.Modifier
+import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 
 class PaymentActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AvalancheScaffold(activity = this, content = {
+            AvalancheTheme {
+                Scaffold(topBar = {
+                    TopAppBar(title = {
+                        Text("Payments")
+                    }, navigationIcon = {
+                        AvalancheGoBackButton(activity = this)
+                    })
+                }, content = { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
 
-            }, button = {})
+                    }
+                })
+            }
         }
     }
 }

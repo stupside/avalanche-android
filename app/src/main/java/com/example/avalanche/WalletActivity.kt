@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Info
@@ -17,10 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.avalanche.core.ui.shared.AvalancheSection
+import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
-import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoreViewModel
 import com.example.avalanche.viewmodels.WalletViewModel
 
@@ -50,31 +53,45 @@ class WalletActivity : ComponentActivity() {
         storeVm.loadStore(this)
 
         setContent {
-            AvalancheScaffold(activity = this, content = {
 
-                val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState(
-                    null
-                )
+            AvalancheTheme {
+                Scaffold(topBar = {
+                    TopAppBar(title = {
+                        Text("Wallet")
+                    }, navigationIcon = {
+                        AvalancheGoBackButton(activity = this)
+                    })
+                }, content = { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
 
-                storeState?.let { store ->
+                        val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState()
 
-                    val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
+                        storeState?.let { store ->
 
-                    AvalancheSection(title = store.name) {
+                            val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
 
-                        AvalancheList(elements = tickets, template = { ticket ->
-                            TicketItem(
-                                this,
-                                ticket = ticket.ticketId,
-                                name = ticket.name,
-                                description = "Ticket description"
+                            StoreHeader(
+                                context = this@WalletActivity,
+                                store = storeId,
+                                name = store.name,
+                                description = store.description,
+                                logo = store.logo.toString()
                             )
-                        })
+
+                            AvalancheList(elements = tickets, template = { ticket ->
+                                TicketItem(
+                                    this@WalletActivity,
+                                    ticket = ticket.ticketId,
+                                    name = ticket.name,
+                                    description = "Ticket description"
+                                )
+                            })
+                        }
                     }
-                }
-            }, button = {
-                ExploreStorePlansButton(context = this, store = storeId)
-            })
+                }, floatingActionButton = {
+                    ExploreStorePlansButton(context = this, store = storeId)
+                })
+            }
         }
     }
 }

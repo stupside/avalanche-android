@@ -9,8 +9,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
@@ -19,9 +18,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import com.example.avalanche.core.ui.shared.AvalancheSection
+import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
-import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoreViewModel
 
 class StoreActivity : ComponentActivity() {
@@ -54,38 +53,65 @@ class StoreActivity : ComponentActivity() {
 
             val planStates: List<PlanService.GetPlansProto.Response> by stationVm.plans.collectAsState()
 
-            AvalancheScaffold(activity = this, content = {
+            AvalancheTheme {
+                Scaffold(topBar = {
+                    TopAppBar(title = {
+                        Text("Store")
+                    }, navigationIcon = {
+                        AvalancheGoBackButton(activity = this)
+                    })
+                }, content = { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
 
-                storeState?.let { store ->
-                    AvalancheSection(store.name) {
-                        Text(store.description)
-                        Text(store.email)
                     }
+                })
+            }
 
-                    AvalancheSection(title = "Plans") {
-                        AvalancheList(elements = planStates) { plan ->
-                            PlanItem(
-                                context = this,
-                                name = plan.name,
-                                description = "Plan description"
+            AvalancheTheme {
+                Scaffold(topBar = {
+                    TopAppBar(title = {
+                        Text("Payments")
+                    }, navigationIcon = {
+                        AvalancheGoBackButton(activity = this)
+                    })
+                }, content = { paddingValues ->
+                    Column(modifier = Modifier.padding(paddingValues)) {
+                        storeState?.let { store ->
+
+                            StoreHeader(
+                                context = this@StoreActivity,
+                                store = storeId,
+                                name = store.name,
+                                description = store.description,
+                                logo = store.logo.toString()
                             )
+
+                            Row {
+                                Text("Plans")
+                                AvalancheList(elements = planStates) { plan ->
+                                    PlanItem(
+                                        context = this@StoreActivity,
+                                        name = plan.name,
+                                        description = "Plan description"
+                                    )
+                                }
+                            }
+
                         }
                     }
-                }
-            }, button = {})
+                })
+            }
         }
     }
 }
 
 @Composable
 fun StoreHeader(context: Context, store: String, name: String, description: String, logo: String?) {
-    ElevatedCard {
-        Box(Modifier.fillMaxWidth()) {
-            Text(store)
-            Text(name)
-            Text(description)
-            StoreLogo(logo)
-        }
+    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+        Text(store)
+        Text(name)
+        Text(description)
+        StoreLogo(logo)
     }
 }
 

@@ -6,23 +6,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.avalanche.StoresActivity
+import androidx.compose.ui.unit.dp
 import com.example.avalanche.WalletsActivity
+import com.example.avalanche.core.envrionment.Constants
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import com.example.avalanche.core.identity.DevelopmentConnectionBuilder
-import com.example.avalanche.core.envrionment.Constants
-import com.example.avalanche.core.ui.shared.scaffold.AvalancheScaffold
+import com.example.avalanche.core.ui.theme.AvalancheTheme
 import net.openid.appauth.AppAuthConfiguration
 import net.openid.appauth.AuthorizationService
 
@@ -56,7 +53,8 @@ class LoginActivity : ComponentActivity() {
 
         val state = AvalancheIdentityState.getInstance(this)
 
-        val register = RegisterActivity.getIntent(this)
+        val registerIntent = RegisterActivity.getIntent(this)
+        val walletsIntent = WalletsActivity.getIntent(this)
 
         setContent {
 
@@ -67,56 +65,66 @@ class LoginActivity : ComponentActivity() {
                 mutableStateOf("")
             }
 
-            val walletsIntent = WalletsActivity.getIntent(this)
+            AvalancheTheme {
+                Scaffold { paddingValues ->
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(paddingValues),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
 
-            AvalancheScaffold(activity = this, button = {}) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        label = { Text("Username") }
-                    )
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Password") }
-                    )
-                    Button(
-                        onClick = {
-
-                            val request = vmLogin.getTokenRequestForPasswordFlow(
-                                state,
-                                username,
-                                password,
-                                Constants.AVALANCHE_IDENTITY_SCOPES
+                        Column {
+                            OutlinedTextField(
+                                value = username,
+                                onValueChange = { username = it },
+                                label = { Text("Username") }
                             )
 
-                            service.performTokenRequest(request) { response, exception ->
-                                state.updateAfterTokenResponse(
-                                    response = response,
-                                    exception = exception
-                                )
+                            OutlinedTextField(
+                                value = password,
+                                onValueChange = { password = it },
+                                label = { Text("Password") }
+                            )
+                        }
 
-                                if (exception == null) {
-                                    startActivity(walletsIntent)
+                        Spacer(modifier = Modifier.padding(vertical = 8.dp))
+
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            OutlinedButton(
+                                onClick = {
+
+                                    val request = vmLogin.getTokenRequestForPasswordFlow(
+                                        state,
+                                        username,
+                                        password,
+                                        Constants.AVALANCHE_IDENTITY_SCOPES
+                                    )
+
+                                    service.performTokenRequest(request) { response, exception ->
+                                        state.updateAfterTokenResponse(
+                                            response = response,
+                                            exception = exception
+                                        )
+
+                                        if (exception == null) {
+                                            startActivity(walletsIntent)
+                                        }
+                                    }
                                 }
+                            ) {
+                                Text("Login")
+                            }
+                            TextButton(
+                                onClick = {
+                                    startActivity(registerIntent)
+                                }
+                            ) {
+                                Text("Register")
                             }
                         }
-                    ) {
-                        Text("Login")
-                    }
-                    Button(
-                        onClick = {
-                            startActivity(register)
-                        }
-                    ) {
-                        Text("Register")
                     }
                 }
+
             }
         }
     }
@@ -127,9 +135,9 @@ class LoginActivity : ComponentActivity() {
         val state = AvalancheIdentityState.getInstance(this)
 
         if (state.get().isAuthorized) {
-            val stationsIntent = Intent(this, StoresActivity::class.java)
+            val walletsActivity = WalletsActivity.getIntent(this)
 
-            startActivity(stationsIntent)
+            startActivity(walletsActivity)
         }
 
     }
