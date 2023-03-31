@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.zIndex
 import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.shared.AvalancheLogo
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoresViewModel
@@ -124,7 +125,7 @@ fun StoreItem(
         }),
         headlineContent = { Text(name) },
         leadingContent = {
-            StoreLogo(logo)
+            AvalancheLogo(logo)
         },
         supportingContent = { Text(description) },
     )

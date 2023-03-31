@@ -6,25 +6,17 @@ import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.AvalancheHeader
@@ -124,40 +116,5 @@ fun PlanItem(context: Context, storeId: String, planId: String, name: String, de
         }),
         headlineContent = { Text(name, style = MaterialTheme.typography.titleSmall) },
         supportingContent = { Text(description, style = MaterialTheme.typography.bodyMedium) },
-    )
-}
-
-@Composable
-fun StoreLogo(logo: String?, size: Dp = 64.dp) {
-    if (logo == null) {
-        StoreLogoPlaceholder(size)
-    } else {
-
-        val bytes = logo.toByteArray()
-
-        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
-
-        if (bitmap == null) {
-            StoreLogoPlaceholder(size)
-        } else {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = logo,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-            )
-        }
-    }
-}
-
-@Composable
-fun StoreLogoPlaceholder(size: Dp) {
-    Icon(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-        contentDescription = "Placeholder",
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
     )
 }
