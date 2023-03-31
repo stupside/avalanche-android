@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+
 // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary
 
 private val LightColors = lightColorScheme(
@@ -84,6 +85,7 @@ fun AvalancheTheme(
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -93,11 +95,16 @@ fun AvalancheTheme(
         else -> LightColors
     }
     val view = LocalView.current
+
+    val activity = view.context as Activity
+
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
+
+            val window = activity.window
 
             window.statusBarColor = colorScheme.primary.toArgb()
+
 
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }

@@ -21,9 +21,9 @@ class StoresViewModel : ViewModel() {
     val stores: StateFlow<List<StoreService.GetStoresProto.Response>>
         get() = _stores.asStateFlow()
 
-    fun loadStores(context: Context, name: String) {
+    fun loadStores(context: Context, nameSearch: String) {
 
-        if (name.isEmpty()) return;
+        if (nameSearch.isEmpty()) return;
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -35,7 +35,7 @@ class StoresViewModel : ViewModel() {
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
-        val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(name)
+        val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(nameSearch)
 
         viewModelScope.launch {
 

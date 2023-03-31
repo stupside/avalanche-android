@@ -1,14 +1,11 @@
 package com.example.avalanche.core.ui.shared
 
 import android.content.Context
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.avalanche.WalletsActivity
 
@@ -50,8 +47,6 @@ fun AvalancheBottomBar(
                 },
                 elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
             ) {
-                Text(floating.description)
-                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
                 Icon(
                     imageVector = floating.icon,
                     contentDescription = floating.description,
