@@ -125,8 +125,8 @@ fun PlanItem(context: Context, storeId: String, planId: String, name: String, de
         modifier = Modifier.clickable(onClick = {
             context.startActivity(checkInIntent)
         }),
-        headlineText = { Text(name, style = MaterialTheme.typography.titleSmall) },
-        supportingText = { Text(description, style = MaterialTheme.typography.bodyMedium) },
+        headlineContent = { Text(name, style = MaterialTheme.typography.titleSmall) },
+        supportingContent = { Text(description, style = MaterialTheme.typography.bodyMedium) },
     )
 }
 

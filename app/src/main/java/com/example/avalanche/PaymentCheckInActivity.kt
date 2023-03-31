@@ -79,7 +79,7 @@ class PaymentCheckInActivity : ComponentActivity() {
                                         modifier = Modifier.clickable(onClick = {
                                             ticketId = ticket.ticketId
                                         }),
-                                        headlineText = { Text(ticket.name) },
+                                        headlineContent = { Text(ticket.name) },
                                         trailingContent = {
                                             Checkbox(
                                                 checked = ticket.name == ticketId,

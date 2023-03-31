@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
@@ -36,7 +39,7 @@ class WalletsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        walletsVm =  WalletsViewModel()
+        walletsVm = WalletsViewModel()
 
         setContent {
 
@@ -64,6 +67,16 @@ class WalletsActivity : ComponentActivity() {
 
                 }, floatingActionButton = {
                     ExploreStoresButton(this)
+                }, floatingActionButtonPosition = FabPosition.End, bottomBar = {
+                    BottomAppBar {
+
+                        IconButton(onClick = { /* doSomething() */ }) {
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                        }
+                        IconButton(onClick = { /* doSomething() */ }) {
+                            Icon(Icons.Filled.Face, contentDescription = "Localized description")
+                        }
+                    }
                 })
             }
         }
@@ -82,7 +95,7 @@ fun WalletItem(
     walletId: String,
     walletName: String,
     description: String,
-    tickets: Int,
+    ticketCount: Int,
     logo: ImageVector
 ) {
 
@@ -92,16 +105,18 @@ fun WalletItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
         }),
-        headlineText = { Text(walletName) },
+        headlineContent = { Text(walletName) },
         leadingContent = {
             Icon(logo, contentDescription = description)
         },
         trailingContent = {
-            Badge {
-                Text("$tickets tickets")
-            }
+            AvalancheColoredBadge(
+                isSuccess = ticketCount > 0,
+                successText = "$ticketCount tickets",
+                errorText = null
+            )
         },
-        supportingText = { Text(description) },
+        supportingContent = { Text(description) },
     )
 }
 

@@ -92,10 +92,10 @@ fun StoreItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
         }),
-        headlineText = { Text(name) },
+        headlineContent = { Text(name) },
         leadingContent = {
             StoreLogo(logo)
         },
-        supportingText = { Text(description) },
+        supportingContent = { Text(description) },
     )
 }

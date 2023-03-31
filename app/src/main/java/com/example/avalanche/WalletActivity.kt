@@ -10,9 +10,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
@@ -21,7 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -123,41 +121,14 @@ fun TicketItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
         }),
-        headlineText = { Text(name) },
-        supportingText = { Text(description) },
+        headlineContent = { Text(name) },
+        supportingContent = { Text(description) },
         trailingContent = {
 
             Row {
-                Badge(
-                    containerColor = if (isValid) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.errorContainer
-
-                    },
-                    contentColor = if (isValid) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.error
-                    }
-                ) {
-                    Text("Valid")
-                }
-                Badge(
-                    containerColor = if (isSealed) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.errorContainer
-
-                    },
-                    contentColor = if (isValid) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.error
-                    }
-                ) {
-                    Text("Sealed")
-                }
+                AvalancheColoredBadge(isValid, "Valid for now", "Not valid for now")
+                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
+                AvalancheColoredBadge(isSealed, "Sealed", "Unsealed")
             }
         }
     )
@@ -175,7 +146,6 @@ fun ExploreStorePlansButton(context: Context, store: String) {
         Icon(
             imageVector = Icons.Rounded.Add,
             contentDescription = "Explore store plans",
-            tint = Color.White,
         )
     }
 }
