@@ -10,21 +10,23 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WalletViewModel(private val storeId: String) : ViewModel() {
 
     private val _tickets =
-        MutableStateFlow(emptyList<TicketService.GetTicketsProto.Response>().toMutableList())
+        MutableStateFlow(listOf<TicketService.GetTicketsProto.Response>())
 
-    val tickets: StateFlow<MutableList<TicketService.GetTicketsProto.Response>>
-        get() = _tickets
+    val tickets: StateFlow<List<TicketService.GetTicketsProto.Response>>
+        get() = _tickets.asStateFlow()
 
     fun loadWallet(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -42,7 +44,9 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
 
                 if (_tickets.value.contains(ticket)) return@collect
 
-                _tickets.value += ticket
+                _tickets.update {
+                    it + ticket
+                }
             }
         }
     }

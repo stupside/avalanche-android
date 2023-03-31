@@ -27,19 +27,16 @@ class StoresActivity : ComponentActivity() {
         }
     }
 
-    private val storesVm: StoresViewModel by lazy {
-        StoresViewModel()
-    }
+    private lateinit var storesVm: StoresViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        storesVm = StoresViewModel()
+
         setContent {
 
             var search by remember { mutableStateOf("") }
-
-
-            storesVm.loadStores(this, search)
 
             AvalancheTheme {
                 Scaffold(topBar = {
@@ -56,6 +53,12 @@ class StoresActivity : ComponentActivity() {
                             onValueChange = { search = it },
                             label = { Text("Name") }
                         )
+                        
+                        TextButton(onClick = {
+                            storesVm.loadStores(this@StoresActivity, search)
+                        }) {
+                            Text("Search")
+                        }
 
                         val stores: List<StoreService.GetStoresProto.Response> by storesVm.stores.collectAsState()
 

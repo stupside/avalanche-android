@@ -31,16 +31,16 @@ class WalletsActivity : ComponentActivity() {
         }
     }
 
-    private val walletsVm: WalletsViewModel by lazy {
-        WalletsViewModel()
-    }
+    private lateinit var walletsVm: WalletsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        walletsVm.loadWallets(this)
+        walletsVm =  WalletsViewModel()
 
         setContent {
+
+            val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.collectAsState()
 
             AvalancheTheme {
                 Scaffold(topBar = {
@@ -49,8 +49,6 @@ class WalletsActivity : ComponentActivity() {
                     })
                 }, content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
-
-                        val wallets: List<TicketService.GetWalletsProto.Response> by walletsVm.wallets.collectAsState()
 
                         AvalancheList(elements = wallets, template = { wallet ->
                             WalletItem(
@@ -70,25 +68,31 @@ class WalletsActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        walletsVm.loadWallets(this)
+    }
 }
 
 @Composable
 fun WalletItem(
     context: Context,
-    wallet: String,
-    name: String,
+    walletId: String,
+    walletName: String,
     description: String,
     tickets: Int,
     logo: ImageVector
 ) {
 
-    val intent = WalletActivity.getIntent(context, wallet)
+    val intent = WalletActivity.getIntent(context, walletId)
 
     ListItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
         }),
-        headlineText = { Text(name) },
+        headlineText = { Text(walletName) },
         leadingContent = {
             Icon(logo, contentDescription = description)
         },

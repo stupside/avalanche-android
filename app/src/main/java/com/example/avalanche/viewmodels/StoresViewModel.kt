@@ -10,14 +10,16 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class StoresViewModel : ViewModel() {
 
-    private val _stores = MutableStateFlow(mutableListOf<StoreService.GetStoresProto.Response>())
+    private val _stores = MutableStateFlow(listOf<StoreService.GetStoresProto.Response>())
 
     val stores: StateFlow<List<StoreService.GetStoresProto.Response>>
-        get() = _stores
+        get() = _stores.asStateFlow()
 
     fun loadStores(context: Context, name: String) {
 
@@ -25,7 +27,7 @@ class StoresViewModel : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -43,7 +45,9 @@ class StoresViewModel : ViewModel() {
 
                 if (_stores.value.contains(store)) return@collect
 
-                _stores.value += store
+                _stores.update {
+                    it + store
+                }
             }
         }
     }

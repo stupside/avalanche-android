@@ -13,9 +13,7 @@ message CreateTicketProto {
 
     string StoreId = 1;
 
-    string UserId = 2;
-
-    string Name = 3;
+    string Name = 2;
   }
 
   message Response {

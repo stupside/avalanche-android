@@ -38,6 +38,12 @@ message GetPlansProto {
     string PlanId = 1;
 
     string Name = 2;
+
+    uint32 Price = 4;
+
+    bool IsFree = 5;
+
+    google.protobuf.Duration Duration = 6;
   }
 }
 

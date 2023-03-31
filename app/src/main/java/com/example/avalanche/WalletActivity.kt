@@ -50,9 +50,6 @@ class WalletActivity : ComponentActivity() {
         walletVm = WalletViewModel(storeId)
         storeVm = StoreViewModel(storeId)
 
-        walletVm.loadWallet(this)
-        storeVm.loadStore(this)
-
         setContent {
 
             AvalancheTheme {
@@ -69,8 +66,6 @@ class WalletActivity : ComponentActivity() {
 
                         storeState?.let { store ->
 
-                            val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
-
                             StoreHeader(
                                 context = this@WalletActivity,
                                 storeId = storeId,
@@ -81,6 +76,8 @@ class WalletActivity : ComponentActivity() {
 
                             Column {
                                 Text("Tickets", style = MaterialTheme.typography.titleMedium)
+
+                                val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
 
                                 AvalancheList(elements = tickets, template = { ticket ->
                                     TicketItem(
@@ -100,6 +97,13 @@ class WalletActivity : ComponentActivity() {
                 })
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        walletVm.loadWallet(this)
+        storeVm.loadStore(this)
     }
 }
 

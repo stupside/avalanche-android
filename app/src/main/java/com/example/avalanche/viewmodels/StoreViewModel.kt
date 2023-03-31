@@ -14,24 +14,26 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class StoreViewModel(private val storeId: String) : ViewModel() {
 
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
-    private val _plans = MutableStateFlow(mutableListOf<PlanService.GetPlansProto.Response>())
+    private val _plans = MutableStateFlow(listOf<PlanService.GetPlansProto.Response>())
 
     val store: LiveData<StoreService.GetStoreProto.Response>
         get() = _store
 
-    val plans: StateFlow<MutableList<PlanService.GetPlansProto.Response>>
-        get() = _plans
+    val plans: StateFlow<List<PlanService.GetPlansProto.Response>>
+        get() = _plans.asStateFlow()
 
     fun loadStore(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -53,7 +55,7 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -70,7 +72,9 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
             flow.collect { plan ->
                 if (_plans.value.contains(plan)) return@collect
 
-                _plans.value += plan
+                _plans.update {
+                    it + plan
+                }
             }
         }
     }

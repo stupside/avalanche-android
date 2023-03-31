@@ -10,12 +10,18 @@ message IntentPaymentProto {
     
     string PlanId = 1;
     
-    string TicketName = 2;
+    string TicketId = 2;
 
     uint32 AvailableInDays = 3;
   }
 
   message Response {
+    string OrderId = 1;
+    
+    uint32 Amount = 2;
+    uint32 AmountReceived = 3;   
+    
+    bool IsPaymentFullFilled = 4;
   }
 }
 

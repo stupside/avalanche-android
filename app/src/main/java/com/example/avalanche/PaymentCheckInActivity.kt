@@ -48,15 +48,13 @@ class PaymentCheckInActivity : ComponentActivity() {
         walletVm = WalletViewModel(storeId)
         purchaseVm = PurchaseViewModel()
 
-        walletVm.loadWallet(this)
-
         val calendar = Calendar.getInstance()
 
         val now = calendar.timeInMillis
 
         setContent {
 
-            var inputTicketName by remember { mutableStateOf("") }
+            var ticketId by remember { mutableStateOf("") }
 
             val inputDate = remember { mutableStateOf(now) }
 
@@ -73,26 +71,18 @@ class PaymentCheckInActivity : ComponentActivity() {
 
                         Column {
 
-                            OutlinedTextField(
-                                value = inputTicketName,
-                                placeholder = {
-                                    Text("Ticket name")
-                                },
-                                onValueChange = { inputTicketName = it },
-                            )
-
                             val ticketStates: List<TicketService.GetTicketsProto.Response>? by walletVm.tickets.collectAsState()
 
                             ticketStates?.let { tickets ->
                                 AvalancheList(elements = tickets) { ticket ->
                                     ListItem(
                                         modifier = Modifier.clickable(onClick = {
-                                            inputTicketName = ticket.name
+                                            ticketId = ticket.ticketId
                                         }),
                                         headlineText = { Text(ticket.name) },
                                         trailingContent = {
                                             Checkbox(
-                                                checked = ticket.name == inputTicketName,
+                                                checked = ticket.name == ticketId,
                                                 onCheckedChange = null
                                             )
                                         }
@@ -114,7 +104,7 @@ class PaymentCheckInActivity : ComponentActivity() {
                         val availableInDays = TimeUnit.MILLISECONDS.toDays(inputDate.value - now)
 
                         Button(onClick = {
-                            purchaseVm.purchase(this@PaymentCheckInActivity, inputTicketName, planId, availableInDays.toInt())
+                            purchaseVm.purchase(this@PaymentCheckInActivity, ticketId, planId, availableInDays.toInt())
                         }) {
                             Text("Buy")
 
@@ -124,5 +114,11 @@ class PaymentCheckInActivity : ComponentActivity() {
                 })
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        walletVm.loadWallet(this)
     }
 }

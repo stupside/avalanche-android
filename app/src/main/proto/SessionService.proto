@@ -1,0 +1,77 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Avalanche.Grpc.Proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package Avalanche.Tracker;
+
+message StartSessionProto {
+
+  message Request {
+
+    float Latitude = 1;
+    float Longitude = 2;
+    float Altitude = 3;
+
+    float Acceleration = 4;
+
+    google.protobuf.FloatValue HorizontalRotation = 5;
+    google.protobuf.FloatValue VerticalRotation = 6;
+
+    google.protobuf.FloatValue Battery = 7;
+
+    google.protobuf.Timestamp Date = 8;
+  }
+
+  message Response {
+
+    string SessionId = 1;
+  }
+}
+
+message GetSessionProto {
+
+  message Request {
+
+    string SessionId = 1;
+  }
+
+  message Response {
+
+    float Latitude = 1;
+    float Longitude = 2;
+    float Altitude = 3;
+
+    float Acceleration = 4;
+
+    google.protobuf.FloatValue HorizontalRotation = 5;
+    google.protobuf.FloatValue VerticalRotation = 6;
+
+    google.protobuf.FloatValue Battery = 7;
+
+    google.protobuf.Timestamp Date = 8;
+  }
+}
+
+message GetSessionsProto {
+
+  message Request {
+
+    string TicketId = 1;
+  }
+
+  message Response {
+
+    string SessionId = 1;
+  }
+}
+
+
+service SessionServiceProto {
+  rpc Start(stream StartSessionProto.Request) returns (StartSessionProto.Response);
+  
+  rpc GetOne(GetSessionProto.Request) returns (stream GetSessionProto.Response);
+  rpc GetMany(GetSessionsProto.Request) returns (stream GetSessionsProto.Response);
+}

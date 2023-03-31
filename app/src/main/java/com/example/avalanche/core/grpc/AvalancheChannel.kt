@@ -7,8 +7,7 @@ import io.grpc.ManagedChannelBuilder
 class AvalancheChannel {
 
     companion object {
-
-        fun getNext(): ManagedChannel {
+        fun getNew(): ManagedChannel {
             return ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext()
                 .build()
         }

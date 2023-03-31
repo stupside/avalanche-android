@@ -12,10 +12,10 @@ import kotlinx.coroutines.launch
 
 class PurchaseViewModel : ViewModel() {
 
-    fun purchase(context: Context, ticketName: String, planId: String, availableInDays: Int) {
+    fun purchase(context: Context, ticketId: String, planId: String, availableInDays: Int) {
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -24,7 +24,7 @@ class PurchaseViewModel : ViewModel() {
             .withCallCredentials(credentials)
 
         val request = OrderService.IntentPaymentProto.Request.newBuilder()
-            .setTicketName(ticketName)
+            .setTicketId(ticketId)
             .setPlanId(planId)
             .setAvailableInDays(availableInDays)
 

@@ -8,23 +8,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.avalanche.core.grpc.AvalancheChannel
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class WalletsViewModel : ViewModel() {
 
     private val _wallets =
-        MutableStateFlow(mutableListOf<TicketService.GetWalletsProto.Response>())
+        MutableStateFlow(listOf<TicketService.GetWalletsProto.Response>())
 
-    val wallets: StateFlow<MutableList<TicketService.GetWalletsProto.Response>>
-        get() = _wallets
+    val wallets: StateFlow<List<TicketService.GetWalletsProto.Response>>
+        get() = _wallets.asStateFlow()
 
     fun loadWallets(context: Context) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
-        val channel = AvalancheChannel.getNext()
+        val channel = AvalancheChannel.getNew()
 
         val credentials =
             BearerTokenCallCredentials(state.get().accessToken.toString())
@@ -34,7 +34,13 @@ class WalletsViewModel : ViewModel() {
 
         val request = TicketService.GetWalletsProto.Request.newBuilder()
 
-        viewModelScope.launch {
+        _wallets.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = ""
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
 
             val flow = service.getWallets(request.build())
 
@@ -42,7 +48,9 @@ class WalletsViewModel : ViewModel() {
 
                 if (_wallets.value.contains(wallet)) return@collect
 
-                _wallets.value += wallet
+                _wallets.update {
+                    it + wallet
+                }
             }
         }
     }
