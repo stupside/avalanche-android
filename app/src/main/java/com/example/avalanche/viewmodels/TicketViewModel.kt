@@ -40,4 +40,46 @@ class TicketViewModel(private val ticketId: String) : ViewModel() {
             _ticket.value = ticket
         }
     }
+
+    fun sealTicket(context: Context, ticketId: String, deviceId: String) {
+
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        viewModelScope.launch {
+
+            val request = TicketService.SealTicketProto.Request.newBuilder().setTicketId(ticketId)
+                .setDeviceIdentifier(deviceId)
+
+            service.seal(request.build())
+        }
+    }
+
+    fun unsealTicket(context: Context, ticketId: String, deviceId: String) {
+
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        viewModelScope.launch {
+
+            val request = TicketService.UnsealTicketProto.Request.newBuilder().setTicketId(ticketId)
+                .setDeviceIdentifier(deviceId)
+
+            service.unseal(request.build())
+        }
+    }
 }
