@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.TicketViewModel
@@ -58,6 +59,8 @@ class TicketActivity : ComponentActivity() {
                             TicketHeader(context = this@TicketActivity, name = ticket.name)
                         }
                     }
+                }, bottomBar = {
+                    AvalancheBottomBar(this, floating = null)
                 })
             }
         }

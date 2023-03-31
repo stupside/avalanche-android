@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -53,7 +54,7 @@ class StoresActivity : ComponentActivity() {
                             onValueChange = { search = it },
                             label = { Text("Name") }
                         )
-                        
+
                         TextButton(onClick = {
                             storesVm.loadStores(this@StoresActivity, search)
                         }) {
@@ -72,6 +73,9 @@ class StoresActivity : ComponentActivity() {
                             )
                         })
                     }
+                }, bottomBar = {
+                    AvalancheBottomBar(this, floating = null)
+
                 })
             }
         }

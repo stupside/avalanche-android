@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
+import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -96,6 +97,9 @@ class StoreActivity : ComponentActivity() {
 
                         }
                     }
+                },
+                bottomBar = {
+                    AvalancheBottomBar(this, floating = null)
                 })
             }
         }

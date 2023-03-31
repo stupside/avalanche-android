@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.avalanche.core.ui.shared.AvalancheBottomBar
+import com.example.avalanche.core.ui.shared.AvalancheBottomBarAction
 import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -65,18 +65,12 @@ class WalletsActivity : ComponentActivity() {
                         })
                     }
 
-                }, floatingActionButton = {
-                    ExploreStoresButton(this)
-                }, floatingActionButtonPosition = FabPosition.End, bottomBar = {
-                    BottomAppBar {
-
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
-                        }
-                        IconButton(onClick = { /* doSomething() */ }) {
-                            Icon(Icons.Filled.Face, contentDescription = "Localized description")
-                        }
-                    }
+                }, bottomBar = {
+                    AvalancheBottomBar(
+                        this,
+                        floating = AvalancheBottomBarAction(Icons.Rounded.Add, "Explore stores") {
+                            startActivity(StoresActivity.getIntent(this@WalletsActivity))
+                        })
                 })
             }
         }
@@ -118,20 +112,4 @@ fun WalletItem(
         },
         supportingContent = { Text(description) },
     )
-}
-
-@Composable
-fun ExploreStoresButton(context: Context) {
-    val intent = StoresActivity.getIntent(context)
-
-    FloatingActionButton(
-        onClick = {
-            context.startActivity(intent)
-        },
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.Add,
-            contentDescription = "Explore store",
-        )
-    }
 }

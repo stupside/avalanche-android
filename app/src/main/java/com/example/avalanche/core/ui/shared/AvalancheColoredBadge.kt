@@ -28,7 +28,7 @@ fun AvalancheColoredBadge(isSuccess: Boolean, successText: String?, errorText: S
                 MaterialTheme.colorScheme.error
             }
         ) {
-            Text(text)
+            Text(text.lowercase())
         }
     }
 }
