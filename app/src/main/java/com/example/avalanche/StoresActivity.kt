@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.zIndex
-import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.AvalancheLogo
 import com.example.avalanche.core.ui.shared.list.AvalancheList
@@ -101,8 +100,6 @@ class StoresActivity : ComponentActivity() {
                             )
                         })
                     }
-                }, bottomBar = {
-                    AvalancheBottomBar(this, floating = null)
                 })
             }
         }

@@ -19,10 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import com.example.avalanche.core.ui.shared.AvalancheBottomBar
-import com.example.avalanche.core.ui.shared.AvalancheBottomBarAction
-import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
-import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.shared.*
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoreViewModel
@@ -93,15 +90,14 @@ class WalletActivity : ComponentActivity() {
                             }
                         }
                     }
-                }, bottomBar = {
-                    AvalancheBottomBar(
-                        this,
-                        floating = AvalancheBottomBarAction(
-                            Icons.Rounded.Add,
-                            "Explore store plans"
-                        ) {
+                }, floatingActionButton = {
+                    AvalancheFloatingActionButton(AvalancheActionConfiguration(
+                        Icons.Rounded.Add,
+                        "Extend or buy a ticket for this store",
+                        onClick = {
                             startActivity(StoreActivity.getIntent(this@WalletActivity, storeId))
-                        })
+                        }
+                    ))
                 })
             }
         }

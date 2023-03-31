@@ -8,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
-import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.nfc.NfcActivity
@@ -28,8 +27,6 @@ class TicketNfcActivity : NfcActivity() {
                     Column(modifier = Modifier.padding(paddingValues)) {
 
                     }
-                }, bottomBar = {
-                    AvalancheBottomBar(this, floating = null)
                 })
             }
         }

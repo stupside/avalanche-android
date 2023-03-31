@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
@@ -57,7 +56,7 @@ class PaymentCheckInActivity : ComponentActivity() {
 
             var ticketId by remember { mutableStateOf("") }
 
-            val inputDate = remember { mutableStateOf(now) }
+            var inputDate by remember { mutableStateOf(now) }
 
             AvalancheTheme {
                 Scaffold(topBar = {
@@ -83,7 +82,7 @@ class PaymentCheckInActivity : ComponentActivity() {
                                         headlineContent = { Text(ticket.name) },
                                         trailingContent = {
                                             Checkbox(
-                                                checked = ticket.name == ticketId,
+                                                checked = ticket.ticketId == ticketId,
                                                 onCheckedChange = null
                                             )
                                         }
@@ -97,12 +96,12 @@ class PaymentCheckInActivity : ComponentActivity() {
                             modifier = Modifier.wrapContentSize(),
                             update = { views ->
                                 views.setOnDateChangeListener { picker, _, _, _ ->
-                                    inputDate.value = picker.date
+                                    inputDate = picker.date
                                 }
                             }
                         )
 
-                        val availableInDays = TimeUnit.MILLISECONDS.toDays(inputDate.value - now)
+                        val availableInDays = TimeUnit.MILLISECONDS.toDays(inputDate - now)
 
                         Button(onClick = {
                             purchaseVm.purchase(this@PaymentCheckInActivity, ticketId, planId, availableInDays.toInt())
@@ -112,8 +111,6 @@ class PaymentCheckInActivity : ComponentActivity() {
                             Text("Ticket will be available in $availableInDays days")
                         }
                     }
-                }, bottomBar = {
-                    AvalancheBottomBar(this, floating = null)
                 })
             }
         }

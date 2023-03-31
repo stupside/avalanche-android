@@ -1,57 +1,28 @@
 package com.example.avalanche.core.ui.shared
 
-import android.content.Context
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.*
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.avalanche.WalletsActivity
 
-class AvalancheBottomBarAction(
-    val icon: ImageVector,
-    val description: String,
-    val onClick: (context: Context) -> Unit,
-)
-
-val AvalancheBottomBarActions: List<AvalancheBottomBarAction> = listOf(
-    AvalancheBottomBarAction(Icons.Filled.Home, "Home") { context ->
-        context.startActivity(WalletsActivity.getIntent(context))
-    },
-    AvalancheBottomBarAction(Icons.Filled.Face, "Identity") { context ->
-        context.startActivity(WalletsActivity.getIntent(context))
-    },
-)
+val AvalancheBottomBarActions: List<AvalancheActionConfiguration> = emptyList()
 
 @Composable
 fun AvalancheBottomBar(
-    context: Context,
-    actions: List<AvalancheBottomBarAction> = AvalancheBottomBarActions,
-    floating: AvalancheBottomBarAction?
+    actions: List<AvalancheActionConfiguration> = AvalancheBottomBarActions,
+    floating: AvalancheActionConfiguration? = null
 ) {
-
     BottomAppBar(actions = {
         actions.forEach { action ->
             IconButton(onClick = {
-                action.onClick(context)
+                action.onClick()
             }) {
-                Icon(action.icon, contentDescription = action.description)
+                Icon(action.icon, contentDescription = action.text)
             }
         }
     }, floatingActionButton = {
         floating?.let {
-            FloatingActionButton(
-                onClick = {
-                    floating.onClick(context)
-                },
-                elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-            ) {
-                Icon(
-                    imageVector = floating.icon,
-                    contentDescription = floating.description,
-                )
-            }
+            AvalancheFloatingActionButton(floating)
         }
     })
 }

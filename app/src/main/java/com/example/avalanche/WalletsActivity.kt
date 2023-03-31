@@ -18,9 +18,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.avalanche.core.ui.shared.AvalancheBottomBar
-import com.example.avalanche.core.ui.shared.AvalancheBottomBarAction
+import com.example.avalanche.core.ui.shared.AvalancheActionConfiguration
 import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
+import com.example.avalanche.core.ui.shared.AvalancheFloatingActionButton
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
@@ -65,12 +65,15 @@ class WalletsActivity : ComponentActivity() {
                         })
                     }
 
-                }, bottomBar = {
-                    AvalancheBottomBar(
-                        this,
-                        floating = AvalancheBottomBarAction(Icons.Rounded.Add, "Explore stores") {
-                            startActivity(StoresActivity.getIntent(this@WalletsActivity))
-                        })
+                }, floatingActionButton = {
+                    AvalancheFloatingActionButton(
+                        AvalancheActionConfiguration(
+                            Icons.Rounded.Add,
+                            "Explore stores",
+                            onClick = {
+                                startActivity(StoresActivity.getIntent(this@WalletsActivity))
+                            })
+                    )
                 })
             }
         }
