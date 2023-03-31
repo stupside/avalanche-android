@@ -20,7 +20,7 @@ class PaymentCheckOutActivity : ComponentActivity() {
             AvalancheTheme {
                 Scaffold(topBar = {
                     TopAppBar(title = {
-                        Text("Payments")
+                        Text("Checkout out")
                     }, navigationIcon = {
                         AvalancheGoBackButton(activity = this)
                     })

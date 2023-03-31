@@ -52,23 +52,24 @@ class WalletActivity : ComponentActivity() {
 
         setContent {
 
+            val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState()
+
             AvalancheTheme {
                 Scaffold(topBar = {
-                    TopAppBar(title = {
-                        Text("Wallet")
-                    }, navigationIcon = {
-                        AvalancheGoBackButton(activity = this)
-                    })
+                    TopAppBar(
+                        title = {
+                            Text("Wallet")
+                        },
+                        navigationIcon = {
+                            AvalancheGoBackButton(activity = this)
+                        },
+                    )
                 }, content = { paddingValues ->
                     Column(modifier = Modifier.padding(paddingValues)) {
-
-                        val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState()
 
                         storeState?.let { store ->
 
                             StoreHeader(
-                                context = this@WalletActivity,
-                                storeId = storeId,
                                 name = store.name,
                                 description = store.description,
                                 logo = store.logo.toString()

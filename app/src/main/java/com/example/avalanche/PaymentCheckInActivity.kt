@@ -62,7 +62,7 @@ class PaymentCheckInActivity : ComponentActivity() {
             AvalancheTheme {
                 Scaffold(topBar = {
                     TopAppBar(title = {
-                        Text("Payments")
+                        Text("Check in")
                     }, navigationIcon = {
                         AvalancheGoBackButton(activity = this)
                     })

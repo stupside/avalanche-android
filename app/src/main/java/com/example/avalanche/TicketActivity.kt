@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.TicketViewModel
 
@@ -47,7 +47,7 @@ class TicketActivity : ComponentActivity() {
             AvalancheTheme {
                 Scaffold(topBar = {
                     TopAppBar(title = {
-                        Text("Payments")
+                        Text("Ticket")
                     }, navigationIcon = {
                         AvalancheGoBackButton(activity = this)
                     })
@@ -56,7 +56,7 @@ class TicketActivity : ComponentActivity() {
                         val ticketState: TicketService.GetTicketProto.Response? by ticketVm.ticket.observeAsState()
 
                         ticketState?.let { ticket ->
-                            TicketHeader(context = this@TicketActivity, name = ticket.name)
+                            TicketHeader(ticketName = ticket.name)
                         }
                     }
                 }, bottomBar = {
@@ -68,16 +68,6 @@ class TicketActivity : ComponentActivity() {
 }
 
 @Composable
-fun TicketHeader(context: Context, name: String) {
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Row {
-                Text(name)
-            }
-        }
-    }
+fun TicketHeader(ticketName: String) {
+    AvalancheHeader(ticketName, null, null)
 }

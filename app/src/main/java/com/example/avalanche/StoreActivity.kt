@@ -14,8 +14,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,9 +22,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheBottomBar
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
+import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.StoreViewModel
@@ -73,8 +74,6 @@ class StoreActivity : ComponentActivity() {
                         storeState?.let { store ->
 
                             StoreHeader(
-                                context = this@StoreActivity,
-                                storeId = storeId,
                                 name = store.name,
                                 description = store.description,
                                 logo = store.logo.toString()
@@ -97,8 +96,7 @@ class StoreActivity : ComponentActivity() {
 
                         }
                     }
-                },
-                bottomBar = {
+                }, bottomBar = {
                     AvalancheBottomBar(this, floating = null)
                 })
             }
@@ -107,17 +105,12 @@ class StoreActivity : ComponentActivity() {
 }
 
 @Composable
-fun StoreHeader(context: Context, storeId: String, name: String, description: String, logo: String?) {
-    Box(modifier = Modifier.padding(32.dp)) {
-        Row {
-            StoreLogo(logo)
-            Column {
-                Text(name, style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.padding(8.dp))
-                Text(description)
-            }
-        }
-    }
+fun StoreHeader(
+    name: String,
+    description: String,
+    logo: String?
+) {
+    AvalancheHeader(name, description, logo)
 }
 
 @Composable
@@ -135,10 +128,9 @@ fun PlanItem(context: Context, storeId: String, planId: String, name: String, de
 }
 
 @Composable
-fun StoreLogo(logo: String?) {
-
+fun StoreLogo(logo: String?, size: Dp = 64.dp) {
     if (logo == null) {
-        StoreLogoPlaceholder()
+        StoreLogoPlaceholder(size)
     } else {
 
         val bytes = logo.toByteArray()
@@ -146,7 +138,7 @@ fun StoreLogo(logo: String?) {
         val bitmap = BitmapFactory.decodeByteArray(bytes, 0, logo.length)
 
         if (bitmap == null) {
-            StoreLogoPlaceholder()
+            StoreLogoPlaceholder(size)
         } else {
             Image(
                 bitmap = bitmap.asImageBitmap(),
@@ -160,12 +152,12 @@ fun StoreLogo(logo: String?) {
 }
 
 @Composable
-fun StoreLogoPlaceholder() {
+fun StoreLogoPlaceholder(size: Dp) {
     Icon(
-        imageVector = Icons.Rounded.Info,
+        painter = painterResource(id = R.drawable.ic_launcher_foreground),
         contentDescription = "Placeholder",
         modifier = Modifier
-            .size(64.dp)
+            .size(size)
             .clip(CircleShape)
     )
 }
