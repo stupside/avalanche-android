@@ -35,7 +35,13 @@ class StoresViewModel : ViewModel() {
 
     fun loadStores(context: Context, nameSearch: String) {
 
-        if (nameSearch.isEmpty()) return;
+        if (nameSearch.isEmpty()) {
+            _stores.update {
+                emptyList()
+            }
+
+            return
+        }
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -52,6 +58,10 @@ class StoresViewModel : ViewModel() {
         viewModelScope.launch {
 
             val flow = service.getMany(request.build())
+
+            _stores.update {
+                emptyList()
+            }
 
             flow.collect { store ->
 
@@ -98,11 +108,16 @@ class StoresViewModel : ViewModel() {
         val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
 
+        val request = PlanService.GetPlansProto.Request.newBuilder().setStoreId(storeId)
+
         viewModelScope.launch {
 
-            val request = PlanService.GetPlansProto.Request.newBuilder().setStoreId(storeId)
 
             val flow = service.getMany(request.build())
+
+            _plans.update {
+                emptyList()
+            }
 
             flow.collect { plan ->
                 if (_plans.value.contains(plan)) return@collect

@@ -40,6 +40,10 @@ class WalletsViewModel : ViewModel() {
 
             val flow = service.getWallets(request.build())
 
+            _wallets.update {
+                emptyList()
+            }
+
             flow.collect { wallet ->
 
                 if (_wallets.value.contains(wallet)) return@collect

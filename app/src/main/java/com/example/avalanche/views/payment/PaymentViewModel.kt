@@ -85,6 +85,10 @@ class PaymentViewModel : ViewModel() {
 
             val flow = service.getMany(request.build())
 
+            _tickets.update {
+                emptyList()
+            }
+
             flow.collect { ticket ->
 
                 if (_tickets.value.contains(ticket)) return@collect
