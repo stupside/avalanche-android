@@ -38,9 +38,21 @@ class TicketActivity : NfcActivity() {
 
             setContent {
                 AvalancheTheme {
-                    TicketView(context = this, viewModel = ticketVm, ticketId = ticketId, deviceIdentifier = deviceIdentifier)
+                    if (ticketId.isEmpty()) {
+                        // TODO: get a ticket for this station
+                        Text("Activity reacted to Nfc tag")
+                    } else {
+                        TicketView(
+                            context = this,
+                            viewModel = ticketVm,
+                            ticketId = ticketId,
+                            deviceIdentifier = deviceIdentifier
+                        )
+                    }
                 }
             }
         }
+
+
     }
 }
