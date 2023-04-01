@@ -68,8 +68,14 @@ class TicketActivity : ComponentActivity() {
                                     .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                var checked by remember { mutableStateOf(true) }
-                                val deviceId: String = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+                                var preset: Boolean = false
+                                if (ticket.isSealed)
+                                    preset = true
+                                var checked by remember { mutableStateOf(preset) }
+                                val deviceId: String = Settings.Secure.getString(
+                                    contentResolver,
+                                    Settings.Secure.ANDROID_ID
+                                )
                                 if (checked) {
                                     Text(text = "Sealed")
                                     if (!ticket.isSealed)
@@ -77,23 +83,18 @@ class TicketActivity : ComponentActivity() {
                                 } else {
                                     Text(text = "Unsealed")
                                     if (ticket.isSealed)
-                                        ticketVm.unsealTicket(this@TicketActivity, ticketId, deviceId)
+                                        ticketVm.unsealTicket(
+                                            this@TicketActivity,
+                                            ticketId,
+                                            deviceId
+                                        )
                                 }
-                                if (ticket.isSealed) {
-                                    Switch(
-                                        modifier = Modifier.semantics {
-                                            contentDescription = "Seal or Unseal the Ticket"
-                                        },
-                                        checked = checked,
-                                        onCheckedChange = { checked = it })
-                                } else {
-                                    Switch(
-                                        modifier = Modifier.semantics {
-                                            contentDescription = "Seal or Unseal the Ticket"
-                                        },
-                                        checked = !checked,
-                                        onCheckedChange = { checked = it })
-                                }
+                                Switch(
+                                    modifier = Modifier.semantics {
+                                        contentDescription = "Seal or Unseal the Ticket"
+                                    },
+                                    checked = checked,
+                                    onCheckedChange = { checked = it })
                             }
                         }
                     }
