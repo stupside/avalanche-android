@@ -42,7 +42,6 @@ fun TicketView(
 
                 Row(
                     modifier = Modifier
-                        .padding(24.dp)
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
@@ -66,10 +65,10 @@ fun TicketView(
 
                 Column(
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(paddingValues)
                         .fillMaxWidth()
                 ) {
-                    Text("Ticket validity")
+                    Text("Ticket validity", modifier = Modifier.padding(16.dp))
                     AvalancheList(elements = ticket.validitiesList, template = { validity ->
                         TicketValidityItem(
                             validity.from.seconds,
@@ -100,23 +99,44 @@ fun TicketHeader(ticketName: String) {
 
 @Composable
 fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
+    val durationStr = getDuration(to - from)
+    val days = (to-from)/86400
     val fromStr = getDateTime(from)
     val toStr = getDateTime(to)
-    val durStr = getDateTime(to - from)
     ListItem(
         headlineContent = {
-            Text("From $fromStr")
-            Text("To $toStr")
+            Text("From: $fromStr")
+            Text("To: $toStr")
         }, trailingContent = {
-            Text("Duration $durStr - IsNow $isNow")
+            if (days<1) {
+                Text("Duration: $durationStr")
+            } else {
+                Text("Duration: $durationStr Days")
+            }
+            //TODO $isNow: replace Icons
+            //Text("In Bracket: $isNow")
         })
 }
 
 private fun getDateTime(seconds: Long): String {
 
-    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH)
+    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)
 
     return simpleDateFormat.format(seconds * 1000L)
+}
+
+private fun getDuration(seconds: Long): String {
+    return try {
+        val days = seconds/86400
+        if (days>=1) {
+            days.toString()
+        } else {
+            val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
+            simpleDateFormat.format(seconds * 1000L)
+        }
+    } catch (_: Exception) {
+        "ValueError"
+    }
 }
 
 @Composable
