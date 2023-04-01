@@ -8,10 +8,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -23,6 +19,8 @@ import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.TicketViewModel
 import android.provider.Settings
+import androidx.compose.material3.*
+import com.example.avalanche.core.ui.shared.list.AvalancheList
 
 
 class TicketActivity : ComponentActivity() {
@@ -95,6 +93,19 @@ class TicketActivity : ComponentActivity() {
                                     },
                                     checked = checked,
                                     onCheckedChange = { checked = it })
+
+                                Column {
+                                    Text("Tickets", style = MaterialTheme.typography.titleMedium)
+
+                                    val validityList = ticket.validitiesList
+
+                                    AvalancheList(elements = validityList, template = { validity ->
+                                        Row(modifier = Modifier.fillMaxWidth()) {
+                                            Text(text = "From: " + validity.from.toString())
+                                            Text(text = "To: " + validity.to.toString())
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
