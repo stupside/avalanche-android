@@ -21,9 +21,11 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun PaymentView(context: Context, viewModel: PaymentViewModel, storeId: String, planId: String) {
 
-    try {
-        viewModel.loadTickets(context, storeId)
-    } catch (_: Exception) {
+    LaunchedEffect(storeId){
+        try {
+            viewModel.loadTickets(context, storeId)
+        } catch (_: Exception) {
+        }
     }
 
     Scaffold(topBar = {

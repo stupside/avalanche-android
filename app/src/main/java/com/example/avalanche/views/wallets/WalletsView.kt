@@ -21,10 +21,11 @@ import com.example.avalanche.core.ui.shared.list.AvalancheList
 
 @Composable
 fun WalletsView(context: Context, viewModel: WalletsViewModel) {
-
-    try {
-        viewModel.loadWallets(context)
-    } catch (_: Exception) {
+    SideEffect {
+        try {
+            viewModel.loadWallets(context)
+        } catch (_: Exception) {
+        }
     }
 
     val wallets: List<TicketService.GetWalletsProto.Response> by viewModel.wallets.collectAsState()

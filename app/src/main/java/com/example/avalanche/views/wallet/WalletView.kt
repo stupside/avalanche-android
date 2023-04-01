@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,9 +30,12 @@ import com.example.avalanche.views.stores.StoreHeader
 @Composable
 fun WalletView(context: Context, viewModel: WalletViewModel, storeId: String) {
 
-    try {
-        viewModel.loadStore(context, storeId)
-    } catch (_: Exception) {
+    LaunchedEffect(storeId) {
+        try {
+            viewModel.loadStore(context, storeId)
+            viewModel.loadTickets(context, storeId)
+        } catch (_: Exception) {
+        }
     }
 
     val storeState: StoreService.GetStoreProto.Response? by viewModel.store.observeAsState()
@@ -50,12 +54,11 @@ fun WalletView(context: Context, viewModel: WalletViewModel, storeId: String) {
                 )
 
                 Column {
-                    Text("Tickets", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
-
-                    try {
-                        viewModel.loadTickets(context, storeId)
-                    } catch (_: Exception) {
-                    }
+                    Text(
+                        "Tickets",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
                     val tickets: List<TicketService.GetTicketsProto.Response> by viewModel.tickets.collectAsState()
 

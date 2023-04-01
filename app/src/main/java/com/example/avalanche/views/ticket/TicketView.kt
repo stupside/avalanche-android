@@ -25,9 +25,11 @@ fun TicketView(
     deviceIdentifier: String
 ) {
 
-    try {
-        viewModel.loadTicket(context, ticketId)
-    } catch (_: Exception) {
+    LaunchedEffect(ticketId){
+        try {
+            viewModel.loadTicket(context, ticketId)
+        } catch (_: Exception) {
+        }
     }
 
     val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
