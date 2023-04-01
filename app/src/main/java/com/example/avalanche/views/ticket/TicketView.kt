@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -13,6 +14,8 @@ import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.shared.list.AvalancheList
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TicketView(
@@ -41,7 +44,8 @@ fun TicketView(
                     modifier = Modifier
                         .padding(24.dp)
                         .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     TicketSealAction(
                         isSealed = ticket.isSealed,
@@ -96,13 +100,23 @@ fun TicketHeader(ticketName: String) {
 
 @Composable
 fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
+    val fromStr = getDateTime(from)
+    val toStr = getDateTime(to)
+    val durStr = getDateTime(to - from)
     ListItem(
         headlineContent = {
-            Text("From $from")
-            Text("To $to")
+            Text("From $fromStr")
+            Text("To $toStr")
         }, trailingContent = {
-            Text("Duration ${to - from} - IsNow $isNow")
+            Text("Duration $durStr - IsNow $isNow")
         })
+}
+
+private fun getDateTime(seconds: Long): String {
+
+    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)
+
+    return simpleDateFormat.format(seconds * 1000L)
 }
 
 @Composable

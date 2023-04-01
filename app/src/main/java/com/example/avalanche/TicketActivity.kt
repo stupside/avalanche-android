@@ -42,10 +42,5 @@ class TicketActivity : NfcActivity() {
                 }
             }
         }
-
-        setContent{
-            // TODO: get a ticket for this station
-            Text("Activity reacted to Nfc tag")
-        }
     }
 }

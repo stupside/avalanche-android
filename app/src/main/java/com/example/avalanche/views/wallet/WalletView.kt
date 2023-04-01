@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.avalanche.StoresActivity
 import com.example.avalanche.TicketActivity
 import com.example.avalanche.core.ui.shared.AvalancheActionConfiguration
@@ -49,7 +50,7 @@ fun WalletView(context: Context, viewModel: WalletViewModel, storeId: String) {
                 )
 
                 Column {
-                    Text("Tickets", style = MaterialTheme.typography.titleMedium)
+                    Text("Tickets", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
 
                     try {
                         viewModel.loadTickets(context, storeId)
