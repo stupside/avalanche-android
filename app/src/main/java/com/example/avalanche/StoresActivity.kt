@@ -64,6 +64,7 @@ class StoresActivity : ComponentActivity() {
                                 .semantics { isContainer = true }
                                 .zIndex(1f)
                                 .fillMaxWidth()) {
+                            
                             SearchBar(
                                 modifier = Modifier.align(Alignment.TopCenter),
                                 query = nameSearch,

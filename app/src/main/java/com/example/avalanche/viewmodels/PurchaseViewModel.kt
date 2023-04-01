@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class PurchaseViewModel : ViewModel() {
 
-    fun purchase(context: Context, ticketId: String, planId: String, availableInDays: Int) {
+    fun purchase(context: Context, ticketId: String, planId: String, availableInDays: Int, onPurchase: (orderId: String) -> Unit) {
         val state = AvalancheIdentityState.getInstance(context)
 
         val channel = AvalancheChannel.getNew()
@@ -29,7 +29,29 @@ class PurchaseViewModel : ViewModel() {
             .setAvailableInDays(availableInDays)
 
         viewModelScope.launch {
-            service.intent(request.build())
+            val response =service.intent(request.build())
+
+            onPurchase(response.orderId)
+        }
+    }
+
+    fun receive(context: Context, orderId: String, amount: Int, onReceived: (isPaymentFullFilled: Boolean) -> Unit) {
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = OrderServiceProtoGrpcKt.OrderServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        val request = OrderService.ReceivePaymentProto.Request.newBuilder().setOrderId(orderId).setAmount(amount)
+
+        viewModelScope.launch {
+            val response = service.receive(request.build())
+
+            onReceived(response.isPaymentFullFilled)
         }
     }
 }

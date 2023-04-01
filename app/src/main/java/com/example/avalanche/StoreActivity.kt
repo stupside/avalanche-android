@@ -107,7 +107,7 @@ fun PlanItem(
     description: String
 ) {
     val checkInIntent =
-        PaymentCheckInActivity.getIntent(
+        PaymentActivity.getIntent(
             context,
             storeId,
             planId

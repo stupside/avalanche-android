@@ -50,4 +50,28 @@ class WalletViewModel(private val storeId: String) : ViewModel() {
             }
         }
     }
+
+    fun createTicket(context: Context, ticketName: String, onCreated: (ticketId: String) -> Unit) {
+
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        val request = TicketService.CreateTicketProto.Request.newBuilder().setStoreId(storeId)
+            .setName(ticketName)
+
+        viewModelScope.launch {
+            val response = service.create(request.build())
+
+            onCreated(response.ticketId)
+
+            loadWallet(context)
+        }
+    }
 }
