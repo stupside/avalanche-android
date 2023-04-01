@@ -1,6 +1,6 @@
 package com.example.avalanche.core.grpc
 
-import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.environment.Constants
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import androidx.annotation.AnyThread
-import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.environment.Constants
 import net.openid.appauth.*
 import org.json.JSONException
 import java.lang.ref.WeakReference

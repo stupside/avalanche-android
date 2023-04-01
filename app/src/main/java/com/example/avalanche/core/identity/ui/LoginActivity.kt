@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.WalletsActivity
-import com.example.avalanche.core.envrionment.Constants
+import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import com.example.avalanche.core.identity.DevelopmentConnectionBuilder
 import com.example.avalanche.core.ui.theme.AvalancheTheme
