@@ -93,7 +93,8 @@ class WalletActivity : ComponentActivity() {
                 }, floatingActionButton = {
                     AvalancheFloatingActionButton(AvalancheActionConfiguration(
                         Icons.Rounded.Add,
-                        "Extend or buy a ticket for this store",
+                        "Extend or buy a ticket",
+                        literal = true,
                         onClick = {
                             startActivity(StoreActivity.getIntent(this@WalletActivity, storeId))
                         }

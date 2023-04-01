@@ -69,6 +69,7 @@ class WalletsActivity : ComponentActivity() {
                         AvalancheActionConfiguration(
                             Icons.Rounded.Add,
                             "Explore stores",
+                            literal = true,
                             onClick = {
                                 startActivity(StoresActivity.getIntent(this@WalletsActivity))
                             })
