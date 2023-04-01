@@ -12,15 +12,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.avalanche.core.ui.shared.AvalancheActionConfiguration
 import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
 import com.example.avalanche.core.ui.shared.AvalancheFloatingActionButton
+import com.example.avalanche.core.ui.shared.AvalancheLogo
 import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.viewmodels.WalletsViewModel
@@ -60,7 +59,7 @@ class WalletsActivity : ComponentActivity() {
                                 wallet.storeId,
                                 "Wallet description",
                                 wallet.ticketCount,
-                                Icons.Filled.AccountBox
+                                null,
                             )
                         })
                     }
@@ -93,7 +92,7 @@ fun WalletItem(
     walletName: String,
     description: String,
     ticketCount: Int,
-    logo: ImageVector
+    logo: String?
 ) {
 
     val intent = WalletActivity.getIntent(context, walletId)
@@ -104,7 +103,7 @@ fun WalletItem(
         }),
         headlineContent = { Text(walletName) },
         leadingContent = {
-            Icon(logo, contentDescription = description)
+            AvalancheLogo(logo)
         },
         trailingContent = {
             AvalancheColoredBadge(
