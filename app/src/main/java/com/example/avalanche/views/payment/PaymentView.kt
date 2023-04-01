@@ -21,105 +21,75 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun PaymentView(context: Context, viewModel: PaymentViewModel, storeId: String, planId: String) {
 
-    LaunchedEffect(storeId){
+    LaunchedEffect(storeId) {
         try {
             viewModel.loadTickets(context, storeId)
         } catch (_: Exception) {
         }
     }
 
+    var ticketName by rememberSaveable { mutableStateOf("") }
+    var days by rememberSaveable { mutableStateOf(0) }
+
+    val tickets: List<TicketService.GetTicketsProto.Response>? by viewModel.tickets.collectAsState()
+
     Scaffold(topBar = {
         PaymentTopBar(context)
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
 
-                val tickets: List<TicketService.GetTicketsProto.Response>? by viewModel.tickets.collectAsState()
+            PaymentTicketNameInput(tickets) { input ->
+                ticketName = input
+            }
 
-                var ticketName by rememberSaveable { mutableStateOf("") }
+            PaymentTicketDateInput { input ->
+                days = input
+            }
 
-                tickets?.let {
-                    PaymentTicketNameInput(tickets) { input ->
-                        ticketName = input
-                    }
+            PaymentTicketConfirmationButton(ticketName, days) {
 
-                    var pick by rememberSaveable { mutableStateOf(false) }
+                val amount = 10000 // TODO: view fake the payment
 
-                    var days by rememberSaveable { mutableStateOf(0) }
+                val intent =
+                    WalletActivity.getIntent(context, storeId)
 
-                    if (pick) {
-                        PaymentTicketDateInput { input ->
-                            days = input
-                            pick = false
-                        }
-                    }
+                val ticket = tickets?.firstOrNull { ticket ->
+                    ticket.name == ticketName
+                }
 
-                    var prompt by remember { mutableStateOf(false) }
-
-                    val ticket = it.firstOrNull { ticket ->
-                        ticket.name == ticketName
-                    }
-
-                    Button(
-                        enabled = ticketName.isNotEmpty() && ticketName.length >= 5,
-                        onClick = {
-                            prompt = true
-                        }) {
-                        Text("Confirm payment")
-                    }
-
-                    if (prompt) {
-
-                        PaymentTicketConfirmation(days, {
-
-                            val amount = 10000 // TODO: view fake the payment
-
-                            val intent =
-                                WalletActivity.getIntent(context, storeId)
-
-                            if (ticket == null) {
+                if (ticket == null) {
+                    try {
+                        viewModel.createTicket(
+                            context,
+                            storeId,
+                            ticketName
+                        ) { ticketId ->
+                            viewModel.purchase(
+                                context,
+                                ticketId,
+                                planId,
+                                days
+                            ) { orderId ->
                                 try {
-                                    viewModel.createTicket(
-                                        context,
-                                        storeId,
-                                        ticketName
-                                    ) { ticketId ->
-                                        viewModel.purchase(
-                                            context,
-                                            ticketId,
-                                            planId,
-                                            days
-                                        ) { orderId ->
-                                            try {
-                                                viewModel.receive(context, orderId, amount) {
-                                                    context.startActivity(intent)
-                                                }
-                                            } catch (_: Exception) {
-                                            }
-                                        }
-                                    }
-                                } catch (_: Exception) {
-                                }
-                            } else {
-                                val ticketId = ticket.ticketId
-
-                                try {
-                                    viewModel.purchase(context, ticketId, planId, days) { orderId ->
-                                        viewModel.receive(context, orderId, amount) {
-                                            context.startActivity(intent)
-                                        }
+                                    viewModel.receive(context, orderId, amount) {
+                                        context.startActivity(intent)
                                     }
                                 } catch (_: Exception) {
                                 }
                             }
+                        }
+                    } catch (_: Exception) {
+                    }
+                } else {
+                    val ticketId = ticket.ticketId
 
-                            prompt = false
-                        }, {
-                            prompt = false
-                        })
+                    try {
+                        viewModel.purchase(context, ticketId, planId, days) { orderId ->
+                            viewModel.receive(context, orderId, amount) {
+                                context.startActivity(intent)
+                            }
+                        }
+                    } catch (_: Exception) {
                     }
                 }
             }
@@ -143,47 +113,47 @@ fun PaymentTicketNameInput(
 ) {
     var ticketName by rememberSaveable { mutableStateOf("") }
 
-    var selecting by rememberSaveable { mutableStateOf(false) }
+    var search by rememberSaveable { mutableStateOf(false) }
 
     val canSearch = !tickets.isNullOrEmpty()
 
-    TextField(
-        modifier = Modifier.fillMaxWidth(),
-        value = ticketName,
-        placeholder = {
-            Text("Enter a ticket name")
-        },
-        onValueChange = {
-            ticketName = it
+    Row {
+        OutlinedTextField(
+            value = ticketName,
+            placeholder = {
+                Text("Ticket name")
+            },
+            onValueChange = {
+                ticketName = it
 
-            onTicketNameChange(ticketName)
-        },
-        trailingIcon = {
-            if (canSearch) {
-                IconButton(onClick = { selecting = true }) {
-                    Icon(
-                        Icons.Default.Search,
-                        contentDescription = "Reference an existing ticket"
-                    )
-                }
-            }
-        })
+                onTicketNameChange(ticketName)
+            })
 
-    if (canSearch) {
-        if (selecting) {
-            PaymentTicketExplorer({ selecting = false }) {
-                Text(
-                    "Select the desired ticket",
-                    style = MaterialTheme.typography.titleLarge
+        if (canSearch) {
+            IconButton(onClick = { search = true }) {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Reference an existing ticket"
                 )
+            }
+        }
+    }
 
-                tickets?.let {
-                    AvalancheList(tickets) {
-                        PaymentTicketExplorerContentItem(it.name, ticketName == it.name) {
-                            ticketName = it.name
+    if (search) {
+        PaymentTicketExplorer({ search = false }) {
+            Text(
+                "Select the desired ticket",
+                style = MaterialTheme.typography.titleLarge
+            )
 
-                            onTicketNameChange(ticketName)
-                        }
+            tickets?.let {
+                AvalancheList(tickets) {
+                    PaymentTicketExplorerContentItem(it.name, ticketName == it.name) {
+                        ticketName = it.name
+
+                        onTicketNameChange(ticketName)
+
+                        search = false
                     }
                 }
             }
@@ -221,7 +191,7 @@ fun PaymentTicketExplorerContentItem(ticketName: String, isSelected: Boolean, on
 }
 
 @Composable
-fun PaymentTicketDateInput(onValidate: (inDays: Int) -> Unit) {
+fun PaymentTicketDateInput(onDateChange: (inDays: Int) -> Unit) {
 
     val now = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
 
@@ -236,52 +206,92 @@ fun PaymentTicketDateInput(onValidate: (inDays: Int) -> Unit) {
             ?: 0
     ).toInt()
 
-    DatePickerDialog(
-        onDismissRequest = {
-            onValidate(availableInDays)
-        },
-        dismissButton = {
-            onValidate(0)
-        },
-        confirmButton = {
-            onValidate(availableInDays)
-        }
-    ) {
-        DatePicker(
-            state = datePickerState,
-            dateValidator = { utcDateInMills ->
-                utcDateInMills >= now.timeInMillis
+    var pick by rememberSaveable { mutableStateOf(false) }
+
+    Button(onClick = {
+        pick = true
+    }) {
+        Text("Select a date")
+    }
+
+    if (pick) {
+        DatePickerDialog(
+            onDismissRequest = {
+                pick = false
             },
-        )
+            dismissButton = {
+                Button(onClick = {
+                    pick = false
+                }) {
+                    Text("Dismiss")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+
+                    pick = false
+
+                    onDateChange(availableInDays)
+                }) {
+                    Text("Confirm")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+                dateValidator = { utcDateInMills ->
+                    utcDateInMills >= now.timeInMillis
+                },
+            )
+        }
     }
 }
 
 @Composable
-fun PaymentTicketConfirmation(
+fun PaymentTicketConfirmationButton(
+    ticketName: String,
     inDays: Int,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onConfirm: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = {
-            onDismiss()
-        },
-        title = {
-            Text("Payment confirmation")
-        },
-        text = {
-            Text("Your ticket will be available in $inDays days")
-        },
-        confirmButton = {
-            Button(onClick = onConfirm) {
-                Text("Confirm")
+
+    var confirm by remember { mutableStateOf(false) }
+
+    Button(
+        enabled = ticketName.isNotEmpty() && ticketName.length >= 5,
+        onClick = {
+            confirm = true
+        }) {
+        Text("Confirm payment")
+    }
+
+    if (confirm) {
+        AlertDialog(
+            onDismissRequest = {
+                confirm = false
+            },
+            title = {
+                Text("Payment confirmation")
+            },
+            text = {
+                Text("Your ticket will be available in $inDays days")
+            },
+            confirmButton = {
+                Button(onClick = {
+                    confirm = false
+
+                    onConfirm()
+                }) {
+                    Text("Confirm")
+                }
+            },
+            dismissButton = {
+                Button(onClick = {
+                    confirm = false
+                }) {
+                    Text("Dismiss")
+                }
             }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Dismiss")
-            }
-        }
-    )
+        )
+    }
 }
 
