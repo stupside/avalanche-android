@@ -114,7 +114,7 @@ fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
 
 private fun getDateTime(seconds: Long): String {
 
-    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)
+    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH)
 
     return simpleDateFormat.format(seconds * 1000L)
 }
