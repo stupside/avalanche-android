@@ -93,19 +93,23 @@ class TicketActivity : ComponentActivity() {
                                     },
                                     checked = checked,
                                     onCheckedChange = { checked = it })
+                            }
 
-                                Column {
-                                    Text("Tickets", style = MaterialTheme.typography.titleMedium)
+                            Column(
+                                modifier = Modifier
+                                    .padding(24.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Text("Times when Valid")
 
-                                    val validityList = ticket.validitiesList
+                                val validityList = ticket.validitiesList
 
-                                    AvalancheList(elements = validityList, template = { validity ->
-                                        Row(modifier = Modifier.fillMaxWidth()) {
-                                            Text(text = "From: " + validity.from.toString())
-                                            Text(text = "To: " + validity.to.toString())
-                                        }
-                                    })
-                                }
+                                AvalancheList(elements = validityList, template = { validity ->
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        Text(text = "From: " + validity.from.toString())
+                                        Text(text = "To: " + validity.to.toString())
+                                    }
+                                })
                             }
                         }
                     }
