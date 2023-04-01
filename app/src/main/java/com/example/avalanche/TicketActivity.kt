@@ -33,26 +33,23 @@ class TicketActivity : NfcActivity() {
 
         val ticketId = intent.getStringExtra(TicketIdKey)
 
-        ticketId?.let {
-            val deviceIdentifier = getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceIdentifier = getString(contentResolver, Settings.Secure.ANDROID_ID)
 
-            setContent {
-                AvalancheTheme {
-                    if (ticketId.isEmpty()) {
-                        // TODO: get a ticket for this station
-                        Text("Activity reacted to Nfc tag")
-                    } else {
-                        TicketView(
-                            context = this,
-                            viewModel = ticketVm,
-                            ticketId = ticketId,
-                            deviceIdentifier = deviceIdentifier
-                        )
-                    }
+        setContent {
+            AvalancheTheme {
+                if (ticketId == null) {
+                    // TODO: get a ticket for this station
+                    Text("Activity reacted to Nfc tag")
+                } else {
+                    TicketView(
+                        context = this,
+                        viewModel = ticketVm,
+                        ticketId = ticketId,
+                        deviceIdentifier = deviceIdentifier
+                    )
                 }
             }
         }
-
 
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.views.stores.StoresView
 import com.example.avalanche.views.stores.StoresViewModel
@@ -23,12 +24,12 @@ class StoresActivity : ComponentActivity() {
 
     private val storesVm: StoresViewModel by viewModels()
 
-    var storeId: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        storeId = intent.getStringExtra(StoreIdIntentKey)
+        val storeId = intent.getStringExtra(StoreIdIntentKey)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
 
@@ -39,15 +40,6 @@ class StoresActivity : ComponentActivity() {
                     storeId = storeId
                 )
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        storeId?.let {
-            storesVm.loadStore(this, it)
-            storesVm.loadPlans(this, it)
         }
     }
 }
