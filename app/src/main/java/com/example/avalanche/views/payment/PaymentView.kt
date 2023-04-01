@@ -277,7 +277,7 @@ fun PaymentTicketConfirmation(
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Dismis")
+                Text("Dismiss")
             }
         }
     )
