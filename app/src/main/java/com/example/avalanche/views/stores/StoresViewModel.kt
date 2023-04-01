@@ -1,4 +1,4 @@
-package com.example.avalanche.viewmodels
+package com.example.avalanche.views.stores
 
 import Avalanche.Market.PlanService
 import Avalanche.Market.PlanServiceProtoGrpcKt
@@ -18,10 +18,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class StoreViewModel(private val storeId: String) : ViewModel() {
+class StoresViewModel : ViewModel() {
 
+    private val _stores = MutableStateFlow(listOf<StoreService.GetStoresProto.Response>())
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
     private val _plans = MutableStateFlow(listOf<PlanService.GetPlansProto.Response>())
+
+    val stores: StateFlow<List<StoreService.GetStoresProto.Response>>
+        get() = _stores.asStateFlow()
 
     val store: LiveData<StoreService.GetStoreProto.Response>
         get() = _store
@@ -29,7 +33,38 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
     val plans: StateFlow<List<PlanService.GetPlansProto.Response>>
         get() = _plans.asStateFlow()
 
-    fun loadStore(context: Context) {
+    fun loadStores(context: Context, nameSearch: String) {
+
+        if (nameSearch.isEmpty()) return;
+
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        val request = StoreService.GetStoresProto.Request.newBuilder().setNameSearch(nameSearch)
+
+        viewModelScope.launch {
+
+            val flow = service.getMany(request.build())
+
+            flow.collect { store ->
+
+                if (_stores.value.contains(store)) return@collect
+
+                _stores.update {
+                    it + store
+                }
+            }
+        }
+    }
+
+    fun loadStore(context: Context, storeId: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -51,7 +86,7 @@ class StoreViewModel(private val storeId: String) : ViewModel() {
         }
     }
 
-    fun loadPlans(context: Context) {
+    fun loadPlans(context: Context, storeId: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 

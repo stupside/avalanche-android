@@ -1,4 +1,4 @@
-package com.example.avalanche.viewmodels
+package com.example.avalanche.views.ticket
 
 import Avalanche.Passport.TicketService
 import Avalanche.Passport.TicketServiceProtoGrpcKt
@@ -12,14 +12,14 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.launch
 
-class TicketViewModel(private val ticketId: String) : ViewModel() {
+class TicketViewModel : ViewModel() {
 
     private val _ticket = MutableLiveData<TicketService.GetTicketProto.Response>()
 
     val ticket: LiveData<TicketService.GetTicketProto.Response>
         get() = _ticket
 
-    fun loadTicket(context: Context) {
+    fun loadTicket(context: Context, ticketId: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 

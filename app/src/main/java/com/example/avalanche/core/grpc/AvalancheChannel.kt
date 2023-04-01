@@ -8,8 +8,12 @@ class AvalancheChannel {
 
     companion object {
         fun getNew(): ManagedChannel {
-            return ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext()
-                .build()
+            val builder = ManagedChannelBuilder.forTarget(Constants.AVALANCHE_GATEWAY_GRPC).usePlaintext()
+            return try {
+                builder.build()
+            } catch (e: java.lang.RuntimeException){
+                builder.build()
+            }
         }
     }
 }

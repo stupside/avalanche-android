@@ -42,16 +42,9 @@
         <activity
             android:name=".StoresActivity"
             android:exported="false" />
-        <activity
-            android:name=".StoreActivity"
-            android:exported="false" />
 
         <activity
             android:name=".TicketActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".TicketNfcActivity"
             android:exported="true"
             android:launchMode="singleInstance">
 

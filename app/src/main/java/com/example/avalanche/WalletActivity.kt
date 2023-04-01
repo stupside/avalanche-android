@@ -1,29 +1,14 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.avalanche
 
-import Avalanche.Market.StoreService
-import Avalanche.Passport.TicketService
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import com.example.avalanche.core.ui.shared.*
-import com.example.avalanche.core.ui.shared.list.AvalancheList
+import androidx.activity.viewModels
 import com.example.avalanche.core.ui.theme.AvalancheTheme
-import com.example.avalanche.viewmodels.StoreViewModel
-import com.example.avalanche.viewmodels.WalletViewModel
+import com.example.avalanche.views.wallet.WalletView
+import com.example.avalanche.views.wallet.WalletViewModel
 
 
 class WalletActivity : ComponentActivity() {
@@ -36,107 +21,17 @@ class WalletActivity : ComponentActivity() {
         }
     }
 
-    private lateinit var walletVm: WalletViewModel
-    private lateinit var storeVm: StoreViewModel
+    private val walletVm: WalletViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val storeId = intent.getStringExtra(StoreIdKey)!!
 
-        walletVm = WalletViewModel(storeId)
-        storeVm = StoreViewModel(storeId)
-
         setContent {
-
-            val storeState: StoreService.GetStoreProto.Response? by storeVm.store.observeAsState()
-
             AvalancheTheme {
-                Scaffold(topBar = {
-                    TopAppBar(
-                        title = {
-                            Text("Wallet")
-                        },
-                        navigationIcon = {
-                            AvalancheGoBackButton(activity = this)
-                        },
-                    )
-                }, content = { paddingValues ->
-                    Column(modifier = Modifier.padding(paddingValues)) {
-
-                        storeState?.let { store ->
-
-                            StoreHeader(
-                                name = store.name,
-                                description = store.description,
-                                logo = store.logo.toString()
-                            )
-
-                            Column {
-                                Text("Tickets", style = MaterialTheme.typography.titleMedium)
-
-                                val tickets: List<TicketService.GetTicketsProto.Response> by walletVm.tickets.collectAsState()
-
-                                AvalancheList(elements = tickets, template = { ticket ->
-                                    TicketItem(
-                                        this@WalletActivity,
-                                        ticket = ticket.ticketId,
-                                        name = ticket.name,
-                                        description = "Ticket description",
-                                        isValid = ticket.isValidForNow,
-                                        isSealed = ticket.isSealed
-                                    )
-                                })
-                            }
-                        }
-                    }
-                }, floatingActionButton = {
-                    AvalancheFloatingActionButton(AvalancheActionConfiguration(
-                        Icons.Rounded.Add,
-                        "Extend or buy a ticket",
-                        literal = true,
-                        onClick = {
-                            startActivity(StoreActivity.getIntent(this@WalletActivity, storeId))
-                        }
-                    ))
-                })
+                WalletView(context = this, viewModel = walletVm, storeId = storeId)
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        walletVm.loadWallet(this)
-        storeVm.loadStore(this)
-    }
-}
-
-@Composable
-fun TicketItem(
-    context: Context,
-    ticket: String,
-    name: String,
-    description: String,
-    isValid: Boolean,
-    isSealed: Boolean
-) {
-
-    val intent = TicketActivity.getIntent(context, ticket)
-
-    ListItem(
-        modifier = Modifier.clickable(onClick = {
-            context.startActivity(intent)
-        }),
-        headlineContent = { Text(name) },
-        supportingContent = { Text(description) },
-        trailingContent = {
-
-            Row {
-                AvalancheColoredBadge(isValid, "Valid for now", "Not valid for now")
-                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-                AvalancheColoredBadge(isSealed, "Sealed", "Unsealed")
-            }
-        }
-    )
 }

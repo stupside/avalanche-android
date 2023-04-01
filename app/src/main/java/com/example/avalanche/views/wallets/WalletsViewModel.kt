@@ -1,4 +1,4 @@
-package com.example.avalanche.viewmodels
+package com.example.avalanche.views.wallets
 
 import Avalanche.Passport.TicketService
 import Avalanche.Passport.TicketServiceProtoGrpcKt
@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.avalanche.core.grpc.AvalancheChannel
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WalletsViewModel : ViewModel() {
@@ -34,13 +36,7 @@ class WalletsViewModel : ViewModel() {
 
         val request = TicketService.GetWalletsProto.Request.newBuilder()
 
-        _wallets.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = ""
-        )
-
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
 
             val flow = service.getWallets(request.build())
 
