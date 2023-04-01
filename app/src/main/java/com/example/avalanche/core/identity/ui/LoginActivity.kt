@@ -68,11 +68,14 @@ class LoginActivity : ComponentActivity() {
             AvalancheTheme {
                 Scaffold { paddingValues ->
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(paddingValues),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Top
                     ) {
-
+                        Spacer(modifier = Modifier.size(250.dp))
+                        
                         Column {
                             OutlinedTextField(
                                 value = username,
