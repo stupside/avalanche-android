@@ -3,6 +3,9 @@ package com.example.avalanche.views.ticket
 import Avalanche.Passport.TicketService
 import android.content.Context
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,6 +34,14 @@ fun TicketView(
     }
 
     val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
+
+    var showValidity by remember {
+        mutableStateOf(false)
+    }
+
+    var showDuration by remember {
+        mutableStateOf(Long.MIN_VALUE)
+    }
 
     Scaffold(topBar = {
         TicketTopBar(context)
@@ -75,13 +86,63 @@ fun TicketView(
                             style = MaterialTheme.typography.titleMedium,
                         )
                         AvalancheList(elements = ticket.validitiesList, template = { validity ->
-                            TicketValidityItem(
-                                validity.from.seconds,
-                                validity.to.seconds,
-                                validity.isNow
-                            )
+                            Surface(onClick = {
+                                showValidity = true
+                                showDuration = validity.to.seconds - validity.from.seconds
+                            }) {
+                                TicketValidityItem(
+                                    validity.from.seconds,
+                                    validity.to.seconds,
+                                    validity.isNow
+                                )
+                            }
                         })
                     }
+
+                    if (showValidity) {
+                        AlertDialog({ showValidity = false }) {
+                            Surface(
+                                //modifier = Modifier.wrapContentSize(),
+                                shape = MaterialTheme.shapes.large
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(16.dp)
+                                ) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            "Validity Details",
+                                            modifier = Modifier.padding(horizontal = 16.dp),
+                                            style = MaterialTheme.typography.titleLarge
+                                        )
+                                        IconButton(onClick = {
+                                            showValidity = false
+                                        }) {
+                                            Icon(Icons.Default.Close, contentDescription = null)
+                                        }
+                                    }
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp)
+                                    ) {
+                                        val duration = getDuration(showDuration)
+                                        if (duration.contains(":")) {
+                                            Text(text = "Duration: $duration")
+                                        } else {
+                                            Text(text = "Duration: $duration Day(s)")
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -100,51 +161,6 @@ fun TicketTopBar(context: Context) {
 @Composable
 fun TicketHeader(ticketName: String) {
     AvalancheHeader(ticketName, null, null)
-}
-
-@Composable
-fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
-
-    val duration = getDuration(to - from)
-
-    val days = (to - from) / 86400
-    val fromStr = getDateTime(from)
-    val toStr = getDateTime(to)
-
-    ListItem(
-        headlineContent = {
-            Text("From: $fromStr")
-            Text("To: $toStr")
-        }, trailingContent = {
-            if (days < 1) {
-                Text("Duration: $duration")
-            } else {
-                Text("Duration: $duration Days")
-            }
-            //TODO $isNow: replace Icons
-            //Text("In Bracket: $isNow")
-        })
-}
-
-private fun getDateTime(seconds: Long): String {
-
-    val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm:ss", Locale.ENGLISH)
-
-    return simpleDateFormat.format(seconds * 1000L)
-}
-
-private fun getDuration(seconds: Long): String {
-    return try {
-        val days = seconds / 86400
-        if (days >= 1) {
-            days.toString()
-        } else {
-            val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
-            simpleDateFormat.format(seconds * 1000L)
-        }
-    } catch (_: Exception) {
-        "ValueError"
-    }
 }
 
 @Composable
@@ -177,3 +193,45 @@ fun TicketSealAction(
             })
     }
 }
+
+@Composable
+fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
+
+    val fromStr = getDateTime(from)
+    val toStr = getDateTime(to)
+
+    ListItem(
+        headlineContent = {
+            Text("$fromStr - $toStr")
+        },
+        trailingContent = {
+            if (isNow) {
+                Icon(
+                    Icons.Default.Done,
+                    contentDescription = null
+                )
+            }
+        })
+}
+
+private fun getDateTime(seconds: Long): String {
+
+    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
+
+    return simpleDateFormat.format(seconds * 1000L)
+}
+
+private fun getDuration(seconds: Long): String {
+    return try {
+        val days = seconds / 86400
+        if (days >= 1) {
+            days.toString()
+        } else {
+            val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
+            simpleDateFormat.format(seconds * 1000L)
+        }
+    } catch (_: Exception) {
+        "ValueError"
+    }
+}
+

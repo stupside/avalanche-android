@@ -44,6 +44,7 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
         mutableStateOf(false)
     }
 
+
     Scaffold(topBar = {
         WalletsTopBar()
     }, content = { paddingValues ->
@@ -67,9 +68,6 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
                         null,
                     )
                 })
-
-                //TODO: Get rid of this code with it's declarations once done fixing ticketview
-                TicketValidityItem(from = 1680737967, to = 1680910767, isNow = true)
 
                 if (showDialog) {
                     AlertDialog({ showDialog = false }) {
@@ -116,58 +114,6 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
         }
     })
 }
-
-//TODO: Get ride of this code once TicketActivity works again
-@Composable
-fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
-
-    val duration = getDuration(to - from)
-
-    val days = (to - from) / 86400
-    val fromStr = getDateTime(from)
-    val toStr = getDateTime(to)
-
-    ListItem(
-        headlineContent = {
-            Text("$fromStr - $toStr")
-        },
-        trailingContent = {
-            if (isNow) {
-                Icon(
-                    Icons.Default.Done,
-                    contentDescription = null
-                )
-            }
-            /*if (days < 1) {
-                Text("Duration: $duration")
-            } else {
-                Text("Duration: $duration Days")
-            }*/
-        })
-}
-
-private fun getDateTime(seconds: Long): String {
-
-    val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-
-    return simpleDateFormat.format(seconds * 1000L)
-}
-
-private fun getDuration(seconds: Long): String {
-    return try {
-        val days = seconds / 86400
-        if (days >= 1) {
-            days.toString()
-        } else {
-            val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
-            simpleDateFormat.format(seconds * 1000L)
-        }
-    } catch (_: Exception) {
-        "ValueError"
-    }
-}
-
-//TODO: End of the Code to get rid of above
 
 @Composable
 fun WalletsTopBar() {
