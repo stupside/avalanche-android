@@ -2,23 +2,16 @@ package com.example.avalanche.views.ticket
 
 import Avalanche.Passport.TicketService
 import android.content.Context
-import android.graphics.Color
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.shared.list.AvalancheList
-import com.example.avalanche.core.ui.theme.md_theme_light_error
-import com.example.avalanche.core.ui.theme.md_theme_light_surfaceTint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +25,7 @@ fun TicketView(
 
     LaunchedEffect(ticketId) {
         try {
-            viewModel.loadTicket(context, ticketId)
+            viewModel.loadTicket(context, ticketId, deviceIdentifier)
         } catch (_: Exception) {
         }
     }
@@ -42,52 +35,53 @@ fun TicketView(
     Scaffold(topBar = {
         TicketTopBar(context)
     }, content = { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).background(color = md_theme_light_surfaceTint), verticalArrangement = Arrangement.Top) {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues),
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                ticket?.let { ticket ->
 
-            ticket?.let { ticket ->
+                    TicketHeader(ticketName = ticket.name)
 
-                TicketHeader(ticketName = ticket.name)
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TicketSealAction(
-                        isSealed = ticket.isSealed,
-                        onSeal = {
-                            try {
-                                viewModel.sealTicket(context, ticketId, deviceIdentifier)
-                            } catch (_: Exception) {
-                            }
-                        },
-                        onUnseal = {
-                            try {
-                                viewModel.unsealTicket(context, ticketId, deviceIdentifier)
-                            } catch (_: Exception) {
-                            }
-                        },
-                    )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        "Ticket validity",
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    AvalancheList(elements = ticket.validitiesList, template = { validity ->
-                        TicketValidityItem(
-                            validity.from.seconds,
-                            validity.to.seconds,
-                            validity.isNow
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        TicketSealAction(
+                            isSealed = ticket.isSealed,
+                            onSeal = {
+                                try {
+                                    viewModel.sealTicket(context, ticketId, deviceIdentifier)
+                                } catch (_: Exception) {
+                                }
+                            },
+                            onUnseal = {
+                                try {
+                                    viewModel.unsealTicket(context, ticketId, deviceIdentifier)
+                                } catch (_: Exception) {
+                                }
+                            },
                         )
-                    })
+                    }
+
+                    Column {
+                        Text(
+                            "Ticket validity",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        AvalancheList(elements = ticket.validitiesList, template = { validity ->
+                            TicketValidityItem(
+                                validity.from.seconds,
+                                validity.to.seconds,
+                                validity.isNow
+                            )
+                        })
+                    }
                 }
             }
         }
@@ -101,7 +95,6 @@ fun TicketTopBar(context: Context) {
     }, navigationIcon = {
         AvalancheGoBackButton(context)
     })
-
 }
 
 @Composable
@@ -111,19 +104,22 @@ fun TicketHeader(ticketName: String) {
 
 @Composable
 fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
-    val durationStr = getDuration(to - from)
+
+    val duration = getDuration(to - from)
+
     val days = (to - from) / 86400
     val fromStr = getDateTime(from)
     val toStr = getDateTime(to)
+
     ListItem(
         headlineContent = {
             Text("From: $fromStr")
             Text("To: $toStr")
         }, trailingContent = {
             if (days < 1) {
-                Text("Duration: $durationStr")
+                Text("Duration: $duration")
             } else {
-                Text("Duration: $durationStr Days")
+                Text("Duration: $duration Days")
             }
             //TODO $isNow: replace Icons
             //Text("In Bracket: $isNow")
@@ -161,21 +157,14 @@ fun TicketSealAction(
     var checked by remember { mutableStateOf(isSealed) }
 
     Row(
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        if (checked) {
-            Text("Sealed", style = MaterialTheme.typography.titleMedium)
-        } else {
-            Text("Unsealed", style = MaterialTheme.typography.titleMedium)
-        }
+        Text(if (checked) "Sealed" else "Unsealed", style = MaterialTheme.typography.bodyMedium)
 
         Switch(
-            modifier = Modifier.padding(16.dp),
             checked = checked,
             onCheckedChange = {
                 checked = it

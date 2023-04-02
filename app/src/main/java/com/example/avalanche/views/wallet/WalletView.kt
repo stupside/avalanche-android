@@ -4,9 +4,9 @@ import Avalanche.Market.StoreService
 import Avalanche.Passport.TicketService
 import android.content.Context
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -28,7 +28,12 @@ import com.example.avalanche.core.ui.shared.list.AvalancheList
 import com.example.avalanche.views.stores.StoreHeader
 
 @Composable
-fun WalletView(context: Context, viewModel: WalletViewModel, storeId: String) {
+fun WalletView(
+    context: Context,
+    viewModel: WalletViewModel,
+    storeId: String,
+    deviceIdentifier: String
+) {
 
     LaunchedEffect(storeId) {
         try {
@@ -38,40 +43,60 @@ fun WalletView(context: Context, viewModel: WalletViewModel, storeId: String) {
         }
     }
 
+    LaunchedEffect(deviceIdentifier) {
+        viewModel.loadSeals(context, deviceIdentifier)
+    }
+
     val storeState: StoreService.GetStoreProto.Response? by viewModel.store.observeAsState()
+    val tickets: List<TicketService.GetTicketsProto.Response> by viewModel.tickets.collectAsState()
+
+    val seals: List<TicketService.GetSealsProto.Response> by viewModel.seals.collectAsState()
 
     Scaffold(topBar = {
         WalletTopBar(context)
     }, content = { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                storeState?.let { store ->
 
-            storeState?.let { store ->
-
-                StoreHeader(
-                    name = store.name,
-                    description = store.description,
-                    logo = store.logo.toString()
-                )
-
-                Column {
-                    Text(
-                        "Tickets",
-                        modifier = Modifier.padding(16.dp),
-                        style = MaterialTheme.typography.titleMedium
+                    StoreHeader(
+                        name = store.name,
+                        description = store.description,
+                        logo = store.logo.toString()
                     )
 
-                    val tickets: List<TicketService.GetTicketsProto.Response> by viewModel.tickets.collectAsState()
-
-                    AvalancheList(elements = tickets, template = { ticket ->
-                        WalletTicketItem(
-                            context,
-                            ticket = ticket.ticketId,
-                            name = ticket.name,
-                            description = "Ticket description",
-                            isValid = ticket.isValidForNow,
-                            isSealed = ticket.isSealed
+                    Column {
+                        Text(
+                            "Tickets",
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleMedium
                         )
-                    })
+
+
+                        AvalancheList(elements = tickets, template = { ticket ->
+
+                            val enabled =
+                                if (ticket.isSealed) {
+                                    ticket.isSealed && seals.any { it.ticketId == ticket.ticketId }
+                                } else {
+                                    true
+                                }
+
+                            WalletTicketItem(
+                                context,
+                                ticketId = ticket.ticketId,
+                                name = ticket.name,
+                                description = "Ticket description",
+                                isValid = ticket.isValidForNow,
+                                isSealed = ticket.isSealed,
+                                bound = enabled
+                            )
+                        })
+                    }
                 }
             }
         }
@@ -109,27 +134,27 @@ fun WalletFloatingActionButton(context: Context, storeId: String) {
 @Composable
 fun WalletTicketItem(
     context: Context,
-    ticket: String,
+    ticketId: String,
     name: String,
     description: String,
     isValid: Boolean,
-    isSealed: Boolean
+    isSealed: Boolean,
+    bound: Boolean,
 ) {
 
-    val intent = TicketActivity.getIntent(context, ticket)
+    val intent = TicketActivity.getIntent(context, ticketId)
 
     ListItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
-        }),
+        }, enabled = bound),
         headlineContent = { Text(name) },
         supportingContent = { Text(description) },
         trailingContent = {
 
-            Row {
-                AvalancheColoredBadge(isValid, "Valid for now", "Not valid for now")
-                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-                AvalancheColoredBadge(isSealed, "Sealed", "Unsealed")
+            Row() {
+                AvalancheColoredBadge(isValid, "Valid", "Invalid")
+                AvalancheColoredBadge(isSealed, "Sealed ${if(bound) "and bound" else ""}", "Unsealed")
             }
         }
     )

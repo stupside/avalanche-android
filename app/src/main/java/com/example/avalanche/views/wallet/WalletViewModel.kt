@@ -23,11 +23,17 @@ class WalletViewModel : ViewModel() {
     private val _tickets =
         MutableStateFlow(listOf<TicketService.GetTicketsProto.Response>())
 
+    private val _seals =
+        MutableStateFlow(listOf<TicketService.GetSealsProto.Response>())
+
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
 
 
     val tickets: StateFlow<List<TicketService.GetTicketsProto.Response>>
         get() = _tickets.asStateFlow()
+
+    val seals: StateFlow<List<TicketService.GetSealsProto.Response>>
+        get() = _seals.asStateFlow()
 
     val store: LiveData<StoreService.GetStoreProto.Response>
         get() = _store
@@ -84,6 +90,38 @@ class WalletViewModel : ViewModel() {
             val store = service.getOne(request.build())
 
             _store.value = store
+        }
+    }
+
+    fun loadSeals(context: Context, deviceIdentifier: String){
+        val state = AvalancheIdentityState.getInstance(context)
+
+        val channel = AvalancheChannel.getNew()
+
+        val credentials =
+            BearerTokenCallCredentials(state.get().accessToken.toString())
+
+        val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
+            .withCallCredentials(credentials)
+
+        viewModelScope.launch {
+
+            val request = TicketService.GetSealsProto.Request.newBuilder().setDeviceIdentifier(deviceIdentifier)
+
+            val flow = service.getSeals(request.build())
+
+            _seals.update {
+                emptyList()
+            }
+
+            flow.collect { seal ->
+
+                if (_seals.value.contains(seal)) return@collect
+
+                _seals.update {
+                    it + seal
+                }
+            }
         }
     }
 }

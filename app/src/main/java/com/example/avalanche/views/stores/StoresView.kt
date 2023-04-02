@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.avalanche.PaymentActivity
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
@@ -48,7 +49,6 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
         StoresAppBar(context)
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-
             StoreSearchBar(onType = {
                 try {
                     viewModel.loadStores(context, it)
@@ -76,38 +76,44 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                     )
                 })
             }
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
-            if (store == null) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "Nothing to show",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-            }
-
-            store?.let { it ->
-                Column {
-                    StoreHeader(it.name, it.description, it.logo.toString())
-
-                    showStoreWithId?.let { storeId ->
-                        AvalancheList(plans) { plan ->
-                            PlanItem(
-                                context = context,
-                                storeId = storeId,
-                                planId = plan.planId,
-                                name = plan.name,
-                                description = "Plan description"
-                            )
-                        }
+                if (store == null) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Nothing to show",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                 }
 
+                store?.let { it ->
+                    Column {
+                        StoreHeader(it.name, it.description, it.logo.toString())
+
+                        showStoreWithId?.let { storeId ->
+                            AvalancheList(plans) { plan ->
+                                PlanItem(
+                                    context = context,
+                                    storeId = storeId,
+                                    planId = plan.planId,
+                                    name = plan.name,
+                                    description = "Plan description"
+                                )
+                            }
+                        }
+                    }
+
+                }
             }
         }
     }
@@ -152,7 +158,7 @@ fun StoreSearchBar(
             },
             placeholder = { Text("Search a store by name") },
             leadingIcon = {
-                if(searching){
+                if (searching) {
                     IconButton(onClick = {
                         searching = false
                     }) {
@@ -161,8 +167,7 @@ fun StoreSearchBar(
                             contentDescription = null
                         )
                     }
-                }
-                else {
+                } else {
                     Icon(Icons.Default.Search, contentDescription = null)
                 }
             },

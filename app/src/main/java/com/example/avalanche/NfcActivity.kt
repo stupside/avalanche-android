@@ -1,4 +1,4 @@
-package com.example.avalanche.nfc
+package com.example.avalanche
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -7,8 +7,14 @@ import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.tech.NfcA
 import android.os.Build
-import android.widget.Toast
+import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import com.example.avalanche.core.environment.Constants
+import com.example.avalanche.core.ui.theme.AvalancheTheme
+import com.example.avalanche.views.nfc.NfcView
+import com.example.avalanche.views.nfc.NfcViewModel
 
 
 abstract class NfcActivity : ComponentActivity() {
@@ -38,6 +44,21 @@ abstract class NfcActivity : ComponentActivity() {
         )
     }
 
+    private val nfcVm: NfcViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // TODO: this should be loaded NFC / QR see HostApdu
+        val storeId = Constants.STORE_ID
+
+        setContent {
+            AvalancheTheme {
+                NfcView(context = this, viewModel = nfcVm, storeId = storeId)
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -61,8 +82,6 @@ abstract class NfcActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
-        Toast.makeText(this, "Nfc", Toast.LENGTH_LONG).show()
 
         if (intent.action == NfcAdapter.ACTION_NDEF_DISCOVERED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

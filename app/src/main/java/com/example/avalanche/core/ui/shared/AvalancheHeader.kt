@@ -23,23 +23,21 @@ fun AvalancheHeader(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp)
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    AvalancheLogo(logo)
-                    Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-                    Text(name, style = MaterialTheme.typography.titleMedium)
-                }
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                AvalancheLogo(logo)
+                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
+                Text(name, style = MaterialTheme.typography.titleMedium)
+            }
 
-                description?.let {
-                    Row {
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Text(it)
-                    }
+            description?.let {
+                Row {
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(it)
                 }
             }
+
         }
     }
 }

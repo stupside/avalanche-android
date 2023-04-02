@@ -37,59 +37,65 @@ fun PaymentView(context: Context, viewModel: PaymentViewModel, storeId: String, 
         PaymentTopBar(context)
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
-            PaymentTicketNameInput(tickets) { input ->
-                ticketName = input
-            }
-
-            PaymentTicketDateInput { input ->
-                days = input
-            }
-
-            PaymentTicketConfirmationButton(ticketName, days) {
-
-                val amount = 10000 // TODO: view fake the payment
-
-                val intent =
-                    WalletActivity.getIntent(context, storeId)
-
-                val ticket = tickets?.firstOrNull { ticket ->
-                    ticket.name == ticketName
+                PaymentTicketNameInput(tickets) { input ->
+                    ticketName = input
                 }
 
-                if (ticket == null) {
-                    try {
-                        viewModel.createTicket(
-                            context,
-                            storeId,
-                            ticketName
-                        ) { ticketId ->
-                            viewModel.purchase(
+                PaymentTicketDateInput { input ->
+                    days = input
+                }
+
+                PaymentTicketConfirmationButton(ticketName, days) {
+
+                    val amount = 10000 // TODO: view fake the payment
+
+                    val intent =
+                        WalletActivity.getIntent(context, storeId)
+
+                    val ticket = tickets?.firstOrNull { ticket ->
+                        ticket.name == ticketName
+                    }
+
+                    if (ticket == null) {
+                        try {
+                            viewModel.createTicket(
                                 context,
-                                ticketId,
-                                planId,
-                                days
-                            ) { orderId ->
-                                try {
-                                    viewModel.receive(context, orderId, amount) {
-                                        context.startActivity(intent)
+                                storeId,
+                                ticketName
+                            ) { ticketId ->
+                                viewModel.purchase(
+                                    context,
+                                    ticketId,
+                                    planId,
+                                    days
+                                ) { orderId ->
+                                    try {
+                                        viewModel.receive(context, orderId, amount) {
+                                            context.startActivity(intent)
+                                        }
+                                    } catch (_: Exception) {
                                     }
-                                } catch (_: Exception) {
                                 }
                             }
+                        } catch (_: Exception) {
                         }
-                    } catch (_: Exception) {
-                    }
-                } else {
-                    val ticketId = ticket.ticketId
+                    } else {
+                        val ticketId = ticket.ticketId
 
-                    try {
-                        viewModel.purchase(context, ticketId, planId, days) { orderId ->
-                            viewModel.receive(context, orderId, amount) {
-                                context.startActivity(intent)
+                        try {
+                            viewModel.purchase(context, ticketId, planId, days) { orderId ->
+                                viewModel.receive(context, orderId, amount) {
+                                    context.startActivity(intent)
+                                }
                             }
+                        } catch (_: Exception) {
                         }
-                    } catch (_: Exception) {
                     }
                 }
             }

@@ -142,9 +142,10 @@ message GetTicketProto {
     }
 
     string Name = 1;
+    
+    string StoreId = 2;
 
-    bool IsSealed = 2;
-    bool IsValidForNow = 3;
+    bool IsSealed = 3;
 
     repeated Validity Validities = 4;
   }

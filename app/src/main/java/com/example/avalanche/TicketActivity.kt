@@ -4,18 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.provider.Settings.Secure.getString
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.material3.Text
+import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.ui.theme.AvalancheTheme
-import com.example.avalanche.nfc.NfcActivity
 import com.example.avalanche.views.ticket.TicketView
 import com.example.avalanche.views.ticket.TicketViewModel
 
 
-class TicketActivity : NfcActivity() {
+class TicketActivity : ComponentActivity() {
 
     companion object {
         private const val TicketIdKey = "TicketId"
@@ -31,25 +29,19 @@ class TicketActivity : NfcActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val ticketId = intent.getStringExtra(TicketIdKey)
+        val ticketId = intent.getStringExtra(TicketIdKey)!!
 
-        val deviceIdentifier = getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceIdentifier = Constants.DEVICE_IDENTIFIER
 
         setContent {
             AvalancheTheme {
-                if (ticketId == null) {
-                    // TODO: get a ticket for this station
-                    Text("Activity reacted to Nfc tag")
-                } else {
-                    TicketView(
-                        context = this,
-                        viewModel = ticketVm,
-                        ticketId = ticketId,
-                        deviceIdentifier = deviceIdentifier
-                    )
-                }
+                TicketView(
+                    context = this,
+                    viewModel = ticketVm,
+                    ticketId = ticketId,
+                    deviceIdentifier = deviceIdentifier
+                )
             }
         }
-
     }
 }

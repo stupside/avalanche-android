@@ -5,7 +5,8 @@ import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -41,28 +42,47 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
             modifier = Modifier
                 .padding(paddingValues)
         ) {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 32.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
 
-            AvalancheList(elements = wallets, template = { wallet ->
-                WalletItem(
-                    context,
-                    wallet.storeId,
-                    wallet.storeId,
-                    "Wallet description",
-                    wallet.ticketCount,
-                    null,
-                )
-            })
+                AvalancheList(elements = wallets, template = { wallet ->
+                    WalletItem(
+                        context,
+                        wallet.storeId,
+                        wallet.storeId,
+                        "Wallet description",
+                        wallet.ticketCount,
+                        null,
+                    )
+                })
 
-            if (showDialog) {
-                AlertDialog({ showDialog = false }) {
-                    Surface(
-                        modifier = Modifier.wrapContentSize(),
-                        shape = MaterialTheme.shapes.large
-                    ) {
-                        Text("Actions", style = MaterialTheme.typography.titleLarge)
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
-                            WalletDialogListItem_ExploreStore(context) { showDialog = false }
+                if (showDialog) {
+                    AlertDialog({ showDialog = false }) {
+                        Surface(
+                            modifier = Modifier.wrapContentSize(),
+                            shape = MaterialTheme.shapes.large
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                                    Text("Actions", style = MaterialTheme.typography.titleLarge)
+                                    IconButton(onClick = {
+                                        showDialog = false
+                                    }) {
+                                        Icon(Icons.Default.Close, contentDescription = null)
+                                    }
+                                }
+                                Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
+                                    WalletDialogListItem_ExploreStore(context) {
+                                        showDialog = false
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -106,10 +126,10 @@ fun WalletDialogListItem_ExploreStore(context: Context, onClick: () -> Unit) {
             context.startActivity(stores)
         }),
         leadingContent = {
-            Icon(Icons.Default.Menu, contentDescription = null)
+            Icon(Icons.Default.ShoppingCart, contentDescription = null)
         },
         headlineContent = {
-            Text("Explore stores")
+            Text("Explore application stores")
         }, supportingContent = {
             Text("Search a stores, create and extend your tickets")
         })

@@ -19,7 +19,12 @@ class TicketViewModel : ViewModel() {
     val ticket: LiveData<TicketService.GetTicketProto.Response>
         get() = _ticket
 
-    fun loadTicket(context: Context, ticketId: String) {
+    val _seal = MutableLiveData<TicketService.GetSealProto.Response>()
+
+    val seal: LiveData<TicketService.GetSealProto.Response>
+        get() = _seal
+
+    fun loadTicket(context: Context, ticketId: String, deviceIdentifier: String) {
 
         val state = AvalancheIdentityState.getInstance(context)
 
@@ -38,6 +43,11 @@ class TicketViewModel : ViewModel() {
             val ticket = service.getOne(request.build())
 
             _ticket.value = ticket
+
+            _seal.value = service.getSeal(
+                TicketService.GetSealProto.Request.newBuilder()
+                    .setDeviceIdentifier(deviceIdentifier).setStoreId(ticket.storeId).build()
+            )
         }
     }
 
@@ -55,7 +65,8 @@ class TicketViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            val request = TicketService.SealTicketProto.Request.newBuilder().setTicketId(ticketId)
+            val request = TicketService.SealTicketProto.Request.newBuilder()
+                .setTicketId(ticketId)
                 .setDeviceIdentifier(deviceId)
 
             service.seal(request.build())

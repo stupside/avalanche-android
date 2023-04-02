@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+        android:description="avalanche"
+        android:requireDeviceUnlock="true">
+        <aid-group android:description="avalanche"
+            android:category="other">
+            <aid-filter android:name="F0010203040506"/>
+            <aid-filter android:name="F0394148148100"/>
+        </aid-group>
+    </host-apdu-service>
+</resources>
