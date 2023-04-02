@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.views.wallet.WalletView
 import com.example.avalanche.views.wallet.WalletViewModel
@@ -28,9 +29,11 @@ class WalletActivity : ComponentActivity() {
 
         val storeId = intent.getStringExtra(StoreIdKey)!!
 
+        val deviceIdentifier = Constants.DEVICE_IDENTIFIER
+
         setContent {
             AvalancheTheme {
-                WalletView(context = this, viewModel = walletVm, storeId = storeId)
+                WalletView(context = this, viewModel = walletVm, storeId = storeId, deviceIdentifier = deviceIdentifier)
             }
         }
     }
