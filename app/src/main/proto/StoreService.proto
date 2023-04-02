@@ -76,7 +76,7 @@ service StoreServiceProto {
 
   rpc Create(CreateStoreProto.Request) returns (CreateStoreProto.Response);
   rpc Update(UpdateStoreProto.Request) returns (UpdateStoreProto.Response);
-
+  
   rpc GetOne(GetStoreProto.Request) returns (GetStoreProto.Response);
   rpc GetMany(GetStoresProto.Request) returns (stream GetStoresProto.Response);
 }

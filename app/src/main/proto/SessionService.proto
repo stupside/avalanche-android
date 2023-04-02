@@ -5,9 +5,9 @@ option csharp_namespace = "Avalanche.Grpc.Proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-package Avalanche.Tracker;
+package Avalanche.Passport;
 
-message StartSessionProto {
+message TrackProto {
 
   message Request {
 
@@ -26,8 +26,8 @@ message StartSessionProto {
   }
 
   message Response {
-
     string SessionId = 1;
+    string SignalId = 2;
   }
 }
 
@@ -70,7 +70,7 @@ message GetSessionsProto {
 
 
 service SessionServiceProto {
-  rpc Start(stream StartSessionProto.Request) returns (StartSessionProto.Response);
+  rpc Track(stream TrackProto.Request) returns (stream TrackProto.Response);
   
   rpc GetOne(GetSessionProto.Request) returns (stream GetSessionProto.Response);
   rpc GetMany(GetSessionsProto.Request) returns (stream GetSessionsProto.Response);

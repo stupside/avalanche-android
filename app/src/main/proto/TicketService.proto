@@ -39,10 +39,12 @@ message ExtendTicketProto {
 message SealTicketProto {
 
   message Request {
+    
+    string StoreId = 1;
 
-    string TicketId = 1;
+    string TicketId = 2;
 
-    string DeviceIdentifier = 2;
+    string DeviceIdentifier = 3;
   }
 
   message Response {
@@ -92,15 +94,31 @@ message DeserializeTicketProto {
   }
 }
 
-message ChallengeTicketProto {
+message GetSealProto {
 
-  message Request {
-    string UserId = 1;
-  }
-  
-  message Response {
+  message Request{
     
-    bool IsValid = 1;
+    string StoreId = 1;
+    string DeviceIdentifier = 2;
+  }
+
+  message Response {
+
+    string TicketId = 1;
+  }
+}
+
+message GetSealsProto {
+
+  message Request{
+
+    string DeviceIdentifier = 1;
+  }
+
+  message Response {
+
+    string StoreId = 1;
+    string TicketId = 2;
   }
 }
 
@@ -170,17 +188,17 @@ service TicketServiceProto {
 
   rpc Extend(ExtendTicketProto.Request) returns (ExtendTicketProto.Response);
 
+  rpc GetSeal(GetSealProto.Request) returns (GetSealProto.Response);
+  rpc GetSeals(GetSealsProto.Request) returns (stream GetSealsProto.Response);
+  
   rpc Seal(SealTicketProto.Request) returns (SealTicketProto.Response);
-
-  rpc Serialize(SerializeTicketProto.Request) returns (SerializeTicketProto.Response);
-
   rpc Unseal(UnsealTicketProto.Request) returns (UnsealTicketProto.Response);
 
-  rpc ChallengeTicketProto(ChallengeTicketProto.Request) returns (ChallengeTicketProto.Response);
-
+  rpc Serialize(SerializeTicketProto.Request) returns (SerializeTicketProto.Response);  
   rpc Deserialize(DeserializeTicketProto.Request) returns (DeserializeTicketProto.Response);
 
   rpc GetOne(GetTicketProto.Request) returns (GetTicketProto.Response);
   rpc GetMany(GetTicketsProto.Request) returns (stream GetTicketsProto.Response);
+  
   rpc GetWallets(GetWalletsProto.Request) returns (stream GetWalletsProto.Response);
 }
