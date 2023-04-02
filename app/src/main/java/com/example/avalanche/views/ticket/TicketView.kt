@@ -2,18 +2,23 @@ package com.example.avalanche.views.ticket
 
 import Avalanche.Passport.TicketService
 import android.content.Context
+import android.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.core.ui.shared.AvalancheHeader
 import com.example.avalanche.core.ui.shared.list.AvalancheList
+import com.example.avalanche.core.ui.theme.md_theme_light_error
+import com.example.avalanche.core.ui.theme.md_theme_light_surfaceTint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,7 +30,7 @@ fun TicketView(
     deviceIdentifier: String
 ) {
 
-    LaunchedEffect(ticketId){
+    LaunchedEffect(ticketId) {
         try {
             viewModel.loadTicket(context, ticketId)
         } catch (_: Exception) {
@@ -37,9 +42,10 @@ fun TicketView(
     Scaffold(topBar = {
         TicketTopBar(context)
     }, content = { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(modifier = Modifier.padding(paddingValues).background(color = md_theme_light_surfaceTint), verticalArrangement = Arrangement.Top) {
 
             ticket?.let { ticket ->
+
                 TicketHeader(ticketName = ticket.name)
 
                 Row(
@@ -67,10 +73,14 @@ fun TicketView(
 
                 Column(
                     modifier = Modifier
-                        .padding(paddingValues)
+                        .padding(horizontal = 16.dp)
                         .fillMaxWidth()
                 ) {
-                    Text("Ticket validity", modifier = Modifier.padding(16.dp))
+                    Text(
+                        "Ticket validity",
+                        modifier = Modifier.padding(16.dp),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
                     AvalancheList(elements = ticket.validitiesList, template = { validity ->
                         TicketValidityItem(
                             validity.from.seconds,
@@ -102,7 +112,7 @@ fun TicketHeader(ticketName: String) {
 @Composable
 fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
     val durationStr = getDuration(to - from)
-    val days = (to-from)/86400
+    val days = (to - from) / 86400
     val fromStr = getDateTime(from)
     val toStr = getDateTime(to)
     ListItem(
@@ -110,7 +120,7 @@ fun TicketValidityItem(from: Long, to: Long, isNow: Boolean) {
             Text("From: $fromStr")
             Text("To: $toStr")
         }, trailingContent = {
-            if (days<1) {
+            if (days < 1) {
                 Text("Duration: $durationStr")
             } else {
                 Text("Duration: $durationStr Days")
@@ -129,8 +139,8 @@ private fun getDateTime(seconds: Long): String {
 
 private fun getDuration(seconds: Long): String {
     return try {
-        val days = seconds/86400
-        if (days>=1) {
+        val days = seconds / 86400
+        if (days >= 1) {
             days.toString()
         } else {
             val simpleDateFormat = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH)
@@ -152,21 +162,20 @@ fun TicketSealAction(
 
     Row(
         modifier = Modifier
-            .padding(24.dp)
+            .padding(horizontal = 24.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
         if (checked) {
-            Text("Sealed")
+            Text("Sealed", style = MaterialTheme.typography.titleMedium)
         } else {
-            Text("Unsealed")
+            Text("Unsealed", style = MaterialTheme.typography.titleMedium)
         }
 
         Switch(
-            modifier = Modifier.semantics {
-                contentDescription = "Seal or Unseal the ticket"
-            },
+            modifier = Modifier.padding(16.dp),
             checked = checked,
             onCheckedChange = {
                 checked = it
