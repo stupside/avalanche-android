@@ -76,6 +76,7 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                     )
                 })
             }
+
             Column(
                 modifier = Modifier
                     .padding(horizontal = 32.dp),

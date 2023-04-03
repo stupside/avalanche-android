@@ -25,12 +25,12 @@ class PaymentViewModel : ViewModel() {
         get() = _tickets.asStateFlow()
 
     fun purchase(context: Context, ticketId: String, planId: String, availableInDays: Int, onPurchase: (orderId: String) -> Unit) {
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = OrderServiceProtoGrpcKt.OrderServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -48,12 +48,12 @@ class PaymentViewModel : ViewModel() {
     }
 
     fun receive(context: Context, orderId: String, amount: Int, onReceived: (isPaymentFullFilled: Boolean) -> Unit) {
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = OrderServiceProtoGrpcKt.OrderServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -69,12 +69,12 @@ class PaymentViewModel : ViewModel() {
 
     fun loadTickets(context: Context, storeId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -107,12 +107,12 @@ class PaymentViewModel : ViewModel() {
         onCreated: (ticketId: String) -> Unit
     ) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

@@ -19,19 +19,19 @@ class TicketViewModel : ViewModel() {
     val ticket: LiveData<TicketService.GetTicketProto.Response>
         get() = _ticket
 
-    val _seal = MutableLiveData<TicketService.GetSealProto.Response>()
+    private val _seal = MutableLiveData<TicketService.GetSealProto.Response>()
 
     val seal: LiveData<TicketService.GetSealProto.Response>
         get() = _seal
 
     fun loadTicket(context: Context, ticketId: String, deviceIdentifier: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -53,12 +53,12 @@ class TicketViewModel : ViewModel() {
 
     fun sealTicket(context: Context, ticketId: String, deviceId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -75,12 +75,12 @@ class TicketViewModel : ViewModel() {
 
     fun unsealTicket(context: Context, ticketId: String, deviceId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

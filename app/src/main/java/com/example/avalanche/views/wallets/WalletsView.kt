@@ -58,6 +58,10 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
+                OutlinedCard(modifier = Modifier) {
+
+                }
+
                 AvalancheList(elements = wallets, template = { wallet ->
                     WalletItem(
                         context,

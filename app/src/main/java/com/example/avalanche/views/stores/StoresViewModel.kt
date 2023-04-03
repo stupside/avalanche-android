@@ -43,12 +43,12 @@ class StoresViewModel : ViewModel() {
             return
         }
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -76,12 +76,12 @@ class StoresViewModel : ViewModel() {
 
     fun loadStore(context: Context, storeId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -103,7 +103,7 @@ class StoresViewModel : ViewModel() {
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.readState().accessToken.toString())
 
         val service = PlanServiceProtoGrpcKt.PlanServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

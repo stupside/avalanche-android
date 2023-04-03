@@ -40,12 +40,12 @@ class WalletViewModel : ViewModel() {
 
     fun loadTickets(context: Context, storeId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -73,12 +73,12 @@ class WalletViewModel : ViewModel() {
 
     fun loadStore(context: Context, storeId: String) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = StoreServiceProtoGrpcKt.StoreServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)
@@ -94,12 +94,12 @@ class WalletViewModel : ViewModel() {
     }
 
     fun loadSeals(context: Context, deviceIdentifier: String){
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

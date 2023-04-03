@@ -135,9 +135,9 @@ class LoginActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val state = AvalancheIdentityState.getInstance(this)
+        val state = AvalancheIdentityState.getInstance(this).readState()
 
-        if (state.get().isAuthorized) {
+        if (state.isAuthorized) {
             val walletsActivity = WalletsActivity.getIntent(this)
 
             startActivity(walletsActivity)

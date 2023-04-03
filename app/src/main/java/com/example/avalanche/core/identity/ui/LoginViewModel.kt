@@ -1,8 +1,8 @@
 package com.example.avalanche.core.identity.ui
 
 import androidx.lifecycle.ViewModel
-import com.example.avalanche.core.identity.AvalancheIdentityState
 import com.example.avalanche.core.environment.Constants
+import com.example.avalanche.core.identity.AvalancheIdentityState
 import net.openid.appauth.TokenRequest
 import net.openid.appauth.TokenRequest.GRANT_TYPE_PASSWORD
 
@@ -16,7 +16,7 @@ class LoginViewModel : ViewModel() {
         scopes: Iterable<String>
     ): TokenRequest {
 
-        val auth = state.get()
+        val auth = state.readState()
 
         val configuration = auth.authorizationServiceConfiguration!!
 

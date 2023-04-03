@@ -127,9 +127,9 @@ class RegisterActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        val state = AvalancheIdentityState.getInstance(this)
+        val state = AvalancheIdentityState.getInstance(this).readState()
 
-        if (state.get().isAuthorized) {
+        if (state.isAuthorized) {
             val stationsIntent = Intent(this, StoresActivity::class.java)
 
             startActivity(stationsIntent)

@@ -24,12 +24,12 @@ class WalletsViewModel : ViewModel() {
 
     fun loadWallets(context: Context) {
 
-        val state = AvalancheIdentityState.getInstance(context)
+        val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
 
         val credentials =
-            BearerTokenCallCredentials(state.get().accessToken.toString())
+            BearerTokenCallCredentials(state.accessToken.toString())
 
         val service = TicketServiceProtoGrpcKt.TicketServiceProtoCoroutineStub(channel)
             .withCallCredentials(credentials)

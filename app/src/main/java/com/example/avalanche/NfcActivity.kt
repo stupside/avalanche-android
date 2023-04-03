@@ -11,7 +11,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.example.avalanche.core.environment.Constants
+import androidx.camera.core.ExperimentalGetImage
 import com.example.avalanche.core.ui.theme.AvalancheTheme
 import com.example.avalanche.views.nfc.NfcView
 import com.example.avalanche.views.nfc.NfcViewModel
@@ -46,15 +46,15 @@ abstract class NfcActivity : ComponentActivity() {
 
     private val nfcVm: NfcViewModel by viewModels()
 
+    @ExperimentalGetImage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // TODO: this should be loaded NFC / QR see HostApdu
-        val storeId = Constants.STORE_ID
 
         setContent {
             AvalancheTheme {
-                NfcView(context = this, viewModel = nfcVm, storeId = storeId)
+                NfcView(context = this, viewModel = nfcVm)
             }
         }
     }
