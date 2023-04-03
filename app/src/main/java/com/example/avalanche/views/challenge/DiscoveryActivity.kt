@@ -8,9 +8,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.camera.core.ExperimentalGetImage
 import com.example.avalanche.core.ui.theme.AvalancheTheme
+import com.google.mlkit.vision.barcode.BarcodeScanner
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @ExperimentalGetImage
-class DiscoveryActivity: ComponentActivity(){
+class DiscoveryActivity : ComponentActivity() {
 
     companion object {
         fun getIntent(context: Context): Intent {
@@ -20,13 +25,35 @@ class DiscoveryActivity: ComponentActivity(){
 
     private val discoveryVm: DiscoveryViewModel by viewModels()
 
+    private lateinit var executor: ExecutorService
+    private lateinit var scanner: BarcodeScanner
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        executor = Executors.newSingleThreadExecutor()
+
+        scanner = BarcodeScanning.getClient(
+            BarcodeScannerOptions.Builder().enableAllPotentialBarcodes()
+                .build()
+        )
+
         setContent {
             AvalancheTheme {
-                DiscoveryView(context = this, viewModel = discoveryVm)
+                DiscoveryView(
+                    context = this,
+                    viewModel = discoveryVm,
+                    executor = executor,
+                    scanner = scanner
+                )
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        executor.shutdown()
+        scanner.close()
     }
 }

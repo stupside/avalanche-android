@@ -18,14 +18,13 @@ import com.example.avalanche.WalletsActivity
 import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
 import com.example.avalanche.views.ticket.TicketHeader
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.common.Barcode
-import java.util.concurrent.Executors
+import java.util.concurrent.ExecutorService
 
 @Composable
 @ExperimentalGetImage
-fun DiscoveryView(context: Context, viewModel: DiscoveryViewModel) {
+fun DiscoveryView(context: Context, viewModel: DiscoveryViewModel, executor: ExecutorService, scanner: BarcodeScanner) {
 
     val deviceIdentifier = Constants.DEVICE_IDENTIFIER
 
@@ -55,17 +54,6 @@ fun DiscoveryView(context: Context, viewModel: DiscoveryViewModel) {
 
             context.startActivity(intent)
         }
-    }
-
-    val scanner = remember {
-        BarcodeScanning.getClient(
-            BarcodeScannerOptions.Builder().enableAllPotentialBarcodes()
-                .build()
-        )
-    }
-
-    val executor = remember {
-        Executors.newSingleThreadExecutor()
     }
 
     Scaffold(topBar = {

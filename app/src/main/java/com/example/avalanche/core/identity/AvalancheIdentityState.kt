@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicReference
 
 class AvalancheIdentityState private constructor(val context: Context) {
 
+    private var reference: WeakReference<AuthState> = WeakReference<AuthState>(null)
+
     companion object {
 
         private val INSTANCE_REF =
@@ -83,15 +85,29 @@ class AvalancheIdentityState private constructor(val context: Context) {
     }
 
     @AnyThread
-    public fun readState(): AuthState {
-        val currentState = Constants.getSharedPreferences(context)
-            ?.getString(Constants.AVALANCHE_SHARED_PREFERENCES_IDENTITY, null)
-            ?: return AuthState()
+    fun readState(): AuthState {
 
-        return try {
-            AuthState.jsonDeserialize(currentState)
-        } catch (ex: JSONException) {
-            AuthState()
+        val auth = reference.get()
+
+        if(auth != null)
+        {
+            return auth
+        }
+        else {
+
+            val preference = Constants.getSharedPreferences(context)
+                ?.getString(Constants.AVALANCHE_SHARED_PREFERENCES_IDENTITY, null)
+                ?: return AuthState()
+
+            return try {
+                val json = AuthState.jsonDeserialize(preference)
+
+                reference = WeakReference(json)
+
+                json
+            } catch (ex: JSONException) {
+                AuthState()
+            }
         }
     }
 
@@ -100,12 +116,17 @@ class AvalancheIdentityState private constructor(val context: Context) {
         val editor = Constants.getSharedPreferences(context)?.edit()
 
         if (state == null) {
+            reference.clear()
+            
             editor?.remove(Constants.AVALANCHE_SHARED_PREFERENCES_IDENTITY)
         } else {
+            val json = state.jsonSerializeString()
+
             editor?.putString(
-                Constants.AVALANCHE_SHARED_PREFERENCES_IDENTITY,
-                state.jsonSerializeString()
+                Constants.AVALANCHE_SHARED_PREFERENCES_IDENTITY,json
             )
+
+            reference = WeakReference(state)
         }
 
         editor?.apply()
