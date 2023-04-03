@@ -19,9 +19,9 @@ class TicketViewModel : ViewModel() {
     val ticket: LiveData<TicketService.GetTicketProto.Response>
         get() = _ticket
 
-    private val _seal = MutableLiveData<TicketService.GetSealProto.Response>()
+    private val _seal = MutableLiveData<Boolean>()
 
-    val seal: LiveData<TicketService.GetSealProto.Response>
+    val seal: LiveData<Boolean>
         get() = _seal
 
     fun loadTicket(context: Context, ticketId: String, deviceIdentifier: String) {
@@ -44,14 +44,17 @@ class TicketViewModel : ViewModel() {
 
             _ticket.value = ticket
 
-            _seal.value = service.getSeal(
-                TicketService.GetSealProto.Request.newBuilder()
-                    .setDeviceIdentifier(deviceIdentifier).setStoreId(ticket.storeId).build()
-            )
+            _ticket.value.let {
+
+                _seal.value = service.getSeal(
+                    TicketService.GetSealProto.Request.newBuilder()
+                        .setDeviceIdentifier(deviceIdentifier).setStoreId(ticket.storeId).build()
+                ).ticketId.value == ticketId
+            }
         }
     }
 
-    fun sealTicket(context: Context, ticketId: String, deviceId: String) {
+    fun sealTicket(context: Context, ticketId: String, deviceIdentifier: String) {
 
         val state = AvalancheIdentityState.getInstance(context).readState()
 
@@ -67,13 +70,13 @@ class TicketViewModel : ViewModel() {
 
             val request = TicketService.SealTicketProto.Request.newBuilder()
                 .setTicketId(ticketId)
-                .setDeviceIdentifier(deviceId)
+                .setDeviceIdentifier(deviceIdentifier)
 
             service.seal(request.build())
         }
     }
 
-    fun unsealTicket(context: Context, ticketId: String, deviceId: String) {
+    fun unsealTicket(context: Context, ticketId: String, deviceIdentifier: String) {
 
         val state = AvalancheIdentityState.getInstance(context).readState()
 
@@ -88,7 +91,7 @@ class TicketViewModel : ViewModel() {
         viewModelScope.launch {
 
             val request = TicketService.UnsealTicketProto.Request.newBuilder().setTicketId(ticketId)
-                .setDeviceIdentifier(deviceId)
+                .setDeviceIdentifier(deviceIdentifier)
 
             service.unseal(request.build())
         }

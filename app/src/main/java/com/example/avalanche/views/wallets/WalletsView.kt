@@ -2,26 +2,29 @@ package com.example.avalanche.views.wallets
 
 import Avalanche.Passport.TicketService
 import android.content.Context
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.avalanche.StoresActivity
 import com.example.avalanche.WalletActivity
-import com.example.avalanche.core.ui.shared.AvalancheActionConfiguration
+import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
-import com.example.avalanche.core.ui.shared.AvalancheFloatingActionButton
 import com.example.avalanche.core.ui.shared.AvalancheLogo
 import com.example.avalanche.core.ui.shared.list.AvalancheList
+import com.example.avalanche.views.challenge.DiscoveryActivity
 
 @Composable
+@ExperimentalGetImage
 fun WalletsView(context: Context, viewModel: WalletsViewModel) {
+
     SideEffect {
         try {
             viewModel.loadWallets(context)
@@ -29,15 +32,31 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
         }
     }
 
-    val wallets: List<TicketService.GetWalletsProto.Response> by viewModel.wallets.collectAsState()
+    val deviceIdentifier = Constants.DEVICE_IDENTIFIER
 
-    var showDialog by remember {
-        mutableStateOf(false)
+    val preferences = Constants.getSharedPreferences(context)
+
+    val storeId by remember {
+        mutableStateOf(
+            preferences?.getString(
+                Constants.AVALANCHE_SHARED_PREFERENCES_STORE,
+                Constants.STORE_ID
+            )
+        )
     }
 
+    LaunchedEffect(storeId) {
+        storeId?.let {
+            viewModel.loadTicket(context, it, deviceIdentifier)
+        }
+    }
+
+    val wallets: List<TicketService.GetWalletsProto.Response> by viewModel.wallets.collectAsState()
 
     Scaffold(topBar = {
-        WalletsTopBar()
+        TopAppBar(title = {
+            Text("Wallets")
+        })
     }, content = { paddingValues ->
         Column(
             modifier = Modifier
@@ -49,8 +68,26 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                OutlinedCard(modifier = Modifier) {
+                ElevatedCard(
+                    modifier = Modifier
+                        .padding(horizontal = 32.dp),
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
+                        val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
+
+                        ticket?.let {
+                            Text("Your active ticket is '${it.name}'")
+                        }
+
+                        Text(
+                            "Change your ticket for another store",
+                            modifier = Modifier.clickable(onClick = {
+                                val intent = DiscoveryActivity.getIntent(context)
+                                context.startActivity(intent)
+                            })
+                        )
+                    }
                 }
 
                 AvalancheList(elements = wallets, template = { wallet ->
@@ -64,88 +101,27 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
                     )
                 })
 
-                if (showDialog) {
-                    AlertDialog({ showDialog = false }) {
-                        Surface(
-                            //modifier = Modifier.wrapContentSize(),
-                            shape = MaterialTheme.shapes.large
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Text(
-                                        "Actions",
-                                        modifier = Modifier.padding(horizontal = 16.dp),
-                                        style = MaterialTheme.typography.titleLarge
-                                    )
-                                    IconButton(onClick = {
-                                        showDialog = false
-                                    }) {
-                                        Icon(Icons.Default.Close, contentDescription = null)
-                                    }
-                                }
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(32.dp),
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    WalletDialogListItem_ExploreStore(context) {
-                                        showDialog = false
-                                    }
-                                }
-                            }
-                        }
-                    }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    WalletExploreStores(context)
                 }
             }
         }
-    }, floatingActionButton = {
-        WalletFloatingBar {
-            showDialog = true
-        }
     })
 }
 
 @Composable
-fun WalletsTopBar() {
-    TopAppBar(title = {
-        Text("Wallets")
-    })
-}
-
-@Composable
-fun WalletFloatingBar(onClick: () -> Unit) {
-    AvalancheFloatingActionButton(
-        AvalancheActionConfiguration(
-            Icons.Rounded.Add,
-            "Manage wallets",
-            literal = true,
-            onClick = onClick
-        )
-    )
-}
-
-@Composable
-fun WalletDialogListItem_ExploreStore(context: Context, onClick: () -> Unit) {
-    ListItem(
+fun WalletExploreStores(context: Context) {
+    Text(
+        "Search a store, create or extend your tickets",
+        style = MaterialTheme.typography.bodyMedium,
         modifier = Modifier.clickable(onClick = {
-
-            onClick()
-
             val stores = StoresActivity.getIntent(context)
 
             context.startActivity(stores)
-        }),
-        headlineContent = {
-            Text("Search a store, create and extend your tickets")
-        },
-        trailingContent = {
-            Icon(Icons.Default.Search, contentDescription = null)
-        }
+        })
     )
 }
 

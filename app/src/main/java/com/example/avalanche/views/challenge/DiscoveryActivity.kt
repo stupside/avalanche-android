@@ -1,4 +1,4 @@
-package com.example.avalanche
+package com.example.avalanche.views.challenge
 
 import android.content.Context
 import android.content.Intent
@@ -8,27 +8,24 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.camera.core.ExperimentalGetImage
 import com.example.avalanche.core.ui.theme.AvalancheTheme
-import com.example.avalanche.views.wallets.WalletsView
-import com.example.avalanche.views.wallets.WalletsViewModel
 
-//
-class WalletsActivity : ComponentActivity() {
+@ExperimentalGetImage
+class DiscoveryActivity: ComponentActivity(){
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, WalletsActivity::class.java)
+            return Intent(context, DiscoveryActivity::class.java)
         }
     }
 
-    private val walletsVm: WalletsViewModel by viewModels()
+    private val discoveryVm: DiscoveryViewModel by viewModels()
 
-    @ExperimentalGetImage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent{
+        setContent {
             AvalancheTheme {
-                WalletsView(context = this, viewModel = walletsVm)
+                DiscoveryView(context = this, viewModel = discoveryVm)
             }
         }
     }

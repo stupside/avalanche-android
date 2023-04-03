@@ -4,6 +4,7 @@ option csharp_namespace = "Avalanche.Grpc.Proto";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
 
 package Avalanche.Passport;
 
@@ -104,7 +105,7 @@ message GetSealProto {
 
   message Response {
 
-    string TicketId = 1;
+    google.protobuf.StringValue TicketId = 1;
   }
 }
 

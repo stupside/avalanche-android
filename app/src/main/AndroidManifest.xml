@@ -51,7 +51,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".NfcActivity"
+            android:name=".views.challenge.TerminalActivity"
             android:exported="true"
             android:launchMode="singleInstance">
 

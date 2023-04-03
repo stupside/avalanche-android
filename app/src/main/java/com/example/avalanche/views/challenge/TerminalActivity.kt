@@ -1,4 +1,4 @@
-package com.example.avalanche
+package com.example.avalanche.views.challenge
 
 import android.app.PendingIntent
 import android.content.Intent
@@ -11,13 +11,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.camera.core.ExperimentalGetImage
 import com.example.avalanche.core.ui.theme.AvalancheTheme
-import com.example.avalanche.views.nfc.NfcView
-import com.example.avalanche.views.nfc.NfcViewModel
 
 
-abstract class NfcActivity : ComponentActivity() {
+abstract class TerminalActivity : ComponentActivity() {
 
     private val adapter: NfcAdapter by lazy {
         NfcAdapter.getDefaultAdapter(this)
@@ -29,10 +26,9 @@ abstract class NfcActivity : ComponentActivity() {
 
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        val flag = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_MUTABLE
-        }
-        else {
+        } else {
             PendingIntent.FLAG_UPDATE_CURRENT
         }
 
@@ -44,9 +40,8 @@ abstract class NfcActivity : ComponentActivity() {
         )
     }
 
-    private val nfcVm: NfcViewModel by viewModels()
+    private val terminalVm: TerminalViewModel by viewModels()
 
-    @ExperimentalGetImage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,7 +49,7 @@ abstract class NfcActivity : ComponentActivity() {
 
         setContent {
             AvalancheTheme {
-                NfcView(context = this, viewModel = nfcVm)
+                TerminalView(context = this, viewModel = terminalVm)
             }
         }
     }

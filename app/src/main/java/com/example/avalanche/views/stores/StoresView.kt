@@ -3,7 +3,8 @@ package com.example.avalanche.views.stores
 import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
-import androidx.compose.foundation.background
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -16,7 +17,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -39,6 +40,8 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
     LaunchedEffect(showStoreWithId) {
         showStoreWithId?.let {
             viewModel.loadStore(context, it)
+
+            viewModel.loadPlans(context, it)
         }
     }
 
@@ -51,6 +54,7 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
         StoresAppBar(context)
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+
             StoreSearchBar(onType = {
                 try {
                     viewModel.loadStores(context, it)
@@ -62,9 +66,6 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                         modifier = Modifier.clickable(onClick = {
 
                             try {
-                                viewModel.loadStore(context, store.storeId)
-                                viewModel.loadPlans(context, store.storeId)
-
                                 showStoreWithId = store.storeId
                             } catch (_: Exception) {
                             } finally {
@@ -103,6 +104,52 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                     Column {
                         StoreHeader(it.name, it.description, it.logo.toString())
 
+                        it.qrCode?.let { qr ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+
+                                var share by remember {
+                                    mutableStateOf(false)
+                                }
+
+                                Text("Show store QR Code", modifier = Modifier.clickable(onClick = {
+                                    share = true
+                                }), style = MaterialTheme.typography.bodyMedium)
+
+                                if (share) {
+                                    AlertDialog(onDismissRequest = { share = false }) {
+                                        Surface(
+                                            shape = MaterialTheme.shapes.large,
+                                            modifier = Modifier
+                                                .size(250.dp, 250.dp)
+                                                .padding(16.dp)
+                                        ) {
+                                            val bytes = qr.toByteArray()
+
+                                            val bitmap = BitmapFactory.decodeByteArray(
+                                                bytes,
+                                                0,
+                                                bytes.size
+                                            )
+
+                                            Image(
+                                                modifier = Modifier
+                                                    .padding(16.dp)
+                                                    .fillMaxSize(),
+                                                bitmap = bitmap.asImageBitmap(),
+                                                contentDescription = "Store QR Code"
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         showStoreWithId?.let { storeId ->
                             AvalancheList(plans) { plan ->
                                 PlanItem(
@@ -115,7 +162,6 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                             }
                         }
                     }
-
                 }
             }
         }

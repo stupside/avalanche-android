@@ -1,4 +1,4 @@
-package com.example.avalanche.views.nfc
+package com.example.avalanche.views.challenge
 
 import Avalanche.Market.StoreService
 import Avalanche.Market.StoreServiceProtoGrpcKt
@@ -14,7 +14,7 @@ import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.AvalancheIdentityState
 import kotlinx.coroutines.launch
 
-class NfcViewModel : ViewModel() {
+class TerminalViewModel : ViewModel() {
 
     private val _store = MutableLiveData<StoreService.GetStoreProto.Response>()
 
@@ -53,7 +53,8 @@ class NfcViewModel : ViewModel() {
         }
     }
 
-    fun loadTicket(context: Context, storeId: String) {
+    fun loadTicket(context: Context, storeId: String, deviceIdentifier: String) {
+        
         val state = AvalancheIdentityState.getInstance(context).readState()
 
         val channel = AvalancheChannel.getNew()
@@ -67,16 +68,20 @@ class NfcViewModel : ViewModel() {
         viewModelScope.launch {
 
             val seal = service.getSeal(
-                TicketService.GetSealProto.Request.newBuilder().setStoreId(storeId).build()
+                TicketService.GetSealProto.Request.newBuilder().setStoreId(storeId)
+                    .setDeviceIdentifier(deviceIdentifier).build()
             )
 
-            _ticketId.value = seal.ticketId
+            seal.ticketId.value?.let {ticketId ->
 
-            val ticket = service.getOne(
-                TicketService.GetTicketProto.Request.newBuilder().setTicketId(seal.ticketId).build()
-            )
+                _ticketId.value = ticketId
 
-            _ticket.value = ticket
+                val ticket = service.getOne(
+                    TicketService.GetTicketProto.Request.newBuilder().setTicketId(ticketId).build()
+                )
+
+                _ticket.value = ticket
+            }
         }
     }
 

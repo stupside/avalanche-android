@@ -19,8 +19,10 @@ message GetStoreProto {
     string Description = 2;
 
     google.protobuf.StringValue Logo = 3;
+    
+    bytes QrCode = 4;
 
-    string Email = 4;
+    string Email = 5;
   }
 }
 

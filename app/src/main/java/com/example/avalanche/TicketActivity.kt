@@ -1,6 +1,5 @@
 package com.example.avalanche
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,7 +24,6 @@ class TicketActivity : ComponentActivity() {
 
     private val ticketVm: TicketViewModel by viewModels()
 
-    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

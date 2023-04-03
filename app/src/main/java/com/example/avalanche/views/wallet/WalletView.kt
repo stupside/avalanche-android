@@ -35,22 +35,20 @@ fun WalletView(
     deviceIdentifier: String
 ) {
 
-    LaunchedEffect(storeId) {
-        try {
-            viewModel.loadStore(context, storeId)
-            viewModel.loadTickets(context, storeId)
-        } catch (_: Exception) {
-        }
-    }
-
     LaunchedEffect(deviceIdentifier) {
         viewModel.loadSeals(context, deviceIdentifier)
     }
 
-    val storeState: StoreService.GetStoreProto.Response? by viewModel.store.observeAsState()
-    val tickets: List<TicketService.GetTicketsProto.Response> by viewModel.tickets.collectAsState()
-
     val seals: List<TicketService.GetSealsProto.Response> by viewModel.seals.collectAsState()
+
+    LaunchedEffect(storeId) {
+        try {
+            viewModel.loadStore(context, storeId)
+        } catch (_: Exception) {
+        }
+    }
+
+    val store: StoreService.GetStoreProto.Response? by viewModel.store.observeAsState()
 
     Scaffold(topBar = {
         WalletTopBar(context)
@@ -61,7 +59,14 @@ fun WalletView(
                     .padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                storeState?.let { store ->
+                store?.let { store ->
+
+                    LaunchedEffect(storeId) {
+                        try {
+                            viewModel.loadTickets(context, storeId)
+                        } catch (_: Exception) {
+                        }
+                    }
 
                     StoreHeader(
                         name = store.name,
@@ -76,15 +81,13 @@ fun WalletView(
                             style = MaterialTheme.typography.titleMedium
                         )
 
+                        LaunchedEffect(storeId){
+                            viewModel.loadTickets(context, storeId)
+                        }
+
+                        val tickets: List<TicketService.GetTicketsProto.Response> by viewModel.tickets.collectAsState()
 
                         AvalancheList(elements = tickets, template = { ticket ->
-
-                            val enabled =
-                                if (ticket.isSealed) {
-                                    ticket.isSealed && seals.any { it.ticketId == ticket.ticketId }
-                                } else {
-                                    true
-                                }
 
                             WalletTicketItem(
                                 context,
@@ -93,7 +96,7 @@ fun WalletView(
                                 description = "Ticket description",
                                 isValid = ticket.isValidForNow,
                                 isSealed = ticket.isSealed,
-                                bound = enabled
+                                isSealedByCurrentDevice = ticket.isSealed && seals.any { it.ticketId == ticket.ticketId }
                             )
                         })
                     }
@@ -139,7 +142,7 @@ fun WalletTicketItem(
     description: String,
     isValid: Boolean,
     isSealed: Boolean,
-    bound: Boolean,
+    isSealedByCurrentDevice: Boolean,
 ) {
 
     val intent = TicketActivity.getIntent(context, ticketId)
@@ -147,14 +150,14 @@ fun WalletTicketItem(
     ListItem(
         modifier = Modifier.clickable(onClick = {
             context.startActivity(intent)
-        }, enabled = bound),
+        }),
         headlineContent = { Text(name) },
         supportingContent = { Text(description) },
         trailingContent = {
 
             Row() {
                 AvalancheColoredBadge(isValid, "Valid", "Invalid")
-                AvalancheColoredBadge(isSealed, "Sealed ${if(bound) "and bound" else ""}", "Unsealed")
+                AvalancheColoredBadge(isSealed, "Sealed ${if(isSealedByCurrentDevice) "and bound" else ""}", "Unsealed")
             }
         }
     )

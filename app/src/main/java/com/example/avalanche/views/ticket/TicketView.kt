@@ -26,7 +26,7 @@ fun TicketView(
     deviceIdentifier: String
 ) {
 
-    LaunchedEffect(ticketId) {
+    LaunchedEffect(ticketId, deviceIdentifier) {
         try {
             viewModel.loadTicket(context, ticketId, deviceIdentifier)
         } catch (_: Exception) {
@@ -34,14 +34,7 @@ fun TicketView(
     }
 
     val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
-
-    var showValidity by remember {
-        mutableStateOf(false)
-    }
-
-    var showDuration by remember {
-        mutableStateOf(Long.MIN_VALUE)
-    }
+    val seal: Boolean? by viewModel.seal.observeAsState()
 
     Scaffold(topBar = {
         TicketTopBar(context)
@@ -70,13 +63,20 @@ fun TicketView(
                                 } catch (_: Exception) {
                                 }
                             },
-                            onUnseal = {
-                                try {
-                                    viewModel.unsealTicket(context, ticketId, deviceIdentifier)
-                                } catch (_: Exception) {
+                            onUnseal = if (ticket.isSealed && seal == true) {
+                                {
+                                    try {
+                                        viewModel.unsealTicket(context, ticketId, deviceIdentifier)
+                                    } catch (_: Exception) {
+                                    }
                                 }
-                            },
+                            }
+                            else null,
                         )
+                    }
+
+                    var duration by remember {
+                        mutableStateOf<Long?>(null)
                     }
 
                     Column {
@@ -85,10 +85,10 @@ fun TicketView(
                             modifier = Modifier.padding(16.dp),
                             style = MaterialTheme.typography.titleMedium,
                         )
+
                         AvalancheList(elements = ticket.validitiesList, template = { validity ->
                             Surface(onClick = {
-                                showValidity = true
-                                showDuration = validity.to.seconds - validity.from.seconds
+                                duration = validity.to.seconds - validity.from.seconds
                             }) {
                                 TicketValidityItem(
                                     validity.from.seconds,
@@ -99,10 +99,9 @@ fun TicketView(
                         })
                     }
 
-                    if (showValidity) {
-                        AlertDialog({ showValidity = false }) {
+                    duration?.let {
+                        AlertDialog({ duration = null }) {
                             Surface(
-                                //modifier = Modifier.wrapContentSize(),
                                 shape = MaterialTheme.shapes.large
                             ) {
                                 Column(
@@ -114,25 +113,26 @@ fun TicketView(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
                                         Text(
-                                            "Validity Details",
+                                            "Validity details",
                                             modifier = Modifier.padding(horizontal = 16.dp),
                                             style = MaterialTheme.typography.titleLarge
                                         )
                                         IconButton(onClick = {
-                                            showValidity = false
+                                            duration = null
                                         }) {
                                             Icon(Icons.Default.Close, contentDescription = null)
                                         }
                                     }
+
                                     Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(16.dp)
                                     ) {
-                                        val duration = getDuration(showDuration)
-                                        if (duration.contains(":")) {
+                                        val days = msToDays(it)
+
+                                        if (days.contains(":")) {
                                             Text(text = "Duration: $duration")
                                         } else {
                                             Text(text = "Duration: $duration Day(s)")
@@ -141,8 +141,8 @@ fun TicketView(
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
             }
         }
@@ -167,7 +167,7 @@ fun TicketHeader(ticketName: String) {
 fun TicketSealAction(
     isSealed: Boolean,
     onSeal: () -> Unit,
-    onUnseal: () -> Unit
+    onUnseal: (() -> Unit)?
 ) {
 
     var checked by remember { mutableStateOf(isSealed) }
@@ -182,13 +182,14 @@ fun TicketSealAction(
 
         Switch(
             checked = checked,
+            enabled = (isSealed && onUnseal != null) || !isSealed,
             onCheckedChange = {
                 checked = it
 
                 if (checked) {
                     onSeal()
                 } else {
-                    onUnseal()
+                    onUnseal?.invoke()
                 }
             })
     }
@@ -221,7 +222,7 @@ private fun getDateTime(seconds: Long): String {
     return simpleDateFormat.format(seconds * 1000L)
 }
 
-private fun getDuration(seconds: Long): String {
+private fun msToDays(seconds: Long): String {
     return try {
         val days = seconds / 86400
         if (days >= 1) {
