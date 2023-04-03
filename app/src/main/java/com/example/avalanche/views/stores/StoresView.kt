@@ -3,6 +3,7 @@ package com.example.avalanche.views.stores
 import Avalanche.Market.PlanService
 import Avalanche.Market.StoreService
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -137,51 +139,52 @@ fun StoreSearchBar(
     var name by remember { mutableStateOf("") }
 
     var searching by rememberSaveable { mutableStateOf(false) }
-
-    Box(
-        Modifier
-            .semantics { isContainer = true }
-            .zIndex(1f)
-            .fillMaxWidth()) {
-        SearchBar(
-            modifier = Modifier.align(Alignment.TopCenter),
-            query = name,
-            onQueryChange = {
-                name = it
-                onType(it)
-            },
-            onSearch = {
-                searching = false
-            },
-            active = searching,
-            onActiveChange = {
-                searching = it
-            },
-            placeholder = { Text("Search a store by name") },
-            leadingIcon = {
-                if (searching) {
-                    IconButton(onClick = {
-                        searching = false
-                    }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null
-                        )
+    Box(Modifier.fillMaxWidth()) {
+        Box(
+            Modifier
+                .semantics { isContainer = true }
+                .zIndex(1f)
+                .fillMaxWidth()) {
+            SearchBar(
+                modifier = Modifier.align(Alignment.TopCenter),
+                query = name,
+                onQueryChange = {
+                    name = it
+                    onType(it)
+                },
+                onSearch = {
+                    searching = false
+                },
+                active = searching,
+                onActiveChange = {
+                    searching = it
+                },
+                placeholder = { Text("Search a store by name") },
+                leadingIcon = {
+                    if (searching) {
+                        IconButton(onClick = {
+                            searching = false
+                        }) {
+                            Icon(
+                                Icons.Default.ArrowBack,
+                                contentDescription = null
+                            )
+                        }
+                    } else {
+                        Icon(Icons.Default.Search, contentDescription = null)
                     }
-                } else {
-                    Icon(Icons.Default.Search, contentDescription = null)
-                }
-            },
-            content = {
-                Surface(
-                    shape = MaterialTheme.shapes.large,
-                ) {
-                    content {
-                        searching = false
+                },
+                content = {
+                    Surface(
+                        shape = MaterialTheme.shapes.large,
+                    ) {
+                        content {
+                            searching = false
+                        }
                     }
-                }
-            },
-        )
+                },
+            )
+        }
     }
 }
 

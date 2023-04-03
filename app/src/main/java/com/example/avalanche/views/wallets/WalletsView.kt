@@ -2,23 +2,16 @@ package com.example.avalanche.views.wallets
 
 import Avalanche.Passport.TicketService
 import android.content.Context
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.sharp.CheckCircle
-import androidx.compose.material.icons.sharp.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.avalanche.R
 import com.example.avalanche.StoresActivity
 import com.example.avalanche.WalletActivity
 import com.example.avalanche.core.ui.shared.AvalancheActionConfiguration
@@ -26,8 +19,6 @@ import com.example.avalanche.core.ui.shared.AvalancheColoredBadge
 import com.example.avalanche.core.ui.shared.AvalancheFloatingActionButton
 import com.example.avalanche.core.ui.shared.AvalancheLogo
 import com.example.avalanche.core.ui.shared.list.AvalancheList
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun WalletsView(context: Context, viewModel: WalletsViewModel) {
