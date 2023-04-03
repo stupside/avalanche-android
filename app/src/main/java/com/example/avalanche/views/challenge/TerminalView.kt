@@ -28,7 +28,7 @@ fun TerminalView(context: Context, viewModel: TerminalViewModel) {
 
     val deviceIdentifier = Constants.DEVICE_IDENTIFIER
 
-    LaunchedEffect(storeId) {
+    LaunchedEffect(storeId, deviceIdentifier) {
         storeId?.let {
             viewModel.loadStore(context, it)
             viewModel.loadTicket(context, it, deviceIdentifier)

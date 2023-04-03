@@ -121,8 +121,6 @@ fun PaymentTicketNameInput(
 
     var search by rememberSaveable { mutableStateOf(false) }
 
-    val canSearch = !tickets.isNullOrEmpty()
-
     Row {
         OutlinedTextField(
             value = ticketName,
@@ -135,13 +133,11 @@ fun PaymentTicketNameInput(
                 onTicketNameChange(ticketName)
             })
 
-        if (canSearch) {
-            IconButton(onClick = { search = true }) {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Reference an existing ticket"
-                )
-            }
+        IconButton(onClick = { search = true }) {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Reference an existing ticket"
+            )
         }
     }
 

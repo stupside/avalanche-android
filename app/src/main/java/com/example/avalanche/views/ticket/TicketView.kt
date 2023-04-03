@@ -130,12 +130,12 @@ fun TicketView(
                                             .fillMaxWidth()
                                             .padding(16.dp)
                                     ) {
-                                        val days = msToDays(it)
+                                        val days = formatMsToString(it)
 
                                         if (days.contains(":")) {
-                                            Text(text = "Duration: $duration")
+                                            Text(text = "Duration: $days")
                                         } else {
-                                            Text(text = "Duration: $duration Day(s)")
+                                            Text(text = "Duration: $days Day(s)")
                                         }
                                     }
                                 }
@@ -222,7 +222,7 @@ private fun getDateTime(seconds: Long): String {
     return simpleDateFormat.format(seconds * 1000L)
 }
 
-private fun msToDays(seconds: Long): String {
+private fun formatMsToString(seconds: Long): String {
     return try {
         val days = seconds / 86400
         if (days >= 1) {

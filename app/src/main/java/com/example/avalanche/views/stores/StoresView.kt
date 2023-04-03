@@ -39,8 +39,11 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
 
     LaunchedEffect(showStoreWithId) {
         showStoreWithId?.let {
-            viewModel.loadStore(context, it)
-            viewModel.loadPlans(context, it)
+            try {
+                viewModel.loadStore(context, it)
+                viewModel.loadPlans(context, it)
+            } catch (_: Exception) {
+            }
         }
     }
 
@@ -154,7 +157,7 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
                                     storeId = storeId,
                                     planId = plan.planId,
                                     name = plan.name,
-                                    description = "Plan description"
+                                    description = "${plan.price / 100} CAD"
                                 )
                             }
                         }

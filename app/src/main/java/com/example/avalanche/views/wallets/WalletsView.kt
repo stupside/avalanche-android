@@ -4,12 +4,12 @@ import Avalanche.Passport.TicketService
 import android.content.Context
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -24,7 +24,6 @@ import com.example.avalanche.views.challenge.DiscoveryActivity
 @Composable
 @ExperimentalGetImage
 fun WalletsView(context: Context, viewModel: WalletsViewModel) {
-
     SideEffect {
         try {
             viewModel.loadWallets(context)
@@ -36,20 +35,22 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
 
     val preferences = Constants.getSharedPreferences(context)
 
-    val storeId by remember {
-        mutableStateOf(
-            preferences?.getString(
-                Constants.AVALANCHE_SHARED_PREFERENCES_STORE,
-                Constants.STORE_ID
-            )
-        )
-    }
+    SideEffect {
 
-    LaunchedEffect(storeId) {
+        val storeId = preferences?.getString(
+            Constants.AVALANCHE_SHARED_PREFERENCES_STORE,
+            Constants.STORE_ID
+        )
+
         storeId?.let {
-            // viewModel.loadTicket(context, it, deviceIdentifier)
+            try {
+                viewModel.loadTicket(context, it, deviceIdentifier)
+            } catch (_: Exception) {
+            }
         }
     }
+
+    val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
 
     val wallets: List<TicketService.GetWalletsProto.Response> by viewModel.wallets.collectAsState()
 
@@ -74,18 +75,24 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
-                        val ticket: TicketService.GetTicketProto.Response? by viewModel.ticket.observeAsState()
-
                         ticket?.let {
-                            Text("Your active ticket is '${it.name}'")
-                        }
+                            Text(
+                                "Your active ticket is '${it.name}'",
+                                modifier = Modifier
+                                    .padding(horizontal = 3.dp)
+                            )
 
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                         Text(
                             "Change your ticket for another store",
-                            modifier = Modifier.clickable(onClick = {
-                                val intent = DiscoveryActivity.getIntent(context)
-                                context.startActivity(intent)
-                            })
+                            modifier = Modifier
+                                .clickable(onClick = {
+                                    val intent = DiscoveryActivity.getIntent(context)
+                                    context.startActivity(intent)
+                                })
+                                .padding(horizontal = 3.dp),
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }

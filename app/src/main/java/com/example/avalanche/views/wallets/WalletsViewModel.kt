@@ -86,12 +86,13 @@ class WalletsViewModel : ViewModel() {
                     .setDeviceIdentifier(deviceIdentifier).build()
             )
 
-            seal.ticketId.value?.let {ticketId ->
+            _ticketId.value = seal.ticketId.value
 
-                _ticketId.value = ticketId
+            _ticketId.value?.let {ticketId ->
 
                 val ticket = service.getOne(
-                    TicketService.GetTicketProto.Request.newBuilder().setTicketId(ticketId).build()
+                    TicketService.GetTicketProto.Request.newBuilder()
+                        .setTicketId(ticketId).build()
                 )
 
                 _ticket.value = ticket

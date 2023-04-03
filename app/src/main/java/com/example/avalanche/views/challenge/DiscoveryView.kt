@@ -14,10 +14,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import com.example.avalanche.WalletsActivity
 import com.example.avalanche.core.environment.Constants
 import com.example.avalanche.core.ui.shared.AvalancheGoBackButton
-import com.example.avalanche.views.ticket.TicketHeader
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.common.Barcode
 import java.util.concurrent.ExecutorService
@@ -37,18 +37,22 @@ fun DiscoveryView(context: Context, viewModel: DiscoveryViewModel, executor: Exe
     val ticket: GetTicketProto.Response? by viewModel.ticket.observeAsState()
 
     LaunchedEffect(storeId) {
-        storeId?.let {
 
+        storeId?.let{
             viewModel.loadTicket(context, it, deviceIdentifier)
+        }
+    }
 
-            val editor = preferences?.edit()
+    LaunchedEffect(ticket){
 
-            editor?.putString(
+        if(ticket == null) return@LaunchedEffect
+
+        preferences?.edit {
+
+            putString(
                 Constants.AVALANCHE_SHARED_PREFERENCES_STORE,
                 storeId
             )
-
-            editor?.apply()
 
             val intent = WalletsActivity.getIntent(context)
 
@@ -64,19 +68,18 @@ fun DiscoveryView(context: Context, viewModel: DiscoveryViewModel, executor: Exe
                 .padding(paddingValues),
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 32.dp),
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text("store: $storeId")
 
                 Column(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ticket?.let { ticket ->
-                        TicketHeader(ticketName = ticket.name)
-                    }
-
                     Text(
                         "Scan the QR Code of the store",
                         style = MaterialTheme.typography.titleMedium
