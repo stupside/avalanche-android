@@ -48,11 +48,18 @@
 
         <activity
             android:name=".TicketActivity"
-            android:exported="true" />
+            android:exported="false" />
+
+        <activity
+            android:name=".views.challenge.DiscoveryActivity"
+            android:exported="false"
+            android:noHistory="true"
+            android:launchMode="singleInstance"/>
 
         <activity
             android:name=".views.challenge.TerminalActivity"
             android:exported="true"
+            android:noHistory="true"
             android:launchMode="singleInstance">
 
             <intent-filter>
@@ -67,9 +74,11 @@
                 android:resource="@xml/nfc_tech_filter" />
 
         </activity>
+
         <activity
             android:name=".WalletsActivity"
             android:exported="false" />
+
         <activity
             android:name=".WalletActivity"
             android:exported="false" />

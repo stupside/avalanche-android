@@ -44,17 +44,19 @@ class TicketViewModel : ViewModel() {
 
             _ticket.value = ticket
 
-            _ticket.value.let {
+            ticket.let {
 
-                _seal.value = service.getSeal(
+                val seal = service.getSeal(
                     TicketService.GetSealProto.Request.newBuilder()
-                        .setDeviceIdentifier(deviceIdentifier).setStoreId(ticket.storeId).build()
-                ).ticketId.value == ticketId
+                        .setDeviceIdentifier(deviceIdentifier).setStoreId(it.storeId).build()
+                )
+
+                _seal.value = ticketId == seal.ticketId.value
             }
         }
     }
 
-    fun sealTicket(context: Context, ticketId: String, deviceIdentifier: String) {
+    fun sealTicket(context: Context, storeId: String, ticketId: String, deviceIdentifier: String) {
 
         val state = AvalancheIdentityState.getInstance(context).readState()
 
@@ -70,6 +72,7 @@ class TicketViewModel : ViewModel() {
 
             val request = TicketService.SealTicketProto.Request.newBuilder()
                 .setTicketId(ticketId)
+                .setStoreId(storeId)
                 .setDeviceIdentifier(deviceIdentifier)
 
             service.seal(request.build())
@@ -90,7 +93,8 @@ class TicketViewModel : ViewModel() {
 
         viewModelScope.launch {
 
-            val request = TicketService.UnsealTicketProto.Request.newBuilder().setTicketId(ticketId)
+            val request = TicketService.UnsealTicketProto.Request.newBuilder()
+                .setTicketId(ticketId)
                 .setDeviceIdentifier(deviceIdentifier)
 
             service.unseal(request.build())

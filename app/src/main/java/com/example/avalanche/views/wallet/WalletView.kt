@@ -155,7 +155,7 @@ fun WalletTicketItem(
         supportingContent = { Text(description) },
         trailingContent = {
 
-            Row() {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 AvalancheColoredBadge(isValid, "Valid", "Invalid")
                 AvalancheColoredBadge(isSealed, "Sealed ${if(isSealedByCurrentDevice) "and bound" else ""}", "Unsealed")
             }

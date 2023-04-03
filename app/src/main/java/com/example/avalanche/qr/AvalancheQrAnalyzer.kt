@@ -8,7 +8,7 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 
 @ExperimentalGetImage
-public class AvalancheQrAnalyzer(
+class AvalancheQrAnalyzer(
     private val scanner: BarcodeScanner,
     private val onAnalyzed: (code: Barcode?) -> Unit
 ) : ImageAnalysis.Analyzer {

@@ -59,7 +59,7 @@ fun TicketView(
                             isSealed = ticket.isSealed,
                             onSeal = {
                                 try {
-                                    viewModel.sealTicket(context, ticketId, deviceIdentifier)
+                                    viewModel.sealTicket(context, ticket.storeId, ticketId, deviceIdentifier)
                                 } catch (_: Exception) {
                                 }
                             },

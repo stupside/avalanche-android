@@ -40,7 +40,6 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
     LaunchedEffect(showStoreWithId) {
         showStoreWithId?.let {
             viewModel.loadStore(context, it)
-
             viewModel.loadPlans(context, it)
         }
     }
@@ -54,37 +53,35 @@ fun StoresView(context: Context, viewModel: StoresViewModel, storeId: String?) {
         StoresAppBar(context)
     }) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-
-            StoreSearchBar(onType = {
-                try {
-                    viewModel.loadStores(context, it)
-                } catch (_: Exception) {
-                }
-            }) { close ->
-                AvalancheList(stores, template = { store ->
-                    ListItem(
-                        modifier = Modifier.clickable(onClick = {
-
-                            try {
-                                showStoreWithId = store.storeId
-                            } catch (_: Exception) {
-                            } finally {
-                                close()
-                            }
-                        }),
-                        headlineContent = { Text(store.name) },
-                        leadingContent = {
-                            AvalancheLogo(store.logo.toString())
-                        },
-                    )
-                })
-            }
-
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp),
+                modifier = Modifier.padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
+                StoreSearchBar(onType = {
+                    try {
+                        viewModel.loadStores(context, it)
+                    } catch (_: Exception) {
+                    }
+                }) { close ->
+                    AvalancheList(stores, template = { store ->
+                        ListItem(
+                            modifier = Modifier.clickable(onClick = {
+
+                                try {
+                                    showStoreWithId = store.storeId
+                                } catch (_: Exception) {
+                                } finally {
+                                    close()
+                                }
+                            }),
+                            headlineContent = { Text(store.name) },
+                            leadingContent = {
+                                AvalancheLogo(store.logo.toString())
+                            },
+                        )
+                    })
+                }
 
                 if (store == null) {
                     Column(
@@ -185,6 +182,7 @@ fun StoreSearchBar(
     var name by remember { mutableStateOf("") }
 
     var searching by rememberSaveable { mutableStateOf(false) }
+
     Box(Modifier.fillMaxWidth()) {
         Box(
             Modifier
