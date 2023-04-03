@@ -47,7 +47,7 @@ fun WalletsView(context: Context, viewModel: WalletsViewModel) {
 
     LaunchedEffect(storeId) {
         storeId?.let {
-            viewModel.loadTicket(context, it, deviceIdentifier)
+            // viewModel.loadTicket(context, it, deviceIdentifier)
         }
     }
 
