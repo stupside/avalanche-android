@@ -1,24 +1,28 @@
 plugins {
     id 'com.android.application'
+
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.protobuf'
 }
 
 android {
     namespace 'com.example.avalanche'
+
     compileSdk 33
 
     defaultConfig {
         applicationId "com.example.avalanche"
+
         minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary true
         }
+
         manifestPlaceholders = [
                 'appAuthRedirectScheme': 'net.openid.appauthdemo'
         ]
@@ -30,24 +34,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+
+        sourceCompatibility JavaVersion.VERSION_19
+        targetCompatibility JavaVersion.VERSION_19
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+
+        jvmTarget = JavaVersion.VERSION_19.toString()
+
         freeCompilerArgs += [
                 '-opt-in=androidx.compose.material3.ExperimentalMaterial3Api'
         ]
     }
+
     buildFeatures {
+
         compose true
         viewBinding true
     }
+
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0'
+
+        kotlinCompilerExtensionVersion "1.4.3"
     }
+
     packagingOptions {
+
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
@@ -56,7 +71,9 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation project(":protos")
+
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
 
     testImplementation 'junit:junit:4.13.2'
@@ -65,15 +82,23 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // Material
-    implementation "androidx.compose.material3:material3:1.1.0-beta01"
-    implementation "androidx.compose.material3:material3-window-size-class:1.1.0-beta01"
+    implementation "androidx.compose.material3:material3:1.1.0-rc01"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.0-rc01"
 
     // Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-compose:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
+    // Datastore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Di
+    implementation "io.insert-koin:koin-android:$koin_android_version"
+    implementation "io.insert-koin:koin-androidx-navigation:$koin_android_version"
+    implementation "io.insert-koin:koin-androidx-compose:$koin_android_version"
+
     // Compose
-    implementation 'androidx.activity:activity-compose:1.7.0'
+    implementation 'androidx.activity:activity-compose:1.7.1'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
@@ -87,51 +112,14 @@ dependencies {
     // Auth
     implementation 'net.openid:appauth:0.11.1'
 
-    // Grpc
-    implementation 'io.grpc:grpc-stub:1.52.1'
-    implementation 'io.grpc:grpc-protobuf:1.53.0'
-    implementation 'io.grpc:grpc-okhttp:1.52.1'
-    implementation 'io.grpc:protoc-gen-grpc-kotlin:1.3.0'
-    implementation 'io.grpc:grpc-kotlin-stub:1.3.0'
-    implementation 'com.google.protobuf:protobuf-kotlin:3.22.0'
-
     // Http
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
 
     // QR
     implementation 'com.google.mlkit:barcode-scanning:17.1.0'
 
-    implementation "androidx.camera:camera-core:1.3.0-alpha05"
-    implementation "androidx.camera:camera-camera2:1.3.0-alpha05"
-    implementation "androidx.camera:camera-lifecycle:1.3.0-alpha05"
-    implementation "androidx.camera:camera-view:1.3.0-alpha05"
-}
-
-// https://github.com/grpc/grpc-kotlin/blob/master/compiler/README.md#build-tool-plugins
-// https://stackoverflow.com/questions/67897164/how-do-you-add-grpc-to-android-studio-with-kotlin
-// https://github.com/google/protobuf-gradle-plugin/tree/781fad2a01e6561b284c5247e14d78a2b3595ad1#customizing-source-directories
-protobuf {  // this section needs to be added
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.21.12"
-    }
-    plugins {
-        grpc {
-            artifact = "io.grpc:protoc-gen-grpc-java:1.52.1"
-        }
-        grpckt {
-            artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
-        }
-    }
-    generateProtoTasks {
-        all().forEach {
-            it.plugins {
-                grpc {}
-                grpckt {}
-            }
-            it.builtins {
-                kotlin {}
-                java {}
-            }
-        }
-    }
+    implementation "androidx.camera:camera-core:1.3.0-alpha06"
+    implementation "androidx.camera:camera-camera2:1.3.0-alpha06"
+    implementation "androidx.camera:camera-lifecycle:1.3.0-alpha06"
+    implementation "androidx.camera:camera-view:1.3.0-alpha06"
 }

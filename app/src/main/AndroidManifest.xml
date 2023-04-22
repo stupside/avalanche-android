@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name=".core.AvalancheApplication"
+        android:name=".AvalancheApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -24,7 +24,7 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".core.identity.ui.LoginActivity"
+            android:name=".AvalancheActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,56 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".PaymentActivity"
-            android:noHistory="true"
-            android:exported="false" />
-
-        <activity
-            android:name=".core.identity.ui.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".StoresActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".TicketActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".views.challenge.DiscoveryActivity"
-            android:exported="false"
-            android:noHistory="true"
-            android:launchMode="singleInstance"/>
-
-        <activity
-            android:name=".views.challenge.TerminalActivity"
-            android:exported="true"
-            android:noHistory="true"
-            android:launchMode="singleInstance">
-
-            <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-                <action android:name="android.nfc.action.TAG_DISCOVERED" />
-            </intent-filter>
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_tech_filter" />
-
-        </activity>
-
-        <activity
-            android:name=".WalletsActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".WalletActivity"
-            android:exported="false" />
 
         <activity
             android:name="net.openid.appauth.RedirectUriReceiverActivity"

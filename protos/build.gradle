@@ -1,0 +1,68 @@
+plugins {
+    id('org.jetbrains.kotlin.jvm')
+
+    id('com.google.protobuf')
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_19
+    targetCompatibility JavaVersion.VERSION_19
+}
+
+sourceSets {
+
+    main {
+
+        proto {
+            srcDir 'src/main/java/com/protobufs'
+        }
+    }
+}
+
+dependencies {
+
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    api("io.grpc:grpc-protobuf:$grpc_version")
+    api("io.grpc:grpc-kotlin-stub:$grpc_kotlin_version")
+    api("com.google.protobuf:protobuf-kotlin:$grpc_protobuf_version")
+}
+
+protobuf {
+
+    protoc {
+
+        artifact = "com.google.protobuf:protoc:$grpc_protobuf_version"
+    }
+
+    plugins {
+
+        grpc {
+
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
+        }
+
+        grpckt {
+
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpc_kotlin_version:jdk8@jar"
+        }
+    }
+
+    generateProtoTasks {
+
+        all().forEach {
+
+            it.plugins {
+
+                grpc {}
+                grpckt {}
+            }
+
+            it.builtins {
+
+                kotlin {}
+                java {}
+            }
+        }
+    }
+}
