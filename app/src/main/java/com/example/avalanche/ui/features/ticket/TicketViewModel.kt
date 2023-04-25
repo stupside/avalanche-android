@@ -7,13 +7,12 @@ import androidx.lifecycle.viewModelScope
 import avalanche.vault.ticket.Ticket.GetOneTicketRpc
 import avalanche.vault.ticket.TicketServiceGrpcKt
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
-import com.example.avalanche.di.services.AvalancheIdentityService
 import io.grpc.ManagedChannel
 import kotlinx.coroutines.launch
 
 class TicketViewModel constructor(
     private val channel: ManagedChannel,
-    private val identity: AvalancheIdentityService
+    private val credentials: BearerTokenCallCredentials
 ) : ViewModel() {
 
     private val _ticket = MutableLiveData<GetOneTicketRpc.Response>()
@@ -22,8 +21,6 @@ class TicketViewModel constructor(
         get() = _ticket
 
     fun setTicketId(ticketId: String) {
-
-        val credentials = BearerTokenCallCredentials(identity.token().toString())
 
         val service = TicketServiceGrpcKt.TicketServiceCoroutineStub(channel)
             .withCallCredentials(credentials)

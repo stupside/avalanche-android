@@ -5,21 +5,18 @@ import androidx.lifecycle.viewModelScope
 import avalanche.merchant.plan.OrderPlanRpcKt
 import avalanche.merchant.plan.PlanServiceGrpcKt
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
-import com.example.avalanche.di.services.AvalancheIdentityService
 import io.grpc.ManagedChannel
 import kotlinx.coroutines.launch
 
 class OrderViewModel constructor(
     private val channel: ManagedChannel,
-    private val identity: AvalancheIdentityService
+    private val credentials: BearerTokenCallCredentials
 ) : ViewModel() {
 
     fun orderPlan(
         planId: String,
         availableInDays: Int,
     ) {
-        val credentials = BearerTokenCallCredentials(identity.token().toString())
-
         val service = PlanServiceGrpcKt.PlanServiceCoroutineStub(channel)
             .withCallCredentials(credentials)
 

@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.avalanche.ui.features.LoginView
 import com.example.avalanche.ui.features.RegisterView
 import com.example.avalanche.ui.features.order.OrderView
+import com.example.avalanche.ui.features.store.StoreView
 import com.example.avalanche.ui.features.stores.StoresView
 import com.example.avalanche.ui.features.ticket.TicketView
 import com.example.avalanche.ui.features.wallet.WalletView
@@ -20,6 +21,10 @@ sealed class AvalancheNavHostLink(val route: String) {
     object Register : AvalancheNavHostLink("register")
 
     object Stores : AvalancheNavHostLink("stores")
+
+    object Store : AvalancheNavHostLink("stores/{storeId}") {
+        fun route(storeId: String) = "stores/$storeId"
+    }
 
     object Wallet : AvalancheNavHostLink("wallet")
 
@@ -74,6 +79,20 @@ fun AvalancheNavHost() {
         composable(AvalancheNavHostLink.Stores.route) {
 
             StoresView(viewModel = koinViewModel(), goBack = {
+                navController.popBackStack()
+            })
+        }
+
+        composable(
+            route = AvalancheNavHostLink.Store.route,
+            arguments = listOf(navArgument("storeId") {
+                type = NavType.StringType
+            })
+        ) {
+
+            val storeId = it.arguments?.getString("storeId")!!
+
+            StoreView(viewModel = koinViewModel(), storeId = storeId, goBack = {
                 navController.popBackStack()
             })
         }

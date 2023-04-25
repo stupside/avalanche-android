@@ -1,5 +1,6 @@
 package com.example.avalanche.di
 
+import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import com.example.avalanche.core.identity.DevelopmentConnectionBuilder
 import com.example.avalanche.di.services.AvalancheIdentityService
 import net.openid.appauth.AppAuthConfiguration
@@ -20,5 +21,9 @@ val authorization = module {
 
     single {
         AvalancheIdentityService(get(), get())
+    }
+
+    single {
+        BearerTokenCallCredentials(get<AvalancheIdentityService>().token().toString())
     }
 }
