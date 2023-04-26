@@ -16,8 +16,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import avalanche.vault.ticket.Ticket.GetOneTicketRpc
-import com.example.avalanche.shared.ui.compose.AvalancheColoredBadge
-import com.example.avalanche.shared.ui.compose.AvalancheHeader
+import com.example.avalanche.ui.components.AvalancheBadge
+import com.example.avalanche.ui.components.AvalancheCard
 import com.example.avalanche.ui.components.AvalancheGoBackButton
 import com.example.avalanche.ui.components.list.AvalancheList
 import com.example.avalanche.ui.features.ticket.validities.TicketValidityItem
@@ -59,7 +59,7 @@ fun TicketView(
 
                 ticket?.let { ticket ->
 
-                    AvalancheHeader(ticket.name, null, null)
+                    AvalancheCard(ticket.name, null, null)
 
                     Column {
 
@@ -74,7 +74,7 @@ fun TicketView(
                                 style = MaterialTheme.typography.titleMedium,
                             )
 
-                            AvalancheColoredBadge(
+                            AvalancheBadge(
                                 isSuccess = ticket.isValid,
                                 successText = "Valid",
                                 errorText = "Invalid"

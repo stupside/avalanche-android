@@ -25,6 +25,7 @@ dependencies {
 
     api("io.grpc:grpc-protobuf:$grpc_version")
     api("io.grpc:grpc-kotlin-stub:$grpc_kotlin_version")
+    api("io.grpc:grpc-okhttp:$grpc_version")
     api("com.google.protobuf:protobuf-kotlin:$grpc_protobuf_version")
 }
 

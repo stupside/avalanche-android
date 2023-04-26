@@ -1,9 +1,13 @@
 package com.example.avalanche.ui.features.store
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import avalanche.merchant.plan.GetManyPlansRpcKt
+import avalanche.merchant.plan.Plan
+import avalanche.merchant.plan.PlanServiceGrpcKt
 import avalanche.merchant.store.GetOneStoreRpcKt
 import avalanche.merchant.store.Store
 import avalanche.merchant.store.StoreServiceGrpcKt
@@ -21,6 +25,26 @@ class StoreViewModel constructor(
 
     val store: LiveData<Store.GetOneStoreRpc.Response>
         get() = _store
+
+    private val _plans = MediatorLiveData<Plan.GetManyPlansRpc.Response>()
+
+    val plans: LiveData<Plan.GetManyPlansRpc.Response>
+        get() = _plans
+
+    init {
+        _plans.addSource(store) {
+            val service = PlanServiceGrpcKt.PlanServiceCoroutineStub(channel)
+                .withCallCredentials(credentials)
+
+            val request = GetManyPlansRpcKt.request {
+                this.storeId = it.storeId
+            }
+
+            viewModelScope.launch {
+                _plans.value = service.getMany(request)
+            }
+        }
+    }
 
     fun getStore(storeId: String) {
 

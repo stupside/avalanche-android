@@ -13,8 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import avalanche.vault.ticket.Ticket
@@ -23,19 +23,24 @@ import com.example.avalanche.ui.components.list.AvalancheList
 import com.example.avalanche.ui.features.wallet.tickets.WalletTicketItem
 
 @Composable
-fun WalletView(viewModel: WalletViewModel, goBack: () -> Unit, goStores: () -> Unit, goTicket: (ticketId: String) -> Unit) {
+fun WalletView(
+    viewModel: WalletViewModel,
+    goBack: () -> Unit,
+    goStores: () -> Unit,
+    goTicket: (ticketId: String) -> Unit
+) {
 
     SideEffect {
         viewModel.loadTickets()
     }
 
-    val tickets: List<Ticket.GetManyTicketsRpc.Response> by viewModel.tickets.collectAsState()
+    val tickets: Ticket.GetManyTicketsRpc.Response? by viewModel.tickets.observeAsState()
 
     Scaffold(topBar = {
 
         TopAppBar(
             title = {
-                Text("My tickets")
+                Text("My wallet")
             },
             navigationIcon = {
                 AvalancheGoBackButton(goBack)
@@ -49,15 +54,17 @@ fun WalletView(viewModel: WalletViewModel, goBack: () -> Unit, goStores: () -> U
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                AvalancheList(elements = tickets, template = { ticket ->
+                tickets?.let {
+                    AvalancheList(elements = it.itemsList, template = { ticket ->
 
-                    WalletTicketItem(
-                        name = ticket.name,
-                        onClick = {
-                            goTicket(ticket.ticketId)
-                        }
-                    )
-                })
+                        WalletTicketItem(
+                            name = ticket.name,
+                            onClick = {
+                                goTicket(ticket.ticketId)
+                            }
+                        )
+                    })
+                }
             }
         }
     }, floatingActionButton = {

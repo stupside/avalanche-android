@@ -30,11 +30,13 @@ message GetOneStoreRpc {
   }
 
   message Response {
+    
+    string store_id = 1;
 
-    string name = 1;
-    string description = 2;
+    string name = 2;
+    string description = 3;
 
-    google.protobuf.StringValue logo = 3;
+    google.protobuf.StringValue logo = 4;
 
     string email = 5;
   }
@@ -48,12 +50,18 @@ message GetManyStoresRpc {
   }
 
   message Response {
-    string store_id = 1;
+    
+    message Item {
 
-    string name = 2;
-    string description = 3;
+      string store_id = 1;
 
-    google.protobuf.StringValue logo = 4;
+      string name = 2;
+      string description = 3;
+
+      google.protobuf.StringValue logo = 4;
+    }
+
+    repeated Item items = 1;
   }
 }
 
@@ -75,5 +83,5 @@ service StoreService {
   rpc Update(UpdateStoreRpc.Command) returns (google.protobuf.Empty);
 
   rpc GetOne(GetOneStoreRpc.Request) returns (GetOneStoreRpc.Response);
-  rpc GetMany(GetManyStoresRpc.Request) returns (stream GetManyStoresRpc.Response);
+  rpc GetMany(GetManyStoresRpc.Request) returns (GetManyStoresRpc.Response);
 }

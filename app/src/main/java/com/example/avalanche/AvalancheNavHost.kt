@@ -80,6 +80,8 @@ fun AvalancheNavHost() {
 
             StoresView(viewModel = koinViewModel(), goBack = {
                 navController.popBackStack()
+            }, goStore = { storeId ->
+                navController.navigate(AvalancheNavHostLink.Store.route(storeId))
             })
         }
 
@@ -94,6 +96,8 @@ fun AvalancheNavHost() {
 
             StoreView(viewModel = koinViewModel(), storeId = storeId, goBack = {
                 navController.popBackStack()
+            }, goOrder = { planId ->
+                navController.navigate(AvalancheNavHostLink.Order.route(planId))
             })
         }
 
@@ -117,8 +121,8 @@ fun AvalancheNavHost() {
                 navController.popBackStack()
             }, goStores = {
                 navController.navigate(AvalancheNavHostLink.Stores.route)
-            }, goTicket = {
-                navController.navigate(AvalancheNavHostLink.Ticket.route(it))
+            }, goTicket = { ticketId ->
+                navController.navigate(AvalancheNavHostLink.Ticket.route(ticketId))
             })
         }
     }

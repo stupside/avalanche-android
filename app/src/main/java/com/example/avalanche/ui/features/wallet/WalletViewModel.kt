@@ -1,16 +1,13 @@
 package com.example.avalanche.ui.features.wallet
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import avalanche.vault.ticket.Ticket.GetManyTicketsRpc
 import avalanche.vault.ticket.TicketServiceGrpcKt
 import com.example.avalanche.core.grpc.BearerTokenCallCredentials
 import io.grpc.ManagedChannel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WalletViewModel constructor(
@@ -18,12 +15,10 @@ class WalletViewModel constructor(
     private val credentials: BearerTokenCallCredentials
 ) : ViewModel() {
 
+    private val _tickets = MutableLiveData<GetManyTicketsRpc.Response>()
 
-    private val _tickets =
-        MutableStateFlow(listOf<GetManyTicketsRpc.Response>())
-
-    val tickets: StateFlow<List<GetManyTicketsRpc.Response>>
-        get() = _tickets.asStateFlow()
+    val tickets: LiveData<GetManyTicketsRpc.Response>
+        get() = _tickets
 
     fun loadTickets() {
 
@@ -34,22 +29,7 @@ class WalletViewModel constructor(
 
         viewModelScope.launch {
 
-            val flow = service.getMany(request.build())
-
-            _tickets.value = flow.toList();
-
-            _tickets.update {
-                emptyList()
-            }
-
-            flow.collect { ticket ->
-
-                if (_tickets.value.contains(ticket)) return@collect
-
-                _tickets.update {
-                    it + ticket
-                }
-            }
+            _tickets.value = service.getMany(request.build())
         }
     }
 }

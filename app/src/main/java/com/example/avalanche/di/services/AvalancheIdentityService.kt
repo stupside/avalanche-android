@@ -2,10 +2,12 @@ package com.example.avalanche.di.services
 
 import android.net.Uri
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.avalanche.core.identity.DevelopmentConnectionBuilder
 import com.example.avalanche.environment.Constants
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
@@ -19,10 +21,9 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.internal.EMPTY_REQUEST
 import java.io.IOException
-import java.util.prefs.Preferences
 
 class AvalancheIdentityService constructor(
-    private val store: DataStore<Preferences>,
+    private val store: DataStore<androidx.datastore.preferences.core.Preferences>,
     private val authorization: AuthorizationService
 ) {
 
@@ -30,22 +31,19 @@ class AvalancheIdentityService constructor(
 
     companion object {
 
-        private const val IDENTITY = "identity"
+        private val IDENTITY = stringPreferencesKey("identity")
     }
 
     init {
 
         AuthorizationServiceConfiguration.fetchFromIssuer(
             Uri.parse(Constants.AVALANCHE_IDENTITY),
-            AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, exception ->
+            AuthorizationServiceConfiguration.RetrieveConfigurationCallback { configuration, _ ->
 
-                if (exception == null) {
+                if (configuration == null)
+                    return@RetrieveConfigurationCallback
 
-                    if (configuration == null)
-                        return@RetrieveConfigurationCallback
-
-                    state = AuthState(configuration)
-                }
+                state = AuthState(configuration)
 
                 return@RetrieveConfigurationCallback
             }, DevelopmentConnectionBuilder.getInstance()
@@ -53,8 +51,12 @@ class AvalancheIdentityService constructor(
     }
 
     fun token(): String? {
+
+        val data = store.data
+
         return runBlocking {
-            store.data.first().get(IDENTITY, null)
+
+            data.firstOrNull()?.get(IDENTITY)
         }
     }
 
@@ -87,18 +89,16 @@ class AvalancheIdentityService constructor(
 
             scope.launch {
 
-                store.updateData { preferences ->
+                store.edit { preferences ->
 
-                    preferences.put(IDENTITY, state.accessToken)
-
-                    preferences
+                    preferences[IDENTITY] = state.accessToken ?: ""
                 }
-            }
 
-            if (exception == null) {
-                onSuccess()
-            } else {
-                onFailure()
+                if (exception == null) {
+                    onSuccess()
+                } else {
+                    onFailure()
+                }
             }
         }
     }

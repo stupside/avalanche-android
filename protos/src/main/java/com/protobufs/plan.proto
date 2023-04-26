@@ -12,7 +12,7 @@ message OrderPlanRpc {
 
     string plan_id = 1;
 
-    uint32 available_in_days = 3;
+    uint32 available_in_days = 2;
   }
 }
 
@@ -28,12 +28,16 @@ message GetOnePlanRpc {
 
     string store_id = 1;
 
-    string name = 2;
-    string description = 3;
+    string plan_id = 2;
 
-    uint32 price = 4;
+    string name = 3;
+    string description = 4;
 
-    google.protobuf.Duration duration = 5;
+    uint32 price = 5;
+
+    bool is_free = 6;
+
+    google.protobuf.Duration duration = 7;
   }
 }
 
@@ -46,17 +50,23 @@ message GetManyPlansRpc {
 
   message Response {
 
-    string plan_id = 1;
+    message Item {
+      
+      string plan_id = 1;
+      
+      string name = 2;
+      string description = 3;
 
-    string name = 2;
+      uint32 price = 4;
+
+      bool is_free = 5;
+
+      google.protobuf.Duration duration = 6;
+    }
     
-    string description = 3;
-
-    uint32 price = 4;
-
-    bool is_free = 5;
-
-    google.protobuf.Duration duration = 6;
+    string store_id = 1;
+    
+    repeated Item items = 2;
   }
 }
 
@@ -96,5 +106,5 @@ service PlanService {
   rpc Delete(DeletePlanRpc.Command) returns (google.protobuf.Empty);
 
   rpc GetOne(GetOnePlanRpc.Request) returns (GetOnePlanRpc.Response);
-  rpc GetMany(GetManyPlansRpc.Request) returns (stream GetManyPlansRpc.Response);
+  rpc GetMany(GetManyPlansRpc.Request) returns (GetManyPlansRpc.Response);
 }

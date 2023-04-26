@@ -12,8 +12,7 @@ val authorization = module {
 
     single {
         AuthorizationService(
-            androidContext(), AppAuthConfiguration.Builder()
-                .setConnectionBuilder(
+            androidContext(), AppAuthConfiguration.Builder().setConnectionBuilder(
                     DevelopmentConnectionBuilder.getInstance()
                 ).build()
         )
@@ -24,6 +23,11 @@ val authorization = module {
     }
 
     single {
-        BearerTokenCallCredentials(get<AvalancheIdentityService>().token().toString())
+
+        val identity = get<AvalancheIdentityService>()
+
+        val token = identity.token()
+
+        BearerTokenCallCredentials(token.toString())
     }
 }

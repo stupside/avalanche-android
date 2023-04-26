@@ -1,4 +1,4 @@
-package com.example.avalanche.shared.ui.compose
+package com.example.avalanche.ui.components
 
 import androidx.compose.material3.Badge
 import androidx.compose.material3.MaterialTheme
@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 
 
 @Composable
-fun AvalancheColoredBadge(isSuccess: Boolean, successText: String?, errorText: String?) {
+fun AvalancheBadge(isSuccess: Boolean, successText: String?, errorText: String?) {
 
     val text = if (isSuccess) {
         successText

@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 class Constants {
     companion object {
 
-        private const val AVALANCHE_NETWORK = "192.168.2.58"
+        private const val AVALANCHE_NETWORK = "172.20.224.215"
 
         const val AVALANCHE_IDENTITY = "http://$AVALANCHE_NETWORK:5678"
 
