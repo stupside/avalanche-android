@@ -112,6 +112,8 @@ fun AvalancheNavHost() {
 
             TicketView(viewModel = koinViewModel(), ticketId = ticketId, goBack = {
                 navController.popBackStack()
+            }, goStore = { storeId ->
+                navController.navigate(AvalancheNavHostLink.Store.route(storeId))
             })
         }
 

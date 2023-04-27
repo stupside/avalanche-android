@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.store.Store.GetManyStoresRpc
 import com.example.avalanche.ui.components.AvalancheGoBackButton
+import com.example.avalanche.ui.components.AvalancheLogo
 
 @Composable
 fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId: String) -> Unit) {
@@ -64,6 +65,8 @@ fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId
 
                                 ListItem(modifier = Modifier.clickable {
                                     goStore(store.storeId)
+                                }, leadingContent = {
+                                    AvalancheLogo(logo = store.logo.value)
                                 }, headlineContent = {
                                     Text(store.name)
                                 })

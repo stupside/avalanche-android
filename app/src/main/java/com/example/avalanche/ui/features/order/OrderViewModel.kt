@@ -62,6 +62,7 @@ class OrderViewModel constructor(
     }
 
     fun orderPlan(
+        planId: String,
         availableInDays: Int,
         onOrdered: () -> Unit
     ) {
@@ -69,7 +70,6 @@ class OrderViewModel constructor(
             .withCallCredentials(credentials)
 
         val request = OrderPlanRpcKt.command {
-
             this.planId = planId
             this.availableInDays = availableInDays
         }

@@ -86,7 +86,7 @@ fun OrderView(viewModel: OrderViewModel, planId: String, goBack: () -> Unit, goW
                     Button(
                         enabled = activation >= 0,
                         onClick = {
-                            viewModel.orderPlan(activation.toInt()) {
+                            viewModel.orderPlan(it.planId, activation.toInt()) {
                                 goWallet()
                             }
                         }) {

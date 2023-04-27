@@ -10,6 +10,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,7 +28,8 @@ import com.example.avalanche.ui.features.ticket.validities.TicketValidityItem
 fun TicketView(
     viewModel: TicketViewModel,
     ticketId: String,
-    goBack: () -> Unit
+    goBack: () -> Unit,
+    goStore: (storeId: String) -> Unit
 ) {
 
     LaunchedEffect(ticketId) {
@@ -61,6 +63,7 @@ fun TicketView(
             ) {
 
                 store?.let {
+
                     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
 
                         Row(modifier = Modifier.padding(8.dp)) {
@@ -72,6 +75,15 @@ fun TicketView(
                                 Text(it.name, style = MaterialTheme.typography.titleLarge)
                                 Text(it.description, style = MaterialTheme.typography.titleMedium)
                             }
+                        }
+                    }
+
+                    Row {
+
+                        TextButton(onClick = {
+                            goStore(it.storeId)
+                        }) {
+                            Text("Extend this ticket")
                         }
                     }
                 }
