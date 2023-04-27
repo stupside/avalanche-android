@@ -69,10 +69,10 @@ fun AvalancheNavHost() {
 
             val planId = it.arguments?.getString("planId")!!
 
-            navController.navigateUp()
-
             OrderView(viewModel = koinViewModel(), planId = planId, goBack = {
                 navController.popBackStack()
+            }, goWallet = {
+                navController.navigate(AvalancheNavHostLink.Wallet.route)
             })
         }
 
@@ -117,9 +117,7 @@ fun AvalancheNavHost() {
 
         composable(AvalancheNavHostLink.Wallet.route) {
 
-            WalletView(viewModel = koinViewModel(), goBack = {
-                navController.popBackStack()
-            }, goStores = {
+            WalletView(viewModel = koinViewModel(), goStores = {
                 navController.navigate(AvalancheNavHostLink.Stores.route)
             }, goTicket = { ticketId ->
                 navController.navigate(AvalancheNavHostLink.Ticket.route(ticketId))

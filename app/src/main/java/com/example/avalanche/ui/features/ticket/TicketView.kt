@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,11 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import avalanche.merchant.store.Store.GetOneStoreRpc
 import avalanche.vault.ticket.Ticket.GetOneTicketRpc
-import com.example.avalanche.ui.components.AvalancheBadge
-import com.example.avalanche.ui.components.AvalancheCard
 import com.example.avalanche.ui.components.AvalancheGoBackButton
-import com.example.avalanche.ui.components.list.AvalancheList
+import com.example.avalanche.ui.components.AvalancheLogo
 import com.example.avalanche.ui.features.ticket.validities.TicketValidityItem
 
 @Composable
@@ -37,10 +38,13 @@ fun TicketView(
     }
 
     val ticket: GetOneTicketRpc.Response? by viewModel.ticket.observeAsState()
+    val store: GetOneStoreRpc.Response? by viewModel.store.observeAsState()
 
     Scaffold(topBar = {
         TopAppBar(title = {
-            Text("Ticket")
+            ticket?.let {
+                Text(it.name)
+            }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)
         })
@@ -52,43 +56,42 @@ fun TicketView(
         ) {
 
             Column(
-                modifier = Modifier
-                    .padding(horizontal = 32.dp),
+                modifier = Modifier.padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
+                store?.let {
+                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+
+                        Row(modifier = Modifier.padding(8.dp)) {
+
+                            AvalancheLogo(logo = it.logo.value)
+
+                            Column {
+
+                                Text(it.name, style = MaterialTheme.typography.titleLarge)
+                                Text(it.description, style = MaterialTheme.typography.titleMedium)
+                            }
+                        }
+                    }
+                }
+
                 ticket?.let { ticket ->
 
-                    AvalancheCard(ticket.name, null, null)
+                    LazyColumn {
 
-                    Column {
+                        for (element in ticket.validitiesList.withIndex()) {
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-
-                            Text(
-                                "Validity",
-                                modifier = Modifier.padding(16.dp),
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-
-                            AvalancheBadge(
-                                isSuccess = ticket.isValid,
-                                successText = "Valid",
-                                errorText = "Invalid"
-                            )
+                            item(element.index) {
+                                val validity = element.value
+                                TicketValidityItem(
+                                    from = validity.from.seconds,
+                                    to = validity.to.seconds,
+                                    kind = validity.kind,
+                                    span = validity.span.seconds
+                                )
+                            }
                         }
-
-                        AvalancheList(elements = ticket.validitiesList, template = { validity ->
-
-                            TicketValidityItem(
-                                validity.from.seconds,
-                                validity.to.seconds,
-                                validity.kind
-                            )
-                        })
                     }
                 }
             }

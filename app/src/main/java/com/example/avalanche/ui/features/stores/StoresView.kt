@@ -4,8 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,24 +16,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.store.Store.GetManyStoresRpc
-import com.example.avalanche.ui.components.AvalancheCard
 import com.example.avalanche.ui.components.AvalancheGoBackButton
-import com.example.avalanche.ui.components.list.AvalancheList
 
 @Composable
 fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId: String) -> Unit) {
 
-    val stores: GetManyStoresRpc.Response? by viewModel.stores.observeAsState()
-
-    val search by remember { mutableStateOf<String?>(null) }
+    var search by remember { mutableStateOf("") }
 
     LaunchedEffect(search) {
-        if (search.isNullOrEmpty())
-            viewModel.loadStores(search!!)
+
+        if (search.length > 3) {
+
+            viewModel.loadStores(search)
+        }
     }
+
+    val stores: GetManyStoresRpc.Response? by viewModel.stores.observeAsState()
 
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -47,18 +52,23 @@ fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
+                TextField(value = search, onValueChange = { search = it }, singleLine = true)
+
                 stores?.let {
 
-                    AvalancheList(elements = it.itemsList) { store ->
+                    LazyColumn {
 
-                        AvalancheCard(
-                            name = store.name,
-                            description = store.description,
-                            logo = store.logo.value,
-                            modifier = Modifier.clickable {
-                                goStore(store.storeId)
+                        for (store in it.itemsList) {
+
+                            item(store.storeId) {
+
+                                ListItem(modifier = Modifier.clickable {
+                                    goStore(store.storeId)
+                                }, headlineContent = {
+                                    Text(store.name)
+                                })
                             }
-                        )
+                        }
                     }
                 }
             }

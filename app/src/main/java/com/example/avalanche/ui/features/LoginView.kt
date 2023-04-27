@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> Unit) {
 
     var username by remember {
-        mutableStateOf<String?>(null)
+        mutableStateOf<String?>("Angel78")
     }
 
     var password by remember {
-        mutableStateOf<String?>(null)
+        mutableStateOf<String?>("password")
     }
 
     Scaffold(content = { paddingValues ->
