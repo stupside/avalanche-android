@@ -1,3 +1,5 @@
+package com.example.avalanche.ui.features.store.components
+
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text

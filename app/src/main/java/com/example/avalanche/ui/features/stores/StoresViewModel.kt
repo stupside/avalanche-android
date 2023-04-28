@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import avalanche.merchant.store.GetManyStoresRpcKt
 import avalanche.merchant.store.Store.GetManyStoresRpc
 import avalanche.merchant.store.StoreServiceGrpcKt
-import com.example.avalanche.core.grpc.BearerTokenCallCredentials
+import com.example.core.grpc.BearerTokenCallCredentials
 import io.grpc.ManagedChannel
 import kotlinx.coroutines.launch
 

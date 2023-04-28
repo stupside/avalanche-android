@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import avalanche.vault.ticket.Ticket.GetManyTicketsRpc
 import avalanche.vault.ticket.TicketServiceGrpcKt
-import com.example.avalanche.core.grpc.BearerTokenCallCredentials
+import com.example.core.grpc.BearerTokenCallCredentials
 import io.grpc.ManagedChannel
 import kotlinx.coroutines.launch
 

@@ -2,7 +2,7 @@ package com.example.avalanche.ui.features
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.avalanche.di.services.AvalancheIdentityService
+import com.example.core.di.services.AvalancheIdentityService
 
 class LoginViewModel constructor(private val identity: AvalancheIdentityService) :
     ViewModel() {

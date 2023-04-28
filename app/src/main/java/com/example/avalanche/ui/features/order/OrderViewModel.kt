@@ -12,7 +12,7 @@ import avalanche.merchant.plan.PlanServiceGrpcKt
 import avalanche.merchant.store.GetOneStoreRpcKt
 import avalanche.merchant.store.Store.GetOneStoreRpc
 import avalanche.merchant.store.StoreServiceGrpcKt
-import com.example.avalanche.core.grpc.BearerTokenCallCredentials
+import com.example.core.grpc.BearerTokenCallCredentials
 import io.grpc.ManagedChannel
 import kotlinx.coroutines.launch
 

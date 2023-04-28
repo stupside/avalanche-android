@@ -1,6 +1,5 @@
 package com.example.avalanche.ui.features.store
 
-import PlanItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import avalanche.merchant.plan.Plan
 import avalanche.merchant.store.Store
 import com.example.avalanche.ui.components.AvalancheGoBackButton
+import com.example.avalanche.ui.features.store.components.PlanItem
 
 @Composable
 fun StoreView(
