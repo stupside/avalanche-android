@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.plan.Plan
 import avalanche.merchant.store.Store
@@ -53,11 +54,12 @@ fun StoreView(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                store?.let {
-                    Column {
-                        Text(it.name)
-                    }
-                }
+                Text(
+                    modifier = Modifier.padding(16.dp),
+                    fontWeight = FontWeight.SemiBold,
+                    text = "Purchasable Plans"
+                )
+
 
                 plans?.let {
 

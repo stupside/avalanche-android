@@ -3,6 +3,7 @@ package com.example.avalanche.ui.features.stores
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ListItem
@@ -53,7 +54,11 @@ fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                TextField(value = search, onValueChange = { search = it }, singleLine = true)
+                TextField(
+                    value = search,
+                    onValueChange = { search = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true)
 
                 stores?.let {
 
@@ -75,6 +80,7 @@ fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId
                     }
                 }
             }
+            // TODO: List of recent searches
         }
     }
 }

@@ -52,7 +52,7 @@ fun TicketView(
     Scaffold(topBar = {
         TopAppBar(title = {
             ticket?.let {
-                Text(it.name)
+                Text(text = it.name)
             }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)
@@ -69,12 +69,91 @@ fun TicketView(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                store?.let {
 
-                    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+                    Column (
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        ListItem(
+                            headlineContent = {
+                            Text(
+                                fontWeight = FontWeight.SemiBold,
+                                text = "Resort"
+                            )
+                        }, supportingContent = {
+                            store?.let {
+                                Text(
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Normal,
+                                    text = it.name
+                                )
+                            }
+                        })
+
+                        ListItem(
+                            headlineContent = {
+                            Text(
+                                fontWeight = FontWeight.SemiBold,
+                                text = "Ticket Id"
+                            )
+                        }, supportingContent = {
+                            ticket?.let {
+                                Text(
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Normal,
+                                    text = it.ticketId
+                                )
+                            }
+                        })
+
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Dates when this ticket can be used"
+                        )
+
+                        ticket?.let { ticket ->
+
+                            LazyColumn {
+
+                                for (element in ticket.validitiesList.withIndex()) {
+
+                                    item(element.index) {
+                                        val validity = element.value
+                                        TicketValidityItem(
+                                            from = validity.from.seconds,
+                                            to = validity.to.seconds,
+                                            kind = validity.kind,
+                                            span = validity.span.seconds
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        store?.let {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                            ) {
+
+                                FilledTonalButton(onClick = {
+                                    goStore(it.storeId)
+                                }) {
+                                    Text("Extend this ticket")
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+
+                    store?.let {
 
                         Column (
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(32.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Row(
@@ -98,59 +177,15 @@ fun TicketView(
                             Text(it.description, style = MaterialTheme.typography.bodyLarge)
 
                             TextButton(onClick = { /*TODO*/ }) {
-                                Text(text = "Resort Website")
+                                Text(
+                                    modifier = Modifier.padding(end = 8.dp),
+                                    text = "Resort Website"
+                                )
                                 Icon(
                                     Icons.Rounded.ArrowForward,
                                     contentDescription = "Go to the Resort's website"
                                 )
                             }
-                        }
-                    }
-
-                    ListItem(headlineContent = {
-                        Text(
-                            fontWeight = FontWeight.SemiBold,
-                            text = "Ticket Id"
-                        )
-                    }, supportingContent = {
-                        ticket?.let {
-                            Text(
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Normal,
-                                text = it.ticketId)
-                        }
-                    })
-                }
-
-                ticket?.let { ticket ->
-
-                    LazyColumn {
-
-                        for (element in ticket.validitiesList.withIndex()) {
-
-                            item(element.index) {
-                                val validity = element.value
-                                TicketValidityItem(
-                                    from = validity.from.seconds,
-                                    to = validity.to.seconds,
-                                    kind = validity.kind,
-                                    span = validity.span.seconds
-                                )
-                            }
-                        }
-                    }
-                }
-
-                store?.let {
-                    Row (
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    ){
-
-                        FilledTonalButton(onClick = {
-                            goStore(it.storeId)
-                        }) {
-                            Text("Extend this ticket")
                         }
                     }
                 }
