@@ -16,7 +16,5 @@ class Constants {
 
         private const val AVALANCHE_GATEWAY_HTTP = "http://$AVALANCHE_NETWORK:5001"
         private const val AVALANCHE_GATEWAY_HTTPS = "https://$AVALANCHE_NETWORK:5002"
-
-        private const val AVALANCHE_SHARED_PREFERENCES = "Avalanche"
     }
 }
