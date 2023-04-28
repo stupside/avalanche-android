@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.avalanche.ui.theme.AvalancheTheme
 
+
 class AvalancheActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
