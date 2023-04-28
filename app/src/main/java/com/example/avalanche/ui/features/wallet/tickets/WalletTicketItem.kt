@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.avalanche.ui.components.AvalancheLogo
 
+//Todo: Should have a validity parameter
+//It would be represented by a small circle (Green, Red, Orange)
 @Composable
 fun WalletTicketItem(
     name: String,
@@ -26,6 +28,9 @@ fun WalletTicketItem(
             Text(name)
         }, supportingContent = {
             Text(description)
-        })
+        }, trailingContent = {
+            Text(text = "Validity")
+        }
+        )
 
 }

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -78,14 +80,13 @@ fun TicketView(
                         }
                     }
 
-                    Row {
-
-                        TextButton(onClick = {
-                            goStore(it.storeId)
-                        }) {
-                            Text("Extend this ticket")
+                    ListItem(headlineContent = {
+                        Text("Ticket Id")
+                    }, supportingContent = {
+                        ticket?.let {
+                            Text(it.ticketId)
                         }
-                    }
+                    })
                 }
 
                 ticket?.let { ticket ->
@@ -103,6 +104,20 @@ fun TicketView(
                                     span = validity.span.seconds
                                 )
                             }
+                        }
+                    }
+                }
+
+                store?.let {
+                    Row (
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+
+                        FilledTonalButton(onClick = {
+                            goStore(it.storeId)
+                        }) {
+                            Text("Extend this ticket")
                         }
                     }
                 }

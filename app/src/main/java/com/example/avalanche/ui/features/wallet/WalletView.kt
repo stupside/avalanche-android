@@ -54,9 +54,15 @@ fun WalletView(
 
                             item(ticket.ticketId) {
 
-                                WalletTicketItem(name = ticket.name,
-                                    description = ticket.ticketId,
+                                WalletTicketItem(
+                                    // Todo: Should be station name
+                                    name = ticket.name,
+                                    // Todo: Replace id with more important information
+                                    //  (Ticket name)
+                                    // description = ticket.ticketId,
+                                    description = "Ticket Name",
                                     logo = null,
+                                    // Todo: Should have a validty parameter
                                     onClick = {
                                         goTicket(ticket.ticketId)
                                     })

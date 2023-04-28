@@ -1,7 +1,4 @@
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,8 +36,7 @@ fun PlanItem(
             Text(text)
         },
         trailingContent = {
-            Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-            AvalancheBadge(isSuccess = free, successText = "${price / 100} $", errorText = "Free")
+            AvalancheBadge(isSuccess = free, successText = "Free", errorText = "${price / 100} $")
         }
     )
 }

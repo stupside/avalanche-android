@@ -41,10 +41,9 @@ fun AvalancheLogo(logo: String?, size: Dp = 64.dp) {
 @Composable
 fun AvalancheLogoPlaceholder(size: Dp) {
     Icon(
-        painter = painterResource(R.drawable.ic_launcher_foreground),
+        painter = painterResource(R.drawable.placeholder_image),
         contentDescription = "Placeholder",
         modifier = Modifier
             .size(size)
-            .clip(CircleShape)
     )
 }
