@@ -4,7 +4,8 @@ import android.net.Uri
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.avalanche.environment.Constants
+import com.example.core.environment.Constants
+import com.example.core.environment.Constants.Companion.AVALANCHE_IDENTITY_SCOPES
 import com.example.core.identity.DevelopmentConnectionBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.firstOrNull
@@ -81,7 +82,7 @@ class AvalancheIdentityService constructor(
             )
         )
 
-        request.setScopes(listOf("avalanche", "merchant", "vault"))
+        request.setScopes(AVALANCHE_IDENTITY_SCOPES)
 
         authorization.performTokenRequest(request.build()) { response, exception ->
 

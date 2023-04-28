@@ -1,6 +1,6 @@
 package com.example.core.di
 
-import com.example.avalanche.environment.Constants
+import com.example.core.environment.Constants
 import io.grpc.ManagedChannelBuilder
 import org.koin.dsl.module
 

@@ -1,7 +1,4 @@
-package com.example.avalanche.environment
-
-import android.content.Context
-import android.content.SharedPreferences
+package com.example.core.environment
 
 class Constants {
     companion object {
@@ -21,11 +18,5 @@ class Constants {
         private const val AVALANCHE_GATEWAY_HTTPS = "https://$AVALANCHE_NETWORK:5002"
 
         private const val AVALANCHE_SHARED_PREFERENCES = "Avalanche"
-
-        const val AVALANCHE_SHARED_PREFERENCES_IDENTITY = "$AVALANCHE_SHARED_PREFERENCES.Identity"
-
-        fun getSharedPreferences(context: Context): SharedPreferences? {
-            return context.getSharedPreferences(AVALANCHE_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        }
     }
 }
