@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.store.Store.GetOneStoreRpc
 import avalanche.vault.ticket.Ticket.GetOneTicketRpc
@@ -68,23 +73,51 @@ fun TicketView(
 
                     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
 
-                        Row(modifier = Modifier.padding(8.dp)) {
+                        Column (
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                AvalancheLogo(logo = it.logo.value)
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    "About ${it.name}",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    modifier = Modifier.padding(end = 50.dp)
+                                )
+                            }
 
-                            AvalancheLogo(logo = it.logo.value)
+                            Text(it.description, style = MaterialTheme.typography.bodyLarge)
 
-                            Column {
-
-                                Text(it.name, style = MaterialTheme.typography.titleLarge)
-                                Text(it.description, style = MaterialTheme.typography.titleMedium)
+                            TextButton(onClick = { /*TODO*/ }) {
+                                Text(text = "Resort Website")
+                                Icon(
+                                    Icons.Rounded.ArrowForward,
+                                    contentDescription = "Go to the Resort's website"
+                                )
                             }
                         }
                     }
 
                     ListItem(headlineContent = {
-                        Text("Ticket Id")
+                        Text(
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Ticket Id"
+                        )
                     }, supportingContent = {
                         ticket?.let {
-                            Text(it.ticketId)
+                            Text(
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Normal,
+                                text = it.ticketId)
                         }
                     })
                 }
