@@ -25,9 +25,7 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun TicketValidityItem(
     from: Long,
-    to: Long,
-    kind: Ticket.GetOneTicketRpc.Response.ValidityKind,
-    span: Long
+    to: Long
 ) {
 
     fun getDateTime(seconds: Long): String {
@@ -36,16 +34,6 @@ fun TicketValidityItem(
                 seconds
             )
         )
-    }
-
-    val days = TimeUnit.SECONDS.toDays(span)
-
-    val availability = if (days == 0L) {
-
-        TimeUnit.SECONDS.toMinutes(span)
-    } else {
-
-        days
     }
 
     ListItem(
@@ -61,42 +49,6 @@ fun TicketValidityItem(
                 Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
                 Text(getDateTime(to))
             }
-        },
-        trailingContent = {
-
-            BadgedBox(badge = {
-                Badge {
-                    Text(availability.toString())
-                }
-            }) {
-                when (kind) {
-                    Ticket.GetOneTicketRpc.Response.ValidityKind.EARLY ->
-                        Icon(
-                            Icons.Default.ArrowForward,
-                            contentDescription = null
-                        )
-
-                    Ticket.GetOneTicketRpc.Response.ValidityKind.VALID ->
-                        Icon(
-                            Icons.Default.ArrowDropDown,
-                            contentDescription = null
-                        )
-
-                    Ticket.GetOneTicketRpc.Response.ValidityKind.LATE ->
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = null
-                        )
-
-                    else -> {
-                        Icon(
-                            Icons.Default.Close,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
-
-
-        })
+        }
+    )
 }

@@ -41,6 +41,7 @@ fun WalletView(
     }, content = { paddingValues ->
 
         Column(modifier = Modifier.padding(paddingValues)) {
+
             Column(
                 modifier = Modifier.padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -48,7 +49,9 @@ fun WalletView(
 
                 tickets?.let {
 
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
 
                         for (ticket in it.itemsList) {
 
@@ -58,14 +61,12 @@ fun WalletView(
                                     // Todo: Should be station name
                                     name = ticket.name,
                                     // Todo: Replace id with more important information
-                                    //  (Ticket name)
-                                    // description = ticket.ticketId,
-                                    description = "Ticket Name",
                                     logo = null,
-                                    // Todo: Should have a validty parameter
+                                    // Todo: Should have a validity parameter
                                     onClick = {
                                         goTicket(ticket.ticketId)
-                                    })
+                                    }
+                                )
                             }
                         }
                     }

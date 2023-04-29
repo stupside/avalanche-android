@@ -2,6 +2,8 @@ package com.example.avalanche.ui.features.store
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
@@ -11,12 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.plan.Plan
 import avalanche.merchant.store.Store
 import com.example.avalanche.ui.components.AvalancheGoBackButton
+import com.example.avalanche.ui.components.AvalancheLogo
 import com.example.avalanche.ui.features.store.components.PlanItem
 
 @Composable
@@ -53,6 +57,16 @@ fun StoreView(
                 modifier = Modifier.padding(horizontal = 32.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
+                store?.let {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        AvalancheLogo(logo = it.logo.value)
+                    }
+                }
 
                 Text(
                     modifier = Modifier.padding(16.dp),

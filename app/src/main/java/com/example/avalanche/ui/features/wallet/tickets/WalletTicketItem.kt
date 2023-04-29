@@ -14,7 +14,6 @@ import com.example.avalanche.ui.components.AvalancheLogo
 @Composable
 fun WalletTicketItem(
     name: String,
-    description: String,
     logo: String?,
     onClick: () -> Unit
 ) {
@@ -31,15 +30,9 @@ fun WalletTicketItem(
                 fontWeight = FontWeight.SemiBold,
                 text = name
             )
-        }, supportingContent = {
-            Text(
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Normal,
-                text = description
-            )
         }, trailingContent = {
             Text(text = "Validity")
         }
-        )
+    )
 
 }
