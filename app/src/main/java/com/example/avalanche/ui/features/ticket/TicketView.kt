@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ElevatedCard
@@ -49,6 +51,8 @@ fun TicketView(
     val ticket: GetOneTicketRpc.Response? by viewModel.ticket.observeAsState()
     val store: GetOneStoreRpc.Response? by viewModel.store.observeAsState()
 
+    // TODO: Make the view scrollable
+
     Scaffold(topBar = {
         TopAppBar(title = {
             ticket?.let {
@@ -58,6 +62,7 @@ fun TicketView(
             AvalancheGoBackButton(goBack)
         })
     }, content = { paddingValues ->
+
 
         Column(
             modifier = Modifier
@@ -69,12 +74,15 @@ fun TicketView(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-
-
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     Column (
                         modifier = Modifier.padding(16.dp)
                     ) {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleLarge,
+                            text = "About Ticket"
+                        )
                         ListItem(
                             headlineContent = {
                             Text(
@@ -135,7 +143,9 @@ fun TicketView(
                         store?.let {
                             Row(
                                 horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
                             ) {
 
                                 FilledTonalButton(onClick = {

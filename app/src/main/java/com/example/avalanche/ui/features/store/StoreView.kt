@@ -40,7 +40,7 @@ fun StoreView(
 
             store?.let {
 
-                Text(it.name)
+                Text("${it.name} Plans")
             }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)

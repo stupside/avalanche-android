@@ -48,7 +48,7 @@ fun OrderView(viewModel: OrderViewModel, planId: String, goBack: () -> Unit, goW
         TopAppBar(title = {
 
             plan?.let {
-                Text(it.name)
+                Text("Order ${it.name}")
             }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)
