@@ -7,31 +7,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Text
+import com.example.core.environment.Constants
 import com.example.reader.ui.theme.AvalancheTheme
 
 class AvalancheDrmReaderReaderCallback constructor(private val challengeId: String) :
     NfcAdapter.ReaderCallback {
-
-    companion object {
-
-        val SELECT_APDU = byteArrayOf(
-            0x00.toByte(),
-            0xA4.toByte(),
-            0x04.toByte(),
-            0x00.toByte(),
-            0x07.toByte(),
-
-            0xF0.toByte(), // AID apduservice.xml
-            0x39.toByte(),
-            0xE2.toByte(),
-            0xD3.toByte(),
-            0xC4.toByte(),
-            0xB5.toByte(),
-            0x00.toByte(),
-
-            0x00.toByte()
-        )
-    }
 
     override fun onTagDiscovered(tag: Tag?) {
 
@@ -39,7 +19,9 @@ class AvalancheDrmReaderReaderCallback constructor(private val challengeId: Stri
 
         iso.connect()
 
-        iso.transceive(SELECT_APDU)
+        iso.transceive(Constants.SELECT_APDU)
+
+        iso.transceive(challengeId.encodeToByteArray())
 
         iso.close()
     }

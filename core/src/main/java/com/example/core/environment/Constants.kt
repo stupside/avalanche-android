@@ -16,5 +16,23 @@ class Constants {
 
         private const val AVALANCHE_GATEWAY_HTTP = "http://$AVALANCHE_NETWORK:5001"
         private const val AVALANCHE_GATEWAY_HTTPS = "https://$AVALANCHE_NETWORK:5002"
+
+        val SELECT_APDU = byteArrayOf(
+            0x00.toByte(),
+            0xA4.toByte(),
+            0x04.toByte(),
+            0x00.toByte(),
+            0x07.toByte(),
+
+            0xF0.toByte(), // AID apduservice.xml
+            0x39.toByte(),
+            0xE2.toByte(),
+            0xD3.toByte(),
+            0xC4.toByte(),
+            0xB5.toByte(),
+            0x00.toByte(),
+
+            0x00.toByte()
+        )
     }
 }

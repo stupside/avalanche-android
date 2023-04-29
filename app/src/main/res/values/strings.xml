@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Avalanche</string>
 
-    <string name="host_apdu_service">AVALANCHE Apdu</string>
-    <string name="host_apdu_service_aid_group">Avalanche Apdu AID</string>
+    <string name="host_apdu_service">avalanche_apdu</string>
+    <string name="host_apdu_service_aid_group">avalanche_apdu_aid</string>
 </resources>

@@ -3,30 +3,13 @@ package com.example.avalanche.core
 import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
 import android.util.Log
+import com.example.core.environment.Constants.Companion.SELECT_APDU
 
 class DrmHostApduService : HostApduService() {
 
     companion object {
 
         private const val TAG = "DrmHostApduService"
-
-        val SELECT_APDU = byteArrayOf(
-            0x00.toByte(),
-            0xA4.toByte(),
-            0x04.toByte(),
-            0x00.toByte(),
-            0x07.toByte(),
-
-            0xF0.toByte(), // AID apduservice.xml
-            0x39.toByte(),
-            0xE2.toByte(),
-            0xD3.toByte(),
-            0xC4.toByte(),
-            0xB5.toByte(),
-            0x00.toByte(),
-
-            0x00.toByte()
-        )
 
         private val A_OKAY = byteArrayOf(
             0x90.toByte(), // SW1	Status byte 1 - Command processing status
@@ -53,7 +36,7 @@ class DrmHostApduService : HostApduService() {
             return A_OKAY
         }
 
-        Log.wtf(TAG, "processCommandApdu() | unhandled command")
+        Log.wtf(TAG, "processCommandApdu() | unhandled command ${commandApdu.decodeToString()}")
 
         return A_ERROR
     }
