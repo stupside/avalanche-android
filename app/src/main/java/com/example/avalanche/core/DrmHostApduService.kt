@@ -48,6 +48,8 @@ class DrmHostApduService : HostApduService() {
             return A_OKAY
         }
 
+        val body = commandApdu.decodeToString()
+
         val service =
             AuthServiceGrpcKt.AuthServiceCoroutineStub(channel).withCallCredentials(credentials)
 

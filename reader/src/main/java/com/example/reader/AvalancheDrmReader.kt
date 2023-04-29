@@ -4,6 +4,7 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Text
@@ -20,6 +21,8 @@ class AvalancheDrmReaderReaderCallback constructor(private val challengeId: Stri
         iso.connect()
 
         iso.transceive(Constants.SELECT_APDU)
+
+        Log.i("AvalancheDrmReaderReaderCallback", "onTagDiscovered()")
 
         iso.transceive(challengeId.encodeToByteArray())
 
@@ -41,9 +44,7 @@ class AvalancheDrmReader : ComponentActivity() {
 
         nfc = NfcAdapter.getDefaultAdapter(this)
 
-        val storeId = intent.getStringExtra(StoreIdKey)!!
-
-        callback = AvalancheDrmReaderReaderCallback(storeId)
+        callback = AvalancheDrmReaderReaderCallback("sme_store_id")
 
         setContent {
 
