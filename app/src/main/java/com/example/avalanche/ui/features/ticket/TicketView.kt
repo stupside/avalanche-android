@@ -112,54 +112,6 @@ fun TicketView(
                     }
                 }
 
-                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(16.dp),
-                            fontWeight = FontWeight.SemiBold,
-                            text = "Usability Windows"
-                        )
-
-                        ticket?.let { ticket ->
-
-                            LazyColumn {
-
-                                for (element in ticket.validitiesList.withIndex()) {
-
-                                    item(element.index) {
-                                        val validity = element.value
-                                        TicketValidityItem(
-                                            from = validity.from.seconds,
-                                            to = validity.to.seconds,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-
-                        store?.let {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-
-                                FilledTonalButton(onClick = {
-                                    goStore(it.storeId)
-                                }) {
-                                    Text("Extend this ticket")
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {

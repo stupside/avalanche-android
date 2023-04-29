@@ -65,6 +65,7 @@ fun WalletView(
                                     name = store?.name
                                         ?: ticket.ticketId,
                                     logo = store?.logo?.value,
+                                    valid = ticket.isValid,
                                     onClick = {
                                         goTicket(ticket.ticketId)
                                     }
