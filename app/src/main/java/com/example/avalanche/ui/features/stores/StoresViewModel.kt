@@ -25,13 +25,13 @@ class StoresViewModel constructor(
         val service =
             StoreServiceGrpcKt.StoreServiceCoroutineStub(channel).withCallCredentials(credentials)
 
-        val request = GetManyStoresRpcKt.request {
+        val request = GetManyStoresRpcKt.requestByName {
             this.nameSearch = nameSearch
         }
 
         viewModelScope.launch {
 
-            _stores.value = service.getMany(request)
+            _stores.value = service.getManyByName(request)
         }
     }
 }

@@ -37,11 +37,9 @@ message GetOneTicketRpc {
     
     string ticket_id = 2;
 
-    string name = 3;
+    repeated Validity validities = 3;
 
-    repeated Validity validities = 4;
-
-    bool is_valid = 5;
+    bool is_valid = 4;
   }
 }
 
@@ -57,8 +55,8 @@ message GetManyTicketsRpc {
       string store_id = 1;
       
       string ticket_id = 2;
-      
-      string name = 3;
+
+      bool is_valid = 3;
     }
     
     repeated Item items = 1;

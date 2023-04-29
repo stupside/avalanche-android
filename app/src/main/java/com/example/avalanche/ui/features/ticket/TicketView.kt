@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ElevatedCard
@@ -43,10 +41,7 @@ fun TicketView(
 ) {
 
     LaunchedEffect(ticketId) {
-        try {
-            viewModel.setTicketId(ticketId)
-        } catch (_: Exception) {
-        }
+        viewModel.setTicketId(ticketId)
     }
 
     val ticket: GetOneTicketRpc.Response? by viewModel.ticket.observeAsState()
@@ -56,7 +51,7 @@ fun TicketView(
 
     Scaffold(topBar = {
         TopAppBar(title = {
-            ticket?.let {
+            store?.let {
                 Text(text = it.name)
             }
         }, navigationIcon = {
@@ -77,9 +72,92 @@ fun TicketView(
 
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
 
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            style = MaterialTheme.typography.titleLarge,
+                            text = "About Ticket"
+                        )
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    fontWeight = FontWeight.SemiBold,
+                                    text = "Resort"
+                                )
+                            }, supportingContent = {
+                                store?.let {
+                                    Text(
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Normal,
+                                        text = it.name
+                                    )
+                                }
+                            })
+
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    fontWeight = FontWeight.SemiBold,
+                                    text = "Ticket Id"
+                                )
+                            }, supportingContent = {
+                                ticket?.let {
+                                    Text(
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Normal,
+                                        text = it.ticketId
+                                    )
+                                }
+                            })
+
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Dates when this ticket can be used"
+                        )
+
+                        ticket?.let { ticket ->
+
+                            LazyColumn {
+
+                                for (element in ticket.validitiesList.withIndex()) {
+
+                                    item(element.index) {
+                                        val validity = element.value
+                                        TicketValidityItem(
+                                            from = validity.from.seconds,
+                                            to = validity.to.seconds,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        store?.let {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+
+                                FilledTonalButton(onClick = {
+                                    goStore(it.storeId)
+                                }) {
+                                    Text("Extend this ticket")
+                                }
+                            }
+                        }
+                    }
+                }
+
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
+
                     store?.let {
 
-                        Column (
+                        Column(
                             modifier = Modifier.padding(32.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {

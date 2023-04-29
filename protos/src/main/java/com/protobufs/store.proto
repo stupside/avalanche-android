@@ -30,7 +30,7 @@ message GetOneStoreRpc {
   }
 
   message Response {
-    
+
     string store_id = 1;
 
     string name = 2;
@@ -44,13 +44,18 @@ message GetOneStoreRpc {
 
 message GetManyStoresRpc {
 
-  message Request {
+  message RequestByName {
 
     string NameSearch = 1;
   }
 
+  message RequestByIdentifiers {
+
+    repeated google.protobuf.StringValue Identifiers = 1;
+  }
+
   message Response {
-    
+
     message Item {
 
       string store_id = 1;
@@ -83,5 +88,7 @@ service StoreService {
   rpc Update(UpdateStoreRpc.Command) returns (google.protobuf.Empty);
 
   rpc GetOne(GetOneStoreRpc.Request) returns (GetOneStoreRpc.Response);
-  rpc GetMany(GetManyStoresRpc.Request) returns (GetManyStoresRpc.Response);
+
+  rpc GetManyByName(GetManyStoresRpc.RequestByName) returns (GetManyStoresRpc.Response);
+  rpc GetManyByIdentifiers(GetManyStoresRpc.RequestByIdentifiers) returns (GetManyStoresRpc.Response);
 }

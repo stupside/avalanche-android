@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import avalanche.merchant.store.Store.GetManyStoresRpc
 import avalanche.vault.ticket.Ticket
 import com.example.avalanche.ui.features.wallet.tickets.WalletTicketItem
 
@@ -32,6 +33,7 @@ fun WalletView(
     }
 
     val tickets: Ticket.GetManyTicketsRpc.Response? by viewModel.tickets.observeAsState()
+    val stores: GetManyStoresRpc.Response? by viewModel.stores.observeAsState()
 
     Scaffold(topBar = {
 
@@ -57,12 +59,12 @@ fun WalletView(
 
                             item(ticket.ticketId) {
 
+                                val store = stores?.itemsList?.find { it.storeId == ticket.storeId }
+
                                 WalletTicketItem(
-                                    // Todo: Should be station name
-                                    name = ticket.name,
-                                    // Todo: Replace id with more important information
-                                    logo = null,
-                                    // Todo: Should have a validity parameter
+                                    name = store?.name
+                                        ?: ticket.ticketId,
+                                    logo = store?.logo?.value,
                                     onClick = {
                                         goTicket(ticket.ticketId)
                                     }
