@@ -34,6 +34,8 @@ class WalletViewModel constructor(
 
         _stores.addSource(_tickets) {
 
+            if(it.itemsList.isEmpty()) return@addSource
+
             val service = StoreServiceGrpcKt.StoreServiceCoroutineStub(channel)
                 .withCallCredentials(credentials)
 
