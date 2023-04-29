@@ -6,8 +6,9 @@
         android:category="other"
         android:description="@string/host_apdu_service_aid_group">
 
-        <aid-filter android:name="F0010203040506"/>
-        <aid-filter android:name="F039E2D3C4B500" />
+        <aid-filter android:name="F0010203040506" />
+        <aid-filter android:name="F039E2D32CB500" />
+
     </aid-group>
 
 </host-apdu-service>

@@ -3,9 +3,21 @@ package com.example.avalanche.core
 import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
 import android.util.Log
+import avalanche.drm.auth.AcquireChallengeRpcKt
+import avalanche.drm.auth.AuthServiceGrpcKt
+import com.example.core.di.services.AvalancheIdentityService
 import com.example.core.environment.Constants.Companion.SELECT_APDU
+import com.example.core.grpc.BearerTokenCallCredentials
+import io.grpc.ManagedChannel
+import kotlinx.coroutines.runBlocking
+import org.koin.android.ext.android.inject
 
 class DrmHostApduService : HostApduService() {
+
+    private val identity: AvalancheIdentityService by inject()
+
+    private val channel: ManagedChannel by inject()
+    private val credentials: BearerTokenCallCredentials by inject()
 
     companion object {
 
@@ -31,9 +43,26 @@ class DrmHostApduService : HostApduService() {
         //
         if (SELECT_APDU.contentEquals(commandApdu)
         ) {
-            Log.i(TAG, "APDU_SELECT triggered.");
+            Log.i(TAG, "processCommandApdu() | SELECT_APDU triggered.")
 
             return A_OKAY
+        }
+
+        val service =
+            AuthServiceGrpcKt.AuthServiceCoroutineStub(channel).withCallCredentials(credentials)
+
+        val request = AcquireChallengeRpcKt.command {
+            this.challengeId = ""
+        }
+
+        val flow = service.acquire(request)
+
+        runBlocking {
+
+            flow.collect {
+
+                Log.wtf(TAG, "processCommandApdu() | ${it.message} ${it.success}")
+            }
         }
 
         Log.wtf(TAG, "processCommandApdu() | unhandled command ${commandApdu.decodeToString()}")
@@ -42,6 +71,6 @@ class DrmHostApduService : HostApduService() {
     }
 
     override fun onDeactivated(reason: Int) {
-        Log.i(TAG, "onDeactivated() Fired! Reason: $reason")
+        Log.i(TAG, "onDeactivated() | Fired! Reason: $reason")
     }
 }
