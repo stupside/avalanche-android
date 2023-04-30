@@ -1,4 +1,4 @@
-package com.example.avalanche.ui.features
+package com.example.reader.features
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,14 +21,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> Unit) {
+fun RegisterView(viewModel: RegisterViewModel, onRegister: () -> Unit) {
 
     var username by remember {
-        mutableStateOf<String?>("Belinda42")
+        mutableStateOf<String?>(null)
     }
 
     var password by remember {
-        mutableStateOf<String?>("password")
+        mutableStateOf<String?>(null)
+    }
+
+    var validation by remember {
+        mutableStateOf<String?>(null)
     }
 
     Scaffold(content = { paddingValues ->
@@ -48,14 +51,11 @@ fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> 
                     modifier = Modifier.weight(2f),
                     verticalAlignment = Alignment.Bottom
                 ) {
-
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
 
-                        OutlinedTextField(
-                            value = username ?: "",
+                        OutlinedTextField(value = username ?: "",
                             onValueChange = { username = it },
-                            label = { Text("Username") }
-                        )
+                            label = { Text("Username") })
 
                         TextField(
                             value = password ?: "",
@@ -63,28 +63,23 @@ fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> 
                             label = { Text("Password") },
                             visualTransformation = PasswordVisualTransformation()
                         )
+
+                        TextField(
+                            value = validation ?: "",
+                            onValueChange = { validation = it },
+                            label = { Text("Password validation") },
+                            visualTransformation = PasswordVisualTransformation()
+                        )
                     }
                 }
 
                 Row(
-                    modifier = Modifier.weight(3f),
-                    horizontalArrangement = Arrangement.Start
+                    modifier = Modifier.weight(3f), horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-
-                    OutlinedButton(
-                        enabled = !(username.isNullOrEmpty() || password.isNullOrEmpty()),
+                    OutlinedButton(enabled = !password.isNullOrEmpty() && password == validation,
                         onClick = {
-                            viewModel.login(username!!, password!!, onLogin)
-                        }
-                    ) {
-                        Text("Login")
-                    }
-
-                    TextButton(
-                        onClick = {
-                            goRegister()
-                        }
-                    ) {
+                            viewModel.register(username!!, password!!, onRegister)
+                        }) {
                         Text("Register")
                     }
                 }

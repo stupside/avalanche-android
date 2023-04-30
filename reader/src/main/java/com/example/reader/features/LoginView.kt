@@ -1,4 +1,4 @@
-package com.example.avalanche.ui.features
+package com.example.reader.features
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

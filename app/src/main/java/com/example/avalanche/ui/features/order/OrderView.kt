@@ -2,14 +2,10 @@ package com.example.avalanche.ui.features.order
 
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +24,7 @@ import com.example.avalanche.ui.components.AvalancheGoBackButton
 import java.util.concurrent.TimeUnit
 
 @Composable
-fun OrderView(viewModel: OrderViewModel, planId: String, goBack: () -> Unit, goWallet: () -> Unit) {
+fun OrderView(viewModel: OrderViewModel, planId: String, goBack: () -> Unit) {
 
     LaunchedEffect(planId) {
         viewModel.loadPlan(planId)
@@ -66,78 +62,77 @@ fun OrderView(viewModel: OrderViewModel, planId: String, goBack: () -> Unit, goW
             ) {
 
                 store?.let {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                fontWeight = FontWeight.SemiBold,
-                                text = "Store"
-                            )
-                        }, supportingContent = {
-                            Text(
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Normal,
-                                text = it.name
-                            )
-                        }
-                    )
+                    Column {
+                        Text(
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Store"
+                        )
+                        Text(
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Normal,
+                            text = it.name
+                        )
+                    }
                 }
 
                 plan?.let {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                fontWeight = FontWeight.SemiBold,
-                                text = "Price"
-                            )
-                        }, supportingContent = {
-                            if (it.isFree)
-                                Text(
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Normal,
-                                    text = "Free"
-                                )
-                            else
-                                Text(
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Normal,
-                                    text = "${it.price / 100} $"
-                                )
-                        }
-                    )
+                    Column {
+                        Text(
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Price"
+                        )
 
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                fontWeight = FontWeight.SemiBold,
-                                text = "Duration"
-                            )
-                        }, supportingContent = {
+                        if (it.isFree) {
                             Text(
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Normal,
-                                text = "${TimeUnit.SECONDS.toDays(it.duration.seconds)} days"
+                                text = "Free"
+                            )
+                        } else {
+                            Text(
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Normal,
+                                text = "${it.price / 100} $"
                             )
                         }
-                    )
+                    }
+
+                    Column {
+                        Text(
+                            fontWeight = FontWeight.SemiBold,
+                            text = "Duration"
+                        )
+
+                        Text(
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Normal,
+                            text = "${TimeUnit.SECONDS.toDays(it.duration.seconds)} days"
+                        )
+                    }
                 }
 
                 DatePicker(
                     state = picker,
+                    headline = {
+                        Text("available in $activation days")
+                    },
                     dateValidator = { utcDateInMills ->
-                        utcDateInMills > now.timeInMillis
+                        utcDateInMills >= now.timeInMillis
                     },
                     showModeToggle = false
                 )
 
                 plan?.let {
+
                     Button(
                         enabled = activation >= 0,
                         onClick = {
                             viewModel.orderPlan(it.planId, activation.toInt()) {
-                                goWallet()
+                                goBack()
                             }
                         }) {
-                        Text("Order '${it.name}' (available in $activation days)")
+
+                        Text("Order")
                     }
                 }
             }

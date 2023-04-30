@@ -71,8 +71,6 @@ fun AvalancheNavHost() {
 
             OrderView(viewModel = koinViewModel(), planId = planId, goBack = {
                 navController.popBackStack()
-            }, goWallet = {
-                navController.navigate(AvalancheNavHostLink.Wallet.route)
             })
         }
 

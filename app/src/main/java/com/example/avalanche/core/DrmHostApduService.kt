@@ -48,13 +48,13 @@ class DrmHostApduService : HostApduService() {
             return A_OKAY
         }
 
-        val body = commandApdu.decodeToString()
+        val challengeId = commandApdu.decodeToString()
 
         val service =
             AuthServiceGrpcKt.AuthServiceCoroutineStub(channel).withCallCredentials(credentials)
 
         val request = AcquireChallengeRpcKt.command {
-            this.challengeId = ""
+            this.challengeId = challengeId
         }
 
         val flow = service.acquire(request)

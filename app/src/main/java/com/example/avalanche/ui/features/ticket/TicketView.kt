@@ -6,13 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -79,12 +73,11 @@ fun TicketView(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 AvalancheLogo(logo = it.logo.value)
                             }
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
@@ -97,17 +90,6 @@ fun TicketView(
                             }
 
                             Text(it.description, style = MaterialTheme.typography.bodyLarge)
-
-                            TextButton(onClick = { /*TODO*/ }) {
-                                Text(
-                                    modifier = Modifier.padding(end = 8.dp),
-                                    text = "Resort Website"
-                                )
-                                Icon(
-                                    Icons.Rounded.ArrowForward,
-                                    contentDescription = "Go to the Resort's website"
-                                )
-                            }
                         }
                     }
                 }
@@ -131,7 +113,9 @@ fun TicketView(
                                     val validity = element.value
                                     TicketValidityItem(
                                         from = validity.from.seconds,
-                                        to = validity.to.seconds
+                                        to = validity.to.seconds,
+                                        span = validity.span.seconds,
+                                        kind = validity.kind
                                     )
                                 }
                             }
@@ -141,18 +125,13 @@ fun TicketView(
                     store?.let {
                         Row(
                             horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
+                            modifier = Modifier.fillMaxWidth()
                         ) {
 
-                            FloatingActionButton(onClick = {
+                            TextButton(onClick = {
                                 goStore(it.storeId)
                             }) {
-                                Text(
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                    text = "Extend this ticket"
-                                )
+                                Text(text = "Extend this ticket")
                             }
                         }
                     }

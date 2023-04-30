@@ -1,47 +1,58 @@
 package com.example.avalanche.ui.features.ticket.validities
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import java.text.SimpleDateFormat
-import java.util.Locale
+import avalanche.vault.ticket.Ticket.GetOneTicketRpc.Response.ValidityKind
 import java.util.concurrent.TimeUnit
 
 
 @Composable
 fun TicketValidityItem(
     from: Long,
-    to: Long
+    to: Long,
+    span: Long,
+    kind: ValidityKind
 ) {
 
     fun getDateTime(seconds: Long): String {
-        return SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH).format(
-            TimeUnit.SECONDS.toMillis(
-                seconds
-            )
-        )
+        val days = TimeUnit.SECONDS.toDays(seconds)
+
+        if (days == 0L) {
+            val hours = TimeUnit.SECONDS.toHours(seconds)
+
+            if (hours == 0L) {
+                return "${TimeUnit.SECONDS.toMinutes(seconds)} minutes"
+            }
+
+            return "$hours hours"
+        } else {
+            return "$days days"
+        }
     }
+
+
 
     ListItem(
         headlineContent = {
+            Text("${getDateTime(to - from)} validity")
+        },
+        trailingContent = {
 
-            Row {
-                Text(getDateTime(from))
-                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-                Icon(
-                    Icons.Default.ArrowForward,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.padding(ButtonDefaults.IconSpacing))
-                Text(getDateTime(to))
+            when (kind) {
+                ValidityKind.EARLY -> {
+                    Text("Valid in ${getDateTime(span)}")
+                }
+
+                ValidityKind.VALID -> {
+                    Text("Valid for ${getDateTime(span)}")
+                }
+
+                ValidityKind.LATE -> {
+                    Text("Valid ${getDateTime(span)} ago")
+                }
+
+                else -> {}
             }
         }
     )
