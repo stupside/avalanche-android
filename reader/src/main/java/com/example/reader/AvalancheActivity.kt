@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.AnyThread
 import avalanche.drm.auth.AcceptChallengeRpcKt
 import avalanche.drm.auth.AuthServiceGrpcKt
 import avalanche.drm.auth.WatchChallengeRpcKt
@@ -28,37 +29,37 @@ class AvalancheActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val storeId = "test-test-test"
+        val storeId = "1aafb766-af63-4f21-a7aa-650e0a7275cd"
 
         nfc = NfcAdapter.getDefaultAdapter(this)
 
-        setContent {
+        callback = AvalancheReaderCallback(storeId, channel, credentials) {
 
-            callback = AvalancheReaderCallback(storeId, channel, credentials) {
+            val service = AuthServiceGrpcKt.AuthServiceCoroutineStub(channel)
+                .withCallCredentials(credentials)
 
-                val service = AuthServiceGrpcKt.AuthServiceCoroutineStub(channel)
-                    .withCallCredentials(credentials)
+            val request = WatchChallengeRpcKt.command {
+                this.challengeId = it
+            }
 
-                val request = WatchChallengeRpcKt.command {
-                    this.challengeId = it
-                }
+            val response = service.watch(request)
 
-                val response = service.watch(request)
+            runBlocking {
 
-                runBlocking {
-
-                    response.collect { response ->
-                        Log.i(
-                            "AvalancheActivity",
-                            "drm response: ${response.message} -> ${response.success}"
-                        )
-                    }
+                response.collect { response ->
+                    Log.i(
+                        "AvalancheActivity",
+                        "drm response: ${response.message} -> ${response.success}"
+                    )
                 }
             }
+        }
+
+        setContent {
 
             AvalancheTheme {
 
-                AvalancheNavHost()
+                AvalancheNavHost(storeId)
             }
         }
     }
@@ -90,6 +91,7 @@ class AvalancheReaderCallback constructor(
 
 ) : NfcAdapter.ReaderCallback {
 
+    @AnyThread
     override fun onTagDiscovered(tag: Tag?) {
 
         val iso = IsoDep.get(tag)
@@ -107,14 +109,14 @@ class AvalancheReaderCallback constructor(
             this.storeId = this@AvalancheReaderCallback.storeId
         }
 
-        val response = runBlocking {
+        runBlocking {
 
-            service.accept(request)
+            val response = service.accept(request)
+
+            iso.transceive(response.challengeId.encodeToByteArray())
+
+            onAcceptChallenge(response.challengeId)
         }
-
-        onAcceptChallenge(response.challengeId)
-
-        iso.transceive(response.challengeId.encodeToByteArray())
 
         iso.close()
     }

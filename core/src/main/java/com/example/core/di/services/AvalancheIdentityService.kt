@@ -28,7 +28,7 @@ class AvalancheIdentityService constructor(
     private val authorization: AuthorizationService
 ) {
 
-    lateinit var state: AuthState
+    private lateinit var state: AuthState
 
     companion object {
 

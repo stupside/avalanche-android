@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.store.Store
 import com.example.reader.components.AvalancheGoBackButton
@@ -39,7 +38,7 @@ fun StoreView(
 
             store?.let {
 
-                Text("${it.name} Plans")
+                Text(it.name)
             }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)
@@ -55,19 +54,15 @@ fun StoreView(
 
                 store?.let {
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         AvalancheLogo(logo = it.logo.value)
                     }
                 }
-
-                Text(
-                    modifier = Modifier.padding(16.dp),
-                    fontWeight = FontWeight.SemiBold,
-                    text = "Purchasable Plans"
-                )
             }
         }
     }

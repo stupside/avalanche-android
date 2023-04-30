@@ -10,7 +10,7 @@ class Constants {
         const val AVALANCHE_IDENTITY_ACCOUNTS = "$AVALANCHE_IDENTITY/accounts"
 
         const val AVALANCHE_IDENTITY_CLIENT_ID = "android"
-        val AVALANCHE_IDENTITY_SCOPES = listOf("avalanche", "merchant", "vault")
+        val AVALANCHE_IDENTITY_SCOPES = listOf("avalanche", "merchant", "vault", "drm")
 
         const val AVALANCHE_GATEWAY_GRPC = "$AVALANCHE_NETWORK:5000"
 

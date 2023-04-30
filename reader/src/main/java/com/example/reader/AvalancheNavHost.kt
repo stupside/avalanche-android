@@ -18,11 +18,9 @@ sealed class AvalancheNavHostLink(val route: String) {
 }
 
 @Composable
-fun AvalancheNavHost() {
+fun AvalancheNavHost(storeId: String) {
 
     val navController = rememberNavController()
-
-    val storeId = ""
 
     NavHost(navController = navController, startDestination = AvalancheNavHostLink.Login.route) {
 

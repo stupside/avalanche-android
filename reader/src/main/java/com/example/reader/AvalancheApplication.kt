@@ -1,13 +1,12 @@
 package com.example.reader
 
 import android.app.Application
-import com.example.reader.features.store.StoreViewModel
-import com.example.reader.features.stores.StoresViewModel
 import com.example.core.di.authorization
 import com.example.core.di.grpc
 import com.example.core.di.preferences
 import com.example.reader.features.LoginViewModel
 import com.example.reader.features.RegisterViewModel
+import com.example.reader.features.store.StoreViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -22,10 +21,6 @@ val vms = module {
 
     viewModel {
         RegisterViewModel(get())
-    }
-
-    viewModel {
-        StoresViewModel(get(), get())
     }
 
     viewModel {

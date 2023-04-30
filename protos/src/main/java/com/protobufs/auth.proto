@@ -26,7 +26,7 @@ message AcceptChallengeRpc {
   }
 
   message Response {
-    
+
     string challenge_id = 1;
   }
 }
@@ -41,7 +41,7 @@ message WatchChallengeRpc {
   message Response {
 
     bool success = 1;
-    
+
     google.protobuf.StringValue message = 2;
   }
 }

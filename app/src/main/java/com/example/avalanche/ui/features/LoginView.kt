@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> Unit) {
 
     var username by remember {
-        mutableStateOf<String?>("Belinda42")
+        mutableStateOf<String?>("Jacqueline44")
     }
 
     var password by remember {
