@@ -2,14 +2,13 @@ package com.example.avalanche.ui.features.wallet.tickets
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.sharp.CheckCircle
-import androidx.compose.material.icons.sharp.Warning
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import com.example.avalanche.ui.components.AvalancheLogo
 
 @Composable
@@ -28,21 +27,18 @@ fun WalletTicketItem(
             AvalancheLogo(logo = logo)
         },
         headlineContent = {
-            Text(
-                fontWeight = FontWeight.SemiBold,
-                text = name
-            )
+            Text(text = name)
         }, trailingContent = {
             if (valid) {
 
                 Icon(
-                    Icons.Sharp.CheckCircle,
+                    Icons.Default.Check,
                     contentDescription = null,
                 )
             } else {
 
                 Icon(
-                    Icons.Sharp.Warning,
+                    Icons.Default.Clear,
                     contentDescription = null,
                 )
             }

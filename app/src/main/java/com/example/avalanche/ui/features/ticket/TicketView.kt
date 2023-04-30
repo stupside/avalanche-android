@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import avalanche.merchant.store.Store.GetOneStoreRpc
 import avalanche.vault.ticket.Ticket.GetOneTicketRpc
@@ -72,6 +71,7 @@ fun TicketView(
                             modifier = Modifier.padding(32.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
+
                             Row(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
@@ -83,9 +83,8 @@ fun TicketView(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    "About ${it.name}",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.padding(end = 50.dp)
+                                    text = it.name,
+                                    style = MaterialTheme.typography.headlineMedium
                                 )
                             }
 
@@ -95,12 +94,12 @@ fun TicketView(
                 }
 
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+
                     Text(
-                        modifier = Modifier.padding(16.dp),
-                        fontWeight = FontWeight.SemiBold,
-                        text = "Usability Windows"
+                        text = "Usability Windows",
+                        style = MaterialTheme.typography.titleMedium
                     )
 
                     ticket?.let { ticket ->

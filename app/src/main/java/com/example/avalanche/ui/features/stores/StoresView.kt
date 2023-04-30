@@ -58,7 +58,8 @@ fun StoresView(viewModel: StoresViewModel, goBack: () -> Unit, goStore: (storeId
                     value = search,
                     onValueChange = { search = it },
                     modifier = Modifier.fillMaxWidth(),
-                    singleLine = true)
+                    singleLine = true
+                )
 
                 stores?.let {
 

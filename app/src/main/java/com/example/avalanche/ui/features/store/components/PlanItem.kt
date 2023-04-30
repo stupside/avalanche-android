@@ -30,13 +30,14 @@ fun PlanItem(
                 onClick()
             }
             .padding(vertical = 8.dp)) {
+
         Column(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             Text(
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 text = name
             )
 
@@ -57,16 +58,16 @@ fun PlanItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Duration: $text")
+                Text("Duration $text")
 
                 if (free)
                     Text(
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.bodyLarge,
                         text = "Free"
                     )
                 else
                     Text(
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.bodyLarge,
                         text = "${price / 100} $"
                     )
             }

@@ -73,9 +73,8 @@ fun StoreView(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                "About ${it.name}",
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(end = 50.dp)
+                                text = it.name,
+                                style = MaterialTheme.typography.headlineMedium,
                             )
                         }
 
