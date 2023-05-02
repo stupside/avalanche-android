@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,7 +32,8 @@ fun StoreView(
     viewModel: StoreViewModel,
     storeId: String,
     goBack: () -> Unit,
-    goOrder: (planId: String) -> Unit
+    goOrder: (planId: String) -> Unit,
+    goDrmReader: () -> Unit
 ) {
 
     LaunchedEffect(storeId) {
@@ -47,6 +52,17 @@ fun StoreView(
             }
         }, navigationIcon = {
             AvalancheGoBackButton(goBack)
+        })
+    }, floatingActionButton = {
+        ExtendedFloatingActionButton(text = {
+            Text("Become a drm hotspot")
+        }, icon = {
+            Icon(
+                imageVector = Icons.Rounded.Lock,
+                contentDescription = null,
+            )
+        }, onClick = {
+            goDrmReader()
         })
     }) { paddingValues ->
 
@@ -97,7 +113,6 @@ fun StoreView(
 
                                 PlanItem(
                                     name = plan.name,
-                                    description = plan.description,
                                     price = plan.price,
                                     free = plan.isFree,
                                     duration = plan.duration.seconds,

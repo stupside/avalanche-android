@@ -13,6 +13,7 @@ class AvalancheActivity : ComponentActivity() {
 
         setContent {
             AvalancheTheme {
+                
                 AvalancheNavHost()
             }
         }

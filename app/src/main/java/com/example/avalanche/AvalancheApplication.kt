@@ -1,6 +1,8 @@
 package com.example.avalanche
 
 import android.app.Application
+import com.example.avalanche.ui.drm.ReaderViewModel
+import com.example.avalanche.ui.drm.WriterViewModel
 import com.example.avalanche.ui.features.LoginViewModel
 import com.example.avalanche.ui.features.RegisterViewModel
 import com.example.avalanche.ui.features.order.OrderViewModel
@@ -46,6 +48,14 @@ val vms = module {
     viewModel {
         OrderViewModel(get(), get())
     }
+
+    viewModel {
+        ReaderViewModel(get(), get())
+    }
+    viewModel {
+        WriterViewModel(get(), get())
+    }
+
 }
 
 class AvalancheApplication : Application() {

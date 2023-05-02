@@ -5,6 +5,9 @@ class Constants {
 
         private const val AVALANCHE_NETWORK = "192.168.2.58"
 
+        const val TEST_USERNAME = ""
+        const val TEST_PASSWORD = ""
+
         const val AVALANCHE_IDENTITY = "http://$AVALANCHE_NETWORK:5678"
 
         const val AVALANCHE_IDENTITY_ACCOUNTS = "$AVALANCHE_IDENTITY/accounts"

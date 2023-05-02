@@ -12,9 +12,12 @@ message AcquireChallengeRpc {
   }
 
   message Response {
+
     bool success = 1;
 
     google.protobuf.StringValue message = 2;
+
+    google.protobuf.StringValue ticket_id = 3;
   }
 }
 
@@ -43,6 +46,8 @@ message WatchChallengeRpc {
     bool success = 1;
 
     google.protobuf.StringValue message = 2;
+
+    google.protobuf.StringValue ticket_id = 3;
   }
 }
 

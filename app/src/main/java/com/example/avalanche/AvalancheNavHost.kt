@@ -1,11 +1,13 @@
 package com.example.avalanche
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.avalanche.ui.drm.ReaderActivity
 import com.example.avalanche.ui.features.LoginView
 import com.example.avalanche.ui.features.RegisterView
 import com.example.avalanche.ui.features.order.OrderView
@@ -96,6 +98,13 @@ fun AvalancheNavHost() {
                 navController.popBackStack()
             }, goOrder = { planId ->
                 navController.navigate(AvalancheNavHostLink.Order.route(planId))
+            }, goDrmReader = {
+
+                val intent = Intent(navController.context, ReaderActivity::class.java).apply {
+                    putExtra(ReaderActivity.INTENT_EXTRA_STORE_ID, storeId)
+                }
+
+                navController.context.startActivity(intent)
             })
         }
 

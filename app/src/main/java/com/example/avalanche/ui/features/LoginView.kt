@@ -20,16 +20,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.core.environment.Constants
 
 @Composable
 fun LoginView(viewModel: LoginViewModel, onLogin: () -> Unit, goRegister: () -> Unit) {
 
     var username by remember {
-        mutableStateOf<String?>("Jacqueline44")
+        mutableStateOf<String?>(Constants.TEST_USERNAME)
     }
 
     var password by remember {
-        mutableStateOf<String?>("password")
+        mutableStateOf<String?>(Constants.TEST_PASSWORD)
     }
 
     Scaffold(content = { paddingValues ->

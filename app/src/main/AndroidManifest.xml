@@ -35,13 +35,21 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.drm.ReaderActivity"
+            android:launchMode="singleInstance" />
+
+        <activity
+            android:name=".ui.drm.WriterActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
         <service
-            android:name=".core.DrmHostApduService"
+            android:name=".core.DrmHostApduWriter"
             android:exported="true"
             android:permission="android.permission.BIND_NFC_SERVICE">
             <intent-filter>
-                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
             </intent-filter>
             <meta-data
                 android:name="android.nfc.cardemulation.host_apdu_service"

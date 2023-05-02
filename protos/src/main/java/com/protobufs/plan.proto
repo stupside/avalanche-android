@@ -31,13 +31,12 @@ message GetOnePlanRpc {
     string plan_id = 2;
 
     string name = 3;
-    string description = 4;
 
-    uint32 price = 5;
+    uint32 price = 4;
 
-    bool is_free = 6;
+    bool is_free = 5;
 
-    google.protobuf.Duration duration = 7;
+    google.protobuf.Duration duration = 6;
   }
 }
 
@@ -55,13 +54,12 @@ message GetManyPlansRpc {
       string plan_id = 1;
       
       string name = 2;
-      string description = 3;
 
-      uint32 price = 4;
+      uint32 price = 3;
 
-      bool is_free = 5;
+      bool is_free = 4;
 
-      google.protobuf.Duration duration = 6;
+      google.protobuf.Duration duration = 5;
     }
     
     string store_id = 1;
@@ -77,11 +75,10 @@ message CreatePlanRpc {
     string store_id = 1;
 
     string name = 2;
-    string description = 3;
 
-    google.protobuf.Duration validity = 4;
+    google.protobuf.Duration validity = 3;
 
-    uint32 price = 5;
+    uint32 price = 4;
   }
 
   message Response {

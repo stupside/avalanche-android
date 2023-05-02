@@ -15,5 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Avalanche"
 include ':app'
 include ':protos'
-include ':reader'
 include ':core'

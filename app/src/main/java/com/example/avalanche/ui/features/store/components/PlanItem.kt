@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun PlanItem(
     name: String,
-    description: String,
     price: Int,
     free: Boolean,
     duration: Long,
@@ -40,8 +39,6 @@ fun PlanItem(
                 style = MaterialTheme.typography.titleMedium,
                 text = name
             )
-
-            Text(description)
 
             val days = TimeUnit.SECONDS.toDays(duration)
 
