@@ -2,32 +2,31 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
     <uses-feature
-        android:name="android.hardware.nfc"
+        android:name="android.hardware.nfc.hce"
         android:required="true" />
 
+    <uses-permission android:name="android.permission.NFC" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
+        android:name=".AvalancheApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Avalanche"
+        android:theme="@style/NoTitle"
         tools:targetApi="31">
+
         <activity
-            android:name=".client.views.StationSearchActivity"
-            android:exported="false"
-            android:label="@string/title_activity_station_search" />
-        <activity
-            android:name=".client.views.MainActivity"
+            android:name=".AvalancheActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,27 +35,28 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.drm.ReaderActivity"
+            android:launchMode="singleInstance" />
+
+        <activity
+            android:name=".ui.drm.WriterActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
         <service
-            android:name=".client.services.StationDiscoveryService"
-            android:enabled="true"
+            android:name=".core.DrmHostApduWriter"
             android:exported="true"
             android:permission="android.permission.BIND_NFC_SERVICE">
-            <meta-data
-                android:name="android.nfc.action.TECH_DISCOVERED"
-                android:resource="@xml/nfc_techlist" />
-
             <intent-filter>
-                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+                <action android:name="android.nfc.cardemulation.action.HOST_APDU_SERVICE" />
             </intent-filter>
+            <meta-data
+                android:name="android.nfc.cardemulation.host_apdu_service"
+                android:resource="@xml/apduservice" />
+
         </service>
-        <service
-            android:name=".client.services.StationPassService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name=".client.services.LocationService"
-            android:enabled="true"
-            android:exported="false" />
+
     </application>
 
 </manifest>
